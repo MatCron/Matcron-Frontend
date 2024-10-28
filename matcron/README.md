@@ -93,5 +93,4 @@ These instructions will guide you through setting up and running *Matcron-Fronte
 
 - **Other Issues**:
   - Run `flutter doctor` to identify and resolve environment setup issues.
-
 ---
