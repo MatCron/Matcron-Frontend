@@ -1,4 +1,4 @@
-name: Dart
+name: Flutter
 
 on:
   push:
@@ -13,23 +13,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Set up the Dart SDK
-      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+      # Set up Flutter SDK
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'stable'  # You can specify a version here, e.g., '2.10.0'
 
       # Specify the working directory for the app location
       - name: Install dependencies
-        run: dart pub get
-        working-directory: matcron
+        run: flutter pub get
+        working-directory: Matcron-Frontend/matcron
 
-      # Uncomment to verify the use of 'dart format' on each commit.
+      # Uncomment to verify the use of 'flutter format' on each commit.
       # - name: Verify formatting
-      #   run: dart format --output=none --set-exit-if-changed .
+      #   run: flutter format --output=none --set-exit-if-changed .
       #   working-directory: Matcron-Frontend/matcron
 
       - name: Analyze project source
-        run: dart analyze
-        working-directory: matcron
+        run: flutter analyze
+        working-directory: Matcron-Frontend/matcron
 
       - name: Run tests
-        run: dart test
-        working-directory: matcron
+        run: flutter test
+        working-directory: Matcron-Frontend/matcron
