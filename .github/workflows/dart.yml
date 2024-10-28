@@ -18,7 +18,7 @@ jobs:
 
       # Specify the working directory for the app location
       - name: Install dependencies
-        run: dart pub get
+        run: flutter pub get
         working-directory: matcron
 
       # Uncomment to verify the use of 'dart format' on each commit.
