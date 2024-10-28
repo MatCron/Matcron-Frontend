@@ -28,8 +28,8 @@ jobs:
 
       - name: Analyze project source
         run: dart analyze
-        working-directory: Matcron-Frontend/matcron
+        working-directory: matcron
 
       - name: Run tests
         run: dart test
-        working-directory: Matcron-Frontend/matcron
+        working-directory: matcron
