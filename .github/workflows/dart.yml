@@ -16,7 +16,7 @@ jobs:
       - name: Install Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.7.0'  # Replace '3.7.0' with the required version, or leave it out for latest stable
+          flutter-version: '3.24.5'  # Replace '3.7.0' with the required version, or leave it out for latest stable
 
       - name: Verify Flutter Installation
         run: flutter --version
@@ -25,11 +25,6 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
         working-directory: matcron
-
-      # Uncomment to verify the use of 'flutter format' on each commit.
-      # - name: Verify formatting
-      #   run: flutter format --output=none --set-exit-if-changed .
-      #   working-directory: Matcron-Frontend/matcron
 
       - name: Analyze project source
         run: flutter analyze
