@@ -21,15 +21,10 @@ jobs:
       - name: Verify Flutter Installation
         run: flutter --version
 
-      - name: List all directories
-        run: |
-          echo "Listing all directories:"
-          find . -type d
-          
       # Specify the working directory for the app location
       - name: Install dependencies
         run: flutter pub get
-        working-directory: Matcron-Frontend/matcron
+        working-directory: matcron
 
       # Uncomment to verify the use of 'flutter format' on each commit.
       # - name: Verify formatting
