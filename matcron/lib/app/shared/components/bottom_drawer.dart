@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 class BottomDrawer extends StatelessWidget {
-  const BottomDrawer({Key? key}) : super(key: key);
+  const BottomDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -74,16 +74,16 @@ class BottomDrawer extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
+                        const Row(
                           children: [
-                            const Text(
+                            Text(
                               "Lateral Rotation Done?",
                               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                             ),
-                            const SizedBox(width: 5),
+                            SizedBox(width: 5),
                             Tooltip(
                               message: 'Indicates if the lateral rotation has been completed',
-                              child: const Icon(Icons.info_outline, size: 20, color: Colors.grey),
+                              child: Icon(Icons.info_outline, size: 20, color: Colors.grey),
                             ),
                           ],
                         ),

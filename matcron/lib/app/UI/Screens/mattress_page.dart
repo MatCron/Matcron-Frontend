@@ -1,9 +1,9 @@
 // lib/ui/pages/mattress_page.dart
 import 'package:flutter/material.dart';
-import '../components/bottom_drawer.dart';
+import '../../shared/components/bottom_drawer.dart';
 
 class MattressPage extends StatelessWidget {
-  const MattressPage({Key? key}) : super(key: key);
+  const MattressPage({super.key});
 
   void _showBottomDrawer(BuildContext context) {
     showModalBottomSheet(
