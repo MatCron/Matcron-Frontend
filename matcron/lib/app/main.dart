@@ -1,6 +1,6 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
-import 'UI/Screens/mattress_page.dart';
+import 'features/mattress/presentation/pages/mattress_page.dart';
 
 void main() {
   runApp(const MyApp());
