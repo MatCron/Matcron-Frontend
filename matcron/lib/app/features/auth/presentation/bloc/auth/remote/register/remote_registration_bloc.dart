@@ -10,11 +10,11 @@ class RemoteRegistrationBloc extends Bloc<RemoteAuthEvent, RemoteAuthState> {
   final GetRegisterUseCase _registerUseCase;
   
 
-  RemoteRegistrationBloc(this._registerUseCase) : super(const RemoteAuthLoading()) {
-    on <Register> (onRegister);
+  RemoteRegistrationBloc(this._registerUseCase) : super(const RemoteAuthInitial()) {
+    on <RegisterUser> (onRegister);
   }
 
-  void onRegister(Register event, Emitter<RemoteAuthState> emit) async {
+  void onRegister(RegisterUser event, Emitter<RemoteAuthState> emit) async {
     final dataState = await _registerUseCase();
 
     if (dataState is DataSuccess && dataState.data != null) {

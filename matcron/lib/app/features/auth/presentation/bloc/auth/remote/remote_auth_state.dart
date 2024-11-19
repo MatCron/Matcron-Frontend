@@ -12,6 +12,10 @@ abstract class RemoteAuthState extends Equatable {
   List<Object> get props => [user!, exception!];
 }
 
+class RemoteAuthInitial extends RemoteAuthState {
+  const RemoteAuthInitial(); // Represents the initial state
+}
+
 class RemoteAuthLoading extends RemoteAuthState {
   const RemoteAuthLoading();
 }
