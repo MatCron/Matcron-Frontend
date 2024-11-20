@@ -16,10 +16,10 @@ class RoundedTextField extends StatefulWidget {
   });
 
   @override
-  _RoundedTextFieldState createState() => _RoundedTextFieldState();
+  RoundedTextFieldState createState() => RoundedTextFieldState();
 }
 
-class _RoundedTextFieldState extends State<RoundedTextField> {
+class RoundedTextFieldState extends State<RoundedTextField> {
   bool _obscureText = true; // Default to obscured text for password fields
 
   // This checks if the input type is a password, enabling or disabling obscure text

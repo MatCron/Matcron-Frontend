@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
-import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_event.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_auth_state.dart';
 import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 import 'package:matcron/app/features/auth/presentation/widgets/rounded_text_field.dart';
