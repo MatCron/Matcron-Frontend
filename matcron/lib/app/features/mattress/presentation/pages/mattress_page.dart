@@ -1,6 +1,6 @@
 // lib/ui/pages/mattress_page.dart
 import 'package:flutter/material.dart';
-import '../../shared/components/bottom_drawer.dart';
+import '../../../../../core/components/bottom_drawer.dart';
 
 class MattressPage extends StatelessWidget {
   const MattressPage({super.key});
