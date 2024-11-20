@@ -15,6 +15,7 @@ class RemoteRegistrationBloc extends Bloc<RemoteAuthEvent, RemoteAuthState> {
   }
 
   void onRegister(RegisterUser event, Emitter<RemoteAuthState> emit) async {
+    await _registerUseCase(params: event.userRegistrationEntity);
     final dataState = await _registerUseCase();
 
     if (dataState is DataSuccess && dataState.data != null) {

@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:matcron/app/features/auth/data/data_sources/remote/auth_api_service.dart';
 import 'package:matcron/app/features/auth/data/models/user.dart';
 import 'package:matcron/app/features/auth/data/models/user_db.dart';
+import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/domain/repository/auth_repository.dart';
 import 'package:matcron/core/resources/data_state.dart';
 
@@ -12,9 +13,9 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._authApiService);
 
   @override
-  Future<DataState<UserModel>> login(UserLoginDbModel model) async {
+  Future<DataState<UserModel>> login(UserLoginEntity entity) async {
     try {
-      final httpResponse = await _authApiService.login(model: model);
+      final httpResponse = await _authApiService.login(model: UserLoginDbModel.fromEntity(entity));
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         return DataSuccess(httpResponse.data);
@@ -34,9 +35,9 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<DataState<UserModel>> register(UserRegistrationDbModel model) async{
+  Future<DataState<UserModel>> register(UserRegistrationEntity entity) async{
     try {
-      final httpResponse = await _authApiService.register(model: model);
+      final httpResponse = await _authApiService.register(model: UserRegistrationDbModel.fromEntity(entity));
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         return DataSuccess(httpResponse.data);

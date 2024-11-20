@@ -10,11 +10,12 @@ class RemoteLoginBloc extends Bloc<RemoteAuthEvent, RemoteAuthState> {
   final GetLoginUseCase _loginUseCase;
   
 
-  RemoteLoginBloc(this._loginUseCase) : super(const RemoteAuthLoading()) {
+  RemoteLoginBloc(this._loginUseCase) : super(const RemoteAuthInitial()) {
     on <Login> (onLogin);
   }
 
   void onLogin(Login event, Emitter<RemoteAuthState> emit) async {
+    await _loginUseCase(params: event.userLoginEntity);
     final dataState = await _loginUseCase();
 
     if (dataState is DataSuccess && dataState.data != null) {

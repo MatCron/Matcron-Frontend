@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_auth_state.dart';
+import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/auth/presentation/widgets/rounded_text_field.dart';
 import 'package:matcron/app/injection_container.dart';
-import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/constants/constants.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -20,14 +20,16 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
+  
+
   _buildBody(context) {
     return BlocBuilder<RemoteRegistrationBloc, RemoteAuthState>(
       builder: (_, state) {
         // If state loading, display the same page but make the button greyed out
         if (state is RemoteAuthLoading) {
-          return const Center(child: Text("HELLO MONKIES"));
+          return const Center(child: Text("Loading"));
         }
-        // If state is initial, show Registration Page
+        // If state is initial, show Registration Page, will handle client side errors
         if (state is RemoteAuthInitial) {
           return Center(
             child: SizedBox(
@@ -39,7 +41,7 @@ class RegisterPage extends StatelessWidget {
                   children: [
                     const SizedBox(height: 30),
                     const Text(
-                      "Welcome to Matcron",
+                      "Welcome to Matcron!",
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     const SizedBox(height: 10),
@@ -93,6 +95,7 @@ class RegisterPage extends StatelessWidget {
                         GestureDetector(
                           onTap: () {
                             // Navigate to the Terms and Conditions page or show a dialog
+                            
                           },
                           child: Text(
                             "Agree to Terms and Conditions",
@@ -121,14 +124,30 @@ class RegisterPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     // Sign In link
-                    GestureDetector(
-                      onTap: () {
-                        // Navigate to Sign In page
-                      },
-                      child: Text(
-                        "Already have an account? Sign In",
-                        style: TextStyle(color: Colors.blue),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                          Text(
+                            "Already have an account?",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          GestureDetector(
+                            onTap:() => Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage())),
+
+                            child: Text(
+                              "Sign In", 
+                              style: TextStyle(
+                                color: matcronPrimaryColor, 
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16
+                              )
+                            ),
+                          )
+                      ],
                     ),
                   ],
                 ),
@@ -136,17 +155,17 @@ class RegisterPage extends StatelessWidget {
             ),
           );
         }
-        // If state is done, navigate page and handle session storage
+        // If state is done, navigate page and handle session storage, do not allow the user to return to this page.
         if (state is RemoteAuthDone) {
           // Handle the state transition (e.g., navigate)
         }
 
-        // Display error messages below text boxes
+        // Display SnackBar
         if (state is RemoteAuthException) {
           // Handle the error state
         }
 
-        return const SizedBox(child: Text("LOL", style: TextStyle(color: Colors.black)));
+        return const SizedBox();
       },
     );
   }

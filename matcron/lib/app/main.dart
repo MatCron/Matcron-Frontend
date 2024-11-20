@@ -1,5 +1,6 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
+import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
@@ -67,6 +68,16 @@ class _MyHomePageState extends State<MyHomePage> {
                 );
               },
               child: const Text("Go to Register Page"),
+            ),
+            const SizedBox(height: 20),
+             ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              },
+              child: const Text("Go to Login Page"),
             ),
           ],
         ),

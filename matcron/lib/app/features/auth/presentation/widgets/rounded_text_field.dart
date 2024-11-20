@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/constants/constants.dart';
 
 class RoundedTextField extends StatefulWidget {
@@ -55,7 +54,7 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
           labelText: widget.placeholder,
           labelStyle: TextStyle(color: Colors.black),
           contentPadding: EdgeInsets.symmetric(
-            vertical: 20.0,
+            vertical: 15.0,
             horizontal: 25.0,
           ), // Padding inside the field
           suffixIcon: _shouldObscureText
