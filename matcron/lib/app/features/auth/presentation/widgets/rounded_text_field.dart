@@ -4,11 +4,15 @@ import 'package:matcron/core/constants/constants.dart';
 class RoundedTextField extends StatefulWidget {
   final String placeholder;
   final TextInputType inputType;
+  final TextEditingController controller;
+  final String? autofillHint; // New property for autofill hints
 
   const RoundedTextField({
     super.key,
     required this.placeholder,
     required this.inputType,
+    required this.controller,
+    this.autofillHint, // Allow null for optional autofill
   });
 
   @override
@@ -33,11 +37,13 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
   Widget build(BuildContext context) {
     return SizedBox(
       child: TextField(
+        controller: widget.controller, // Attach the provided controller
         obscureText: _shouldObscureText ? _obscureText : false, // Apply obscuring logic based on input type
-        onTapOutside: ((event) {
-          FocusScope.of(context).unfocus();
-        }),
         keyboardType: widget.inputType, // Use dynamic input type
+        autofillHints: widget.autofillHint != null ? [widget.autofillHint!] : null, // Autofill hints
+        onTapOutside: (event) {
+          FocusScope.of(context).unfocus();
+        },
         decoration: InputDecoration(
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(matcronTextFieldBorderRadius), // Rounded corners
@@ -52,8 +58,8 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
           filled: true,
           fillColor: Colors.white,
           labelText: widget.placeholder,
-          labelStyle: TextStyle(color: Colors.black),
-          contentPadding: EdgeInsets.symmetric(
+          labelStyle: const TextStyle(color: Colors.black),
+          contentPadding: const EdgeInsets.symmetric(
             vertical: 15.0,
             horizontal: 25.0,
           ), // Padding inside the field
