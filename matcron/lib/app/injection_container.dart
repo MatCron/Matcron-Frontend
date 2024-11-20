@@ -7,6 +7,7 @@ import 'package:matcron/app/features/auth/domain/usecases/login.dart';
 import 'package:matcron/app/features/auth/domain/usecases/register.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
+import 'package:matcron/core/resources/encryption.dart';
 
 final sl = GetIt.instance;
 
@@ -21,7 +22,7 @@ Future<void> initializeDependencies() async {
   );
 
   sl.registerSingleton<AuthRepository>(
-    AuthRepositoryImpl(sl())
+    AuthRepositoryImpl(sl(), sl())
   );
 
   // UseCases
@@ -42,4 +43,8 @@ Future<void> initializeDependencies() async {
     () => RemoteLoginBloc(sl())
   );
 
+  //Services
+  sl.registerFactory<EncryptionService>(
+    () => EncryptionService()
+  );
 }
