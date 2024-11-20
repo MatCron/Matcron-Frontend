@@ -16,13 +16,18 @@ Future<void> initializeDependencies() async {
   // Dio
   sl.registerSingleton<Dio>(Dio());
 
+  //Services
+  sl.registerFactory<EncryptionService>(
+    () => EncryptionService()
+  );
+
   // Dependencies
   sl.registerSingleton<AuthApiService>(
     AuthApiService(sl())
   );
 
   sl.registerSingleton<AuthRepository>(
-    AuthRepositoryImpl(sl(), sl())
+    AuthRepositoryImpl(sl(),sl())
   );
 
   // UseCases
@@ -43,8 +48,4 @@ Future<void> initializeDependencies() async {
     () => RemoteLoginBloc(sl())
   );
 
-  //Services
-  sl.registerFactory<EncryptionService>(
-    () => EncryptionService()
-  );
 }

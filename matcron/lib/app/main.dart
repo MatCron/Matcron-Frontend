@@ -6,8 +6,8 @@ import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'features/mattress/presentation/pages/mattress_page.dart';
 
-void main() {
-  initializeDependencies();
+Future<void> main() async {
+  await initializeDependencies(); // Initialize all dependencies
   runApp(const MyApp());
 }
 
