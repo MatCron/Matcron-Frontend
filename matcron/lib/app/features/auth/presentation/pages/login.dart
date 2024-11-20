@@ -1,14 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
+import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_event.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_auth_state.dart';
 import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 import 'package:matcron/app/features/auth/presentation/widgets/rounded_text_field.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/core/constants/constants.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  // TextEditingControllers for email and password fields
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +31,11 @@ class LoginPage extends StatelessWidget {
     );
   }
 
-  _buildBody(context) {
+  Widget _buildBody(BuildContext context) {
     return BlocBuilder<RemoteLoginBloc, RemoteAuthState>(
       builder: (_, state) {
         if (state is RemoteAuthLoading) {
-          return const Center(child: Text("Loading"));
-          
+          return const Center(child: CircularProgressIndicator());
         }
 
         if (state is RemoteAuthInitial) {
@@ -43,86 +53,117 @@ class LoginPage extends StatelessWidget {
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
                     ),
                     const SizedBox(height: 30),
-                     const RoundedTextField(
+
+                    // Email Field
+                    RoundedTextField(
+                      controller: emailController,
                       placeholder: "Enter email",
                       inputType: TextInputType.emailAddress,
+                      autofillHint: AutofillHints.email,
                     ),
                     const SizedBox(height: 30),
-                    // Password field
-                    const RoundedTextField(
+
+                    // Password Field
+                    RoundedTextField(
+                      controller: passwordController,
                       placeholder: "Enter password",
                       inputType: TextInputType.visiblePassword,
+                      autofillHint: AutofillHints.password,
                     ),
                     const SizedBox(height: 15),
+
+                    // Forgot Password
                     GestureDetector(
                       onTap: () {
-                        // Navigate to Sign In page
+                        // Navigate to Forgot Password screen
                       },
                       child: Text(
                         "Forgot Password?",
-                        style: TextStyle(color: matcronPrimaryColor, fontWeight: FontWeight.bold, fontSize: 20),
+                        style: TextStyle(
+                          color: matcronPrimaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                     const SizedBox(height: 35),
+
+                    // Sign In Button
                     ElevatedButton(
                       onPressed: () {
-                        // Handle Sign Up action
+                        context.read<RemoteLoginBloc>().add(
+                              Login(
+                                UserLoginEntity(
+                                  email: emailController.text,
+                                  password: passwordController.text,
+                                )
+                              ),
+                            );
                       },
-                      
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        minimumSize: Size(double.infinity, 60),
-                        backgroundColor: matcronPrimaryColor
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        minimumSize: const Size(double.infinity, 60),
+                        backgroundColor: matcronPrimaryColor,
                       ),
-                      child: const Text("Sign In", style: TextStyle(color: Colors.white, fontSize: 20),),
+                      child: const Text(
+                        "Sign In",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
                     ),
                     const SizedBox(height: 20),
-                    // Sign In link
+
+                    // Sign Up Link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                          Text(
-                            "Don't have an account?",
+                        const Text(
+                          "Don't have an account?",
+                          style: TextStyle(color: Colors.black, fontSize: 16),
+                        ),
+                        const SizedBox(width: 5),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const RegisterPage()),
+                          ),
+                          child: Text(
+                            "Sign Up",
                             style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16
+                              color: matcronPrimaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
                             ),
                           ),
-                          SizedBox(width: 5),
-                          GestureDetector(
-                            onTap:() => Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPage())),
-
-                            child: Text(
-                              "Sign Up", 
-                              style: TextStyle(
-                                color: matcronPrimaryColor, 
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16
-                              )
-                            ),
-                          )
+                        ),
                       ],
                     ),
-                  ]
-                )
+                  ],
+                ),
               ),
             ),
           );
         }
 
-        // If state is done, navigate page and handle session storage, do not allow the user to return to this page.
-        if (state is RemoteAuthDone) {
-          // Handle the state transition (e.g., navigate)
-        }
-
-        // Display SnackBar
         if (state is RemoteAuthException) {
-          // Handle the error state
+          return Center(
+            child: Text(
+              "Error: ${state.exception}",
+              style: const TextStyle(color: Colors.red),
+            ),
+          );
         }
 
         return const SizedBox();
-      }
+      },
     );
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers when the widget is removed
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 }

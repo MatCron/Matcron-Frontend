@@ -7,8 +7,25 @@ import 'package:matcron/app/features/auth/presentation/widgets/rounded_text_fiel
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/core/constants/constants.dart';
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
+
+  @override
+  State<RegisterPage> createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
+  // TextEditingControllers for form fields
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController orgCodeController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+  
+
+  // Checkbox state
+  bool agreeToTerms = false;
 
   @override
   Widget build(BuildContext context) {
@@ -20,24 +37,20 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
-  
-
-  _buildBody(context) {
+  Widget _buildBody(BuildContext context) {
     return BlocBuilder<RemoteRegistrationBloc, RemoteAuthState>(
       builder: (_, state) {
-        // If state loading, display the same page but make the button greyed out
         if (state is RemoteAuthLoading) {
-          return const Center(child: Text("Loading"));
+          return const Center(child: CircularProgressIndicator());
         }
-        // If state is initial, show Registration Page, will handle client side errors
+
         if (state is RemoteAuthInitial) {
           return Center(
             child: SizedBox(
               width: 325,
-              child: SingleChildScrollView( // To handle overflow on smaller screens
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 30),
                     const Text(
@@ -50,54 +63,84 @@ class RegisterPage extends StatelessWidget {
                       style: TextStyle(fontSize: 24, color: matcronPrimaryColor),
                     ),
                     const SizedBox(height: 30),
-                    // Row for First Name and Last Name
-                    const Row(
+
+                    // First Name and Last Name
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
                           child: RoundedTextField(
+                            controller: firstNameController,
                             placeholder: "First Name",
                             inputType: TextInputType.name,
+                            autofillHint: AutofillHints.givenName,
                           ),
                         ),
-                        SizedBox(width: 10), // space between the two fields
+                        const SizedBox(width: 10),
                         Expanded(
                           child: RoundedTextField(
+                            controller: lastNameController,
                             placeholder: "Last Name",
                             inputType: TextInputType.name,
+                            autofillHint: AutofillHints.familyName,
                           ),
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 30),
-                    const RoundedTextField(
+                    // Organization Code
+                    RoundedTextField(
+                      controller: emailController,
+                      placeholder: "Enter email",
+                      inputType: TextInputType.emailAddress,
+                      autofillHint: AutofillHints.email,
+                    ),
+                    const SizedBox(height: 30),
+
+                    // Organization Code
+                    RoundedTextField(
+                      controller: orgCodeController,
                       placeholder: "Enter organization code",
                       inputType: TextInputType.text,
                     ),
                     const SizedBox(height: 30),
-                    // Password field
-                    const RoundedTextField(
+
+                    // Password
+                    RoundedTextField(
+                      controller: passwordController,
                       placeholder: "Enter a strong password",
                       inputType: TextInputType.visiblePassword,
+                      autofillHint: AutofillHints.newPassword,
                     ),
                     const SizedBox(height: 30),
-                    // Confirm password field
-                    const RoundedTextField(
+
+                    // Confirm Password
+                    RoundedTextField(
+                      controller: confirmPasswordController,
                       placeholder: "Confirm password",
                       inputType: TextInputType.visiblePassword,
+                      autofillHint: AutofillHints.newPassword,
                     ),
                     const SizedBox(height: 20),
+
                     // Checkbox for terms and conditions
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Checkbox(value: false, onChanged: (value) {  }),
+                        Checkbox(
+                          value: agreeToTerms,
+                          onChanged: (value) {
+                            setState(() {
+                              agreeToTerms = value ?? false;
+                            });
+                          },
+                        ),
                         GestureDetector(
                           onTap: () {
-                            // Navigate to the Terms and Conditions page or show a dialog
-                            
+                            // Navigate to Terms and Conditions
                           },
-                          child: Text(
+                          child: const Text(
                             "Agree to Terms and Conditions",
                             style: TextStyle(
                               color: Colors.blue,
@@ -107,46 +150,63 @@ class RegisterPage extends StatelessWidget {
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 20),
-                    // Sign Up button
+
+                    // Sign Up Button
                     ElevatedButton(
-                      onPressed: () {
-                        // Handle Sign Up action
-                      },
-                      
+                      onPressed: agreeToTerms
+                          ? () {
+                              // // Trigger Sign Up
+                              // context.read<RemoteRegistrationBloc>().add(
+                              //   RegisterUser(UserRegistrationEntity(
+                              //       firstName: firstNameController.text, 
+                              //       lastName: lastNameController.text, 
+                              //       email: emailController.text, 
+                              //       password: passwordController.text, 
+                              //       organisationCode: orgCodeController.text
+                              //       )
+                              //   )
+                              // );
+                            }
+                          : null, // Disable button if terms are not agreed
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-                        padding: EdgeInsets.symmetric(vertical: 16),
-                        minimumSize: Size(double.infinity, 60),
-                        backgroundColor: matcronPrimaryColor
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        minimumSize: const Size(double.infinity, 60),
+                        backgroundColor: matcronPrimaryColor,
                       ),
-                      child: const Text("Sign Up", style: TextStyle(color: Colors.white, fontSize: 20),),
+                      child: const Text(
+                        "Sign Up",
+                        style: TextStyle(color: Colors.white, fontSize: 20),
+                      ),
                     ),
+
                     const SizedBox(height: 20),
+
                     // Sign In link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                          Text(
-                            "Already have an account?",
+                        const Text(
+                          "Already have an account?",
+                          style: TextStyle(color: Colors.black, fontSize: 16),
+                        ),
+                        const SizedBox(width: 5),
+                        GestureDetector(
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const LoginPage()),
+                          ),
+                          child: Text(
+                            "Sign In",
                             style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16
+                              color: matcronPrimaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
                             ),
                           ),
-                          SizedBox(width: 5),
-                          GestureDetector(
-                            onTap:() => Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPage())),
-
-                            child: Text(
-                              "Sign In", 
-                              style: TextStyle(
-                                color: matcronPrimaryColor, 
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16
-                              )
-                            ),
-                          )
+                        ),
                       ],
                     ),
                   ],
@@ -155,18 +215,55 @@ class RegisterPage extends StatelessWidget {
             ),
           );
         }
-        // If state is done, navigate page and handle session storage, do not allow the user to return to this page.
-        if (state is RemoteAuthDone) {
-          // Handle the state transition (e.g., navigate)
-        }
 
-        // Display SnackBar
         if (state is RemoteAuthException) {
-          // Handle the error state
+          return Center(
+            child: Text(
+              "Error: ${state.exception}",
+              style: const TextStyle(color: Colors.red),
+            ),
+          );
         }
 
         return const SizedBox();
       },
     );
+  }
+
+  bool isValidCredentials() {
+    //STRING
+    if (firstNameController.text.isEmpty) {
+      return false;
+    }
+
+
+    if (lastNameController.text.isEmpty) {
+      return false;
+    }
+
+    if (orgCodeController.text.isEmpty) {
+
+    }
+
+    if (passwordController.text.isEmpty) {
+      return false;
+    }
+
+    if (confirmPasswordController.text.isEmpty) {
+      
+    }
+
+    return true;
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers when the widget is removed
+    firstNameController.dispose();
+    lastNameController.dispose();
+    orgCodeController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
   }
 }
