@@ -22,6 +22,20 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+
+    // Add listeners to the controllers
+    emailController.addListener(() {
+      debugPrint("Email field changed: ${emailController.text}");
+    });
+
+    passwordController.addListener(() {
+      debugPrint("Password field changed: ${passwordController.text}");
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocProvider<RemoteLoginBloc>(
       create: (context) => sl(),
@@ -91,14 +105,14 @@ class _LoginPageState extends State<LoginPage> {
                     // Sign In Button
                     ElevatedButton(
                       onPressed: () {
-                        context.read<RemoteLoginBloc>().add(
-                              Login(
-                                UserLoginEntity(
-                                  email: emailController.text,
-                                  password: passwordController.text,
-                                )
-                              ),
-                            );
+                        // context.read<RemoteLoginBloc>().add(
+                        //       Login(
+                        //         UserLoginEntity(
+                        //           email: emailController.text,
+                        //           password: passwordController.text,
+                        //         )
+                        //       ),
+                        //     );
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
@@ -167,3 +181,4 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 }
+
