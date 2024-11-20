@@ -1,8 +1,13 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
-import 'UI/Screens/mattress_page.dart';
+import 'package:matcron/app/features/auth/presentation/pages/login.dart';
+import 'package:matcron/app/features/auth/presentation/pages/register.dart';
+import 'package:matcron/app/injection_container.dart';
+import 'package:matcron/config/theme/app_theme.dart';
+import 'features/mattress/presentation/pages/mattress_page.dart';
 
-void main() {
+Future<void> main() async {
+  await initializeDependencies(); // Initialize all dependencies
   runApp(const MyApp());
 }
 
@@ -12,12 +17,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        scaffoldBackgroundColor: HexColor("#E5E5E5"), // Set background color for the whole app
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
+      home: const MyHomePage(title: 'Flutter Demo Home Page'), 
     );
   }
 }
@@ -32,13 +37,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +49,7 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 20),
+            
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -66,13 +59,28 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text("Go to Mattress Page"),
             ),
+             const SizedBox(height: 20),
+             ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegisterPage()),
+                );
+              },
+              child: const Text("Go to Register Page"),
+            ),
+            const SizedBox(height: 20),
+             ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              },
+              child: const Text("Go to Login Page"),
+            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }

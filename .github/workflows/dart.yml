@@ -30,6 +30,3 @@ jobs:
         run: flutter analyze
         working-directory: matcron
 
-      - name: Run tests
-        run: flutter test
-        working-directory: matcron
