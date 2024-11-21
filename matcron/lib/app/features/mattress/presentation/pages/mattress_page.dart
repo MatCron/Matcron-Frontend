@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import '../../../../../core/components/bottom_drawer.dart';
 
+//change this to widget!!
 class MattressPage extends StatelessWidget {
   const MattressPage({super.key});
 
