@@ -2,12 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import 'components/bottom_bar/controllers/bottom_bar_active_item.dart';
-import 'components/bottom_bar/controllers/bottom_bar_inactive_item.dart';
-import 'components/bottom_bar/controllers/bottom_bar_painter.dart';
-import 'constants/constants.dart';
-import 'components/bottom_bar/models/bottom_bar_item_model.dart';
-import 'components/bottom_bar/controllers/notch_bottom_bar_controller.dart';
+import 'bottom_bar_active_item.dart';
+import 'bottom_bar_inactive_item.dart';
+import 'bottom_bar_painter.dart';
+import '../../../constants/constants.dart';
+import '../models/bottom_bar_item_model.dart';
+import 'notch_bottom_bar_controller.dart';
 
 /// Class to generate the NotchBottomBar
 class AnimatedNotchBottomBar extends StatefulWidget {
