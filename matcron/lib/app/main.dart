@@ -6,7 +6,6 @@ import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'features/mattress/presentation/pages/mattress_page.dart';
-import  'package:matcron/core/constants/constants.dart';
 
 Future<void> main() async {
   await initializeDependencies(); // Initialize all dependencies

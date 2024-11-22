@@ -124,7 +124,7 @@ class AnimatedNotchBottomBar extends StatefulWidget {
     this.elevation = 5.0,
     this.showBottomRadius = true,
     this.showTopRadius = true,
-    this.notchGradient = null,
+    this.notchGradient,
     this.maxLine,
     this.textOverflow,
     this.textAlign,
@@ -134,10 +134,9 @@ class AnimatedNotchBottomBar extends StatefulWidget {
   });
 
   @override
-  _AnimatedNotchBottomBarState createState() => _AnimatedNotchBottomBarState();
+  AnimatedNotchBottomBarState createState() => AnimatedNotchBottomBarState();
 }
-
-class _AnimatedNotchBottomBarState extends State<AnimatedNotchBottomBar> with SingleTickerProviderStateMixin {
+class AnimatedNotchBottomBarState extends State<AnimatedNotchBottomBar> with SingleTickerProviderStateMixin {
   late double _screenWidth;
   int maxCount = 5;
   int currentIndex = 0;

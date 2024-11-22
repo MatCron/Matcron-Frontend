@@ -118,8 +118,8 @@ class BottomBarPainter extends CustomPainter {
         Offset(kTopRadius, -kTopRadius),
         radius: Radius.circular(kTopRadius),
       );
-    if (this.showShadow) {
-      canvas..drawShadow(path, _shadowColor, shadowElevation ?? 5, true);
+    if (showShadow) {
+      canvas.drawShadow(path, _shadowColor, shadowElevation ?? 5, true);
     }
     canvas.drawPath(path, _paint);
   }
@@ -138,8 +138,8 @@ class BottomBarPainter extends CustomPainter {
         0,
         kPi * 2,
       );
-    if (this.showShadow) {
-      canvas..drawShadow(path, _shadowColor, shadowElevation ?? 5.0, true);
+    if (showShadow) {
+      canvas.drawShadow(path, _shadowColor, shadowElevation ?? 5.0, true);
     }
     shader != null
         ? canvas.drawPath(path, _notchPaint..shader = shader)
