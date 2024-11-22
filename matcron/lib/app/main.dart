@@ -1,12 +1,12 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'dart:developer';
-import 'package:matcron/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:matcron/core/resources/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'features/mattress/presentation/pages/mattress_page.dart';
+import  'package:matcron/core/constants/constants.dart';
 
 Future<void> main() async {
   await initializeDependencies(); // Initialize all dependencies
@@ -38,56 +38,6 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-@override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Login Page'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MattressPage()),
-                );
-              },
-              child: const Text("Go to Mattress Page"),
-            ),
-             const SizedBox(height: 20),
-             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const RegisterPage()),
-                );
-              },
-              child: const Text("Go to Register Page"),
-            ),
-            const SizedBox(height: 20),
-             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
-              },
-              child: const Text("Go to Login Page"),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-
-
-
 class _MyHomePageState extends State<MyHomePage> {
    /// Controller to handle PageView and also handles initial page
  final _pageController = PageController(initialPage: 0);
@@ -95,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
    /// Controller to handle bottom nav bar and also handles initial page
   final NotchBottomBarController _controller = NotchBottomBarController(index: 0);
 
-    int maxCount = 5;
+    int maxCount = 4;
 
   @override
   void dispose() {
@@ -109,9 +59,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     /// widget list
     final List<Widget> bottomBarPages = [
-      Dashboard(
-        controller: (_controller),
-      ),
+      Dashboard(controller: _controller),
       const Mattress(),
       const Type(),
       const Organisation(),
@@ -191,9 +139,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   activeItem: Icon(
                     Icons.person,
-                  color:  Color.fromRGBO(30, 167, 169, 1),
+                  color: Color.fromRGBO(30, 167, 169, 1) ,
                   ),
                   itemLabel: 'Firm',
+
                 ),
               ],
               onTap: (index) {
@@ -210,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
 class Dashboard extends StatelessWidget {
   final NotchBottomBarController? controller;
 
-  const Dashboard({Key? key, this.controller}) : super(key: key);
+  const Dashboard({super.key, this.controller}) ;
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +181,7 @@ class Dashboard extends StatelessWidget {
 
 
 class Mattress extends StatelessWidget {
-  const Mattress({Key? key}) : super(key: key);
+  const Mattress({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -241,7 +190,7 @@ class Mattress extends StatelessWidget {
 }
 
 class Type extends StatelessWidget {
-  const Type({Key? key}) : super(key: key);
+  const Type({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -250,13 +199,66 @@ class Type extends StatelessWidget {
 }
 
 class Organisation extends StatelessWidget {
-  const Organisation({Key? key}) : super(key: key);
+  const Organisation({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(color: const Color.fromARGB(255, 248, 250, 248), child: const Center(child: Text('Organisation')));
   }
 }
+
+@override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Login Page'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MattressPage()),
+                );
+              },
+              child: const Text("Go to Mattress Page"),
+            ),
+             const SizedBox(height: 20),
+             ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RegisterPage()),
+                );
+              },
+              child: const Text("Go to Register Page"),
+            ),
+            const SizedBox(height: 20),
+             ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                );
+              },
+              child: const Text("Go to Login Page"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
+
+
+
+
 
 
   

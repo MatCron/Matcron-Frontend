@@ -2,12 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import 'bottom_bar_active_item.dart';
-import 'bottom_bar_inactive_item.dart';
-import 'bottom_bar_painter.dart';
+import 'components/bottom_bar/controllers/bottom_bar_active_item.dart';
+import 'components/bottom_bar/controllers/bottom_bar_inactive_item.dart';
+import 'components/bottom_bar/controllers/bottom_bar_painter.dart';
 import 'constants/constants.dart';
-import 'models/bottom_bar_item_model.dart';
-import 'notch_bottom_bar_controller.dart';
+import 'components/bottom_bar/models/bottom_bar_item_model.dart';
+import 'components/bottom_bar/controllers/notch_bottom_bar_controller.dart';
 
 /// Class to generate the NotchBottomBar
 class AnimatedNotchBottomBar extends StatefulWidget {
@@ -100,7 +100,7 @@ class AnimatedNotchBottomBar extends StatefulWidget {
   final double topMargin;
 
   const AnimatedNotchBottomBar({
-    Key? key,
+    super.key,
     required this.notchBottomBarController,
     required this.bottomBarItems,
     required this.onTap,
@@ -131,7 +131,7 @@ class AnimatedNotchBottomBar extends StatefulWidget {
     this.textDirection,
     this.topMargin = 10.0,
     this.circleMargin = 8.0,
-  }) : super(key: key);
+  });
 
   @override
   _AnimatedNotchBottomBarState createState() => _AnimatedNotchBottomBarState();
@@ -156,16 +156,16 @@ class _AnimatedNotchBottomBarState extends State<AnimatedNotchBottomBar> with Si
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: widget.durationInMilliSeconds));
 
-    kHeight = (widget.bottomBarHeight >= kBottomNavigationBarHeight)
-        ? widget.removeMargins
-            ? widget.bottomBarHeight + 10.0
-            : widget.bottomBarHeight
-        : widget.removeMargins
-            ? kHeight + 10
-            : kHeight;
-    kTopRadius = widget.showTopRadius ? kTopRadius : 0;
-    kBottomRadius = widget.showBottomRadius ? kBottomRadius : 0;
-    kMargin = widget.removeMargins ? 0 : 14.0;
+    // kHeight = (widget.bottomBarHeight >= kBottomNavigationBarHeight)
+    //     ? widget.removeMargins
+    //         ? widget.bottomBarHeight + 10.0
+    //         : widget.bottomBarHeight
+    //     : widget.removeMargins
+    //         ? kHeight + 10
+    //         : kHeight;
+    // kTopRadius = widget.showTopRadius ? kTopRadius : 0;
+    // kBottomRadius = widget.showBottomRadius ? kBottomRadius : 0;
+    // kMargin = widget.removeMargins ? 0 : 14.0;
     widget.notchBottomBarController.addListener(() {
       _animationController.reset();
       _animationController.forward();
