@@ -2,9 +2,11 @@
 
 //User
 import 'package:flutter/material.dart';
+import 'package:matcron/config/config.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 
-const String userAPIBaseURL = '';
+
+const String userAPIBaseURL = '${Config.devBaseUrl}/auth';
 
 // UI
 const double matcronTextFieldBorderRadius = 50;

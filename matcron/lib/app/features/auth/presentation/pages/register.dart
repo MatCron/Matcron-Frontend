@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
+import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_event.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_auth_state.dart';
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/auth/presentation/widgets/rounded_text_field.dart';
@@ -30,7 +32,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<RemoteRegistrationBloc>(
-      create: (context) => sl(),
+      create: (context) => sl<RemoteRegistrationBloc>(),
       child: Scaffold(
         body: _buildBody(context),
       ),
@@ -157,6 +159,8 @@ class _RegisterPageState extends State<RegisterPage> {
                     ElevatedButton(
                       onPressed: agreeToTerms
                           ? () {
+                              register(context);
+                              
                               // // Trigger Sign Up
                               // context.read<RemoteRegistrationBloc>().add(
                               //   RegisterUser(UserRegistrationEntity(
@@ -254,6 +258,10 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     return true;
+  }
+
+  void register(BuildContext context) {
+    context.read<RemoteRegistrationBloc>().add(RegisterUser(UserRegistrationEntity(firstName: "firstName", lastName: "lastName", email: "email", password: "password", organisationCode: "organisationCode")));
   }
 
   @override

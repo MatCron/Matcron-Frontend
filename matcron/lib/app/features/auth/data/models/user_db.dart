@@ -16,7 +16,7 @@ class UserRegistrationDbModel extends UserRegistrationEntity {
         );
 
   // Convert JSON to Model
-  factory UserRegistrationDbModel.toJson(Map<String, dynamic> map) {
+  factory UserRegistrationDbModel.fromJson(Map<String, dynamic> map) {
     return UserRegistrationDbModel(
       firstName: map['firstName'] ?? "",
       lastName: map['lastName'] ?? "",
@@ -24,6 +24,16 @@ class UserRegistrationDbModel extends UserRegistrationEntity {
       password: map['password'] ?? "",
       organisationCode: map['organisationCode'] ?? "",
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'firstName': firstName,
+      'lastName': lastName,
+      'email': email,
+      'password': password,
+      'organisationCode': organisationCode
+    };
   }
 
   // Create Model from Entity
@@ -47,8 +57,15 @@ class UserLoginDbModel extends UserLoginEntity {
           password: password ?? '',
         );
 
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+      'password': password,
+    };
+  }
+
   // Convert JSON to Model
-  factory UserLoginDbModel.toJson(Map<String, dynamic> map) {
+  factory UserLoginDbModel.fromJson(Map<String, dynamic> map) {
     return UserLoginDbModel(
       email: map['email'] ?? "",
       password: map['password'] ?? "",

@@ -1,5 +1,8 @@
 // lib/main.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
+import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 import 'package:matcron/app/injection_container.dart';
@@ -19,10 +22,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: HexColor("#E5E5E5"), // Set background color for the whole app
+        scaffoldBackgroundColor:
+            HexColor("#E5E5E5"), // Set background color for the whole app
       ),
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
-      home: const MyHomePage(title: 'Flutter Demo Home Page'), 
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -37,7 +41,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,7 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -59,22 +61,32 @@ class _MyHomePageState extends State<MyHomePage> {
               },
               child: const Text("Go to Mattress Page"),
             ),
-             const SizedBox(height: 20),
-             ElevatedButton(
+            const SizedBox(height: 20),
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const RegisterPage()),
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider<RemoteRegistrationBloc>(
+                      create: (_) => sl<RemoteRegistrationBloc>(),
+                      child: const RegisterPage(),
+                    ),
+                  ),
                 );
               },
               child: const Text("Go to Register Page"),
             ),
             const SizedBox(height: 20),
-             ElevatedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
+                  MaterialPageRoute(
+                    builder: (context) => BlocProvider<RemoteLoginBloc>(
+                      create: (_) => sl<RemoteLoginBloc>(),
+                      child: const LoginPage(),
+                    ),
+                  ),
                 );
               },
               child: const Text("Go to Login Page"),
