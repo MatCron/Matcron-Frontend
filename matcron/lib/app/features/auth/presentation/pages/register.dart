@@ -261,7 +261,17 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void register(BuildContext context) {
-    context.read<RemoteRegistrationBloc>().add(RegisterUser(UserRegistrationEntity(firstName: "firstName", lastName: "lastName", email: "email", password: "password", organisationCode: "organisationCode")));
+    context.read<RemoteRegistrationBloc>().add(
+      RegisterUser(
+        UserRegistrationEntity(
+          firstName: firstNameController.text, 
+          lastName: lastNameController.text, 
+          email: firstNameController.text, 
+          password: passwordController.text, 
+          organisationCode: orgCodeController.text
+        )
+      )
+    );
   }
 
   @override
