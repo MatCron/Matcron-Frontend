@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auth_api_service.dart';
+part of 'dashboard_api_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,14 +8,12 @@ part of 'auth_api_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
-class _AuthApiService implements AuthApiService {
-  _AuthApiService(
+class _DashboardApiService implements DashboardApiService {
+  _DashboardApiService(
     this._dio, {
     this.baseUrl,
     this.errorLogger,
-  }) {
-    baseUrl ??= 'http://192.168.1.17:8080/api/auth';
-  }
+  });
 
   final Dio _dio;
 
@@ -24,21 +22,19 @@ class _AuthApiService implements AuthApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<UserModel>> login(
-      {required UserLoginDbModel model}) async {
+  Future<HttpResponse<DashboardModel>> getDashboardInfo() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(model.toJson());
-    final _options = _setStreamType<HttpResponse<UserModel>>(Options(
-      method: 'POST',
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<DashboardModel>>(Options(
+      method: 'GET',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/login',
+          '/dashboard',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -48,45 +44,9 @@ class _AuthApiService implements AuthApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late UserModel _value;
+    late DashboardModel _value;
     try {
-      _value = UserModel.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    final httpResponse = HttpResponse(_value, _result);
-    return httpResponse;
-  }
-
-  @override
-  Future<HttpResponse<UserModel>> register(
-      {required UserRegistrationDbModel model}) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(model.toJson());
-    final _options = _setStreamType<HttpResponse<UserModel>>(Options(
-      method: 'POST',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          '/register',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late UserModel _value;
-    try {
-      _value = UserModel.fromJson(_result.data!);
+      _value = DashboardModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

@@ -11,9 +11,9 @@ abstract class AuthApiService {
   factory AuthApiService(Dio dio) = _AuthApiService;
  
   
-  @POST('/user/login')
+  @POST('/login')
   Future<HttpResponse<UserModel>> login({@Body() required UserLoginDbModel model});
 
-  @POST('user/register')
+  @POST('/register')
   Future<HttpResponse<UserModel>> register({@Body() required UserRegistrationDbModel model});
 }
