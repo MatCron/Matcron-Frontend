@@ -22,16 +22,43 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController orgCodeController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
 
   bool agreeToTerms = false;
+
+  String selectedLanguage = 'English'; // Default language
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<RemoteRegistrationBloc>(
       create: (context) => sl<RemoteRegistrationBloc>(),
       child: Scaffold(
-        body: _buildBody(context),
+        appBar: AppBar(
+          toolbarHeight: 40, // Minimal height
+          backgroundColor: Colors.transparent, // Transparent background
+          elevation: 0, // No shadow
+          automaticallyImplyLeading: false, // No back button
+          actions: [
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.language), // Language icon
+              onSelected: (value) {
+                setState(() {
+                  selectedLanguage = value;
+                });
+              },
+              itemBuilder: (BuildContext context) {
+                return ['English', 'German', 'Spanish'].map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
+          ],
+        ),
+        body: _buildBody(context), // Non-scrollable content
       ),
     );
   }
@@ -44,24 +71,32 @@ class _RegisterPageState extends State<RegisterPage> {
         }
 
         if (state is RemoteAuthInitial) {
-          return SingleChildScrollView(
+          return Center(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 40),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // Reserved space for image or icon
                   Container(
-                    height: 50, // Adjust as needed
+                    height: 75,
                     alignment: Alignment.center,
-                    child: const Icon(Icons.access_alarm_rounded, size: 60, color: Colors.grey), // Placeholder icon
+                    child: Image.asset(
+                      'assets/images/MATCRON_Logo.png',
+                      fit: BoxFit.contain,
+                      height: 100,
+                    ),
                   ),
-                  const SizedBox(height: 15),
+                  const SizedBox(height: 10),
 
                   // Welcome Text
                   const Text(
                     "Welcome to Matcron!",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 8),
@@ -159,7 +194,8 @@ class _RegisterPageState extends State<RegisterPage> {
                           }
                         : null,
                     style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       minimumSize: const Size(double.infinity, 50),
                       backgroundColor: matcronPrimaryColor,
@@ -183,7 +219,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       GestureDetector(
                         onTap: () => Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const LoginPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
                         ),
                         child: Text(
                           "Sign In",
@@ -218,16 +255,16 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void register(BuildContext context) {
     context.read<RemoteRegistrationBloc>().add(
-      RegisterUser(
-        UserRegistrationEntity(
-          firstName: firstNameController.text,
-          lastName: lastNameController.text,
-          email: emailController.text,
-          password: passwordController.text,
-          organisationCode: orgCodeController.text,
-        ),
-      ),
-    );
+          RegisterUser(
+            UserRegistrationEntity(
+              firstName: firstNameController.text,
+              lastName: lastNameController.text,
+              email: emailController.text,
+              password: passwordController.text,
+              organisationCode: orgCodeController.text,
+            ),
+          ),
+        );
   }
 
   @override
