@@ -8,7 +8,7 @@ class NotchBottomBarController extends ChangeNotifier {
 
   jumpTo(int index) {
     oldIndex = this.index;
-    index = index;
+     this.index = index;
     notifyListeners();
   }
 }
