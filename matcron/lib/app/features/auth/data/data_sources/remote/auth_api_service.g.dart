@@ -13,7 +13,9 @@ class _AuthApiService implements AuthApiService {
     this._dio, {
     this.baseUrl,
     this.errorLogger,
-  });
+  }) {
+    baseUrl ??= 'http://192.168.1.17:8080/api/auth';
+  }
 
   final Dio _dio;
 
@@ -27,7 +29,8 @@ class _AuthApiService implements AuthApiService {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = model;
+    final _data = <String, dynamic>{};
+    _data.addAll(model.toJson());
     final _options = _setStreamType<HttpResponse<UserModel>>(Options(
       method: 'POST',
       headers: _headers,
@@ -35,7 +38,7 @@ class _AuthApiService implements AuthApiService {
     )
         .compose(
           _dio.options,
-          '/user/login',
+          '/login',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -62,7 +65,8 @@ class _AuthApiService implements AuthApiService {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = model;
+    final _data = <String, dynamic>{};
+    _data.addAll(model.toJson());
     final _options = _setStreamType<HttpResponse<UserModel>>(Options(
       method: 'POST',
       headers: _headers,
@@ -70,7 +74,7 @@ class _AuthApiService implements AuthApiService {
     )
         .compose(
           _dio.options,
-          'user/register',
+          '/register',
           queryParameters: queryParameters,
           data: _data,
         )
