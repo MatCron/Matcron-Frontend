@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
-import 'package:matcron/app/features/auth/presentation/pages/register.dart';
+import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
+import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/constants/constants.dart';
@@ -44,9 +44,9 @@ class InitialScreens extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: HexColor("#E5E5E5"), // Set background color for the whole app
       ),
-      home: BlocProvider<RemoteRegistrationBloc>(
-        create: (_) => sl<RemoteRegistrationBloc>(), // Initialize the RemoteRegistrationBloc using your DI container
-        child: const RegisterPage(), // The RegisterPage is wrapped here with the bloc
+      home: BlocProvider<RemoteLoginBloc>(
+        create: (_) => sl<RemoteLoginBloc>(), // Initialize the RemoteRegistrationBloc using your DI container
+        child: const LoginPage(), // The RegisterPage is wrapped here with the bloc
       ),
     );
   }
