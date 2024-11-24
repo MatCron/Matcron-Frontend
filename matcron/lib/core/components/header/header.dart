@@ -4,7 +4,7 @@ import 'package:matcron/core/constants/constants.dart';
 class Header extends StatefulWidget {
   final String title;
 
-  Header({Key? key, required this.title}) : super(key: key);
+  const Header({super.key, required this.title});
 
   @override
   HeaderState createState() => HeaderState();
