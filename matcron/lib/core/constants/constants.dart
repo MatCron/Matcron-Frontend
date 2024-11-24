@@ -1,14 +1,19 @@
-//Order A-Z
-
-//User
 import 'package:flutter/material.dart';
 import 'package:matcron/config/theme/app_theme.dart';
+import 'package:matcron/config/config.dart';
 
-const String userAPIBaseURL = '';
+
+//Apis
+const String userAPIBaseURL = '${Config.devBaseUrl}/auth';
+const String mattressAPIBaseUrl = '';
+const String dashboardAPIBaseUrl = '';
 
 // UI
 const double matcronTextFieldBorderRadius = 50;
 Color matcronPrimaryColor = HexColor("#50C2C9");
+
+
+
 
 
 /// margin

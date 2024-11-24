@@ -7,6 +7,11 @@ import 'package:matcron/app/features/auth/domain/usecases/login.dart';
 import 'package:matcron/app/features/auth/domain/usecases/register.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
+import 'package:matcron/app/features/dashboard/data/data_sources/remote/dashboard_api_service.dart';
+import 'package:matcron/app/features/dashboard/data/repository/dashboard_repository_impl.dart';
+import 'package:matcron/app/features/dashboard/domain/repository/dashboard_repository.dart';
+import 'package:matcron/app/features/dashboard/domain/usecases/dashboard.dart';
+import 'package:matcron/app/features/dashboard/presentation/bloc/remote_dashboard_bloc.dart';
 import 'package:matcron/core/resources/encryption.dart';
 
 final sl = GetIt.instance;
@@ -21,13 +26,21 @@ Future<void> initializeDependencies() async {
     () => EncryptionService()
   );
 
-  // Dependencies
   sl.registerSingleton<AuthApiService>(
     AuthApiService(sl())
   );
 
+  sl.registerSingleton<DashboardApiService>(
+    DashboardApiService(sl())
+  );
+
   sl.registerSingleton<AuthRepository>(
     AuthRepositoryImpl(sl(),sl())
+  );
+
+  
+  sl.registerSingleton<DashboardRepository>(
+    DashboardRepositoryImpl(sl())
   );
 
   // UseCases
@@ -37,6 +50,10 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<GetLoginUseCase>(
     GetLoginUseCase(sl())
+  );
+
+  sl.registerSingleton<GetDashboardInfoUseCase>(
+    GetDashboardInfoUseCase(sl())
   );
   
   // Blocs
@@ -48,4 +65,7 @@ Future<void> initializeDependencies() async {
     () => RemoteLoginBloc(sl())
   );
 
+  sl.registerFactory<RemoteDashboardBloc>(
+    () => RemoteDashboardBloc(sl())
+  );
 }
