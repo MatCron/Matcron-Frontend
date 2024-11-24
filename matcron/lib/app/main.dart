@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:matcron/core/constants/constants.dart';
 import 'dart:developer';
 import 'package:matcron/core/resources/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
-import 'package:matcron/app/features/auth/presentation/pages/login.dart';
-import 'package:matcron/app/features/auth/presentation/pages/register.dart';
+//import 'package:matcron/app/features/auth/presentation/pages/login.dart';
+//import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'features/mattress/presentation/pages/mattress_page.dart';
@@ -59,10 +60,10 @@ class _MyHomePageState extends State<MyHomePage> {
     /// widget list
     final List<Widget> bottomBarPages = [
       Dashboard(controller: _controller),
-      const Mattress(),
-      const Type(),
-      const Organisation(),
-    ];
+      MattressPage(),
+      Container(color: Colors.green), //placeholder pages
+      Container(color: Colors.yellow), //placeholder pages
+    ]; 
     return Scaffold(
       body: PageView(
         controller: _pageController,
@@ -74,7 +75,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ? AnimatedNotchBottomBar(
               /// Provide NotchBottomBarController
               notchBottomBarController: _controller,
-              color:  Color.fromRGBO(30, 167, 169, 1),
+              color: matcronPrimaryColor,
               showLabel: true,
               textOverflow: TextOverflow.visible,
               maxLine: 1,
@@ -152,7 +153,55 @@ class _MyHomePageState extends State<MyHomePage> {
             )
           : null,
     );
-  }
+}
+
+
+  // @override
+  // Widget build(BuildContext context) {
+  //     return Scaffold(
+  //       appBar: AppBar(
+  //         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+  //         title: const Text('Login Page'),
+  //       ),
+  //       body: Center(
+  //         child: Column(
+  //           mainAxisAlignment: MainAxisAlignment.center,
+  //           children: <Widget>[
+              
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(builder: (context) => const MattressPage()),
+  //                 );
+  //               },
+  //               child: const Text("Go to Mattress Page"),
+  //             ),
+  //             const SizedBox(height: 20),
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(builder: (context) => const RegisterPage()),
+  //                 );
+  //               },
+  //               child: const Text("Go to Register Page"),
+  //             ),
+  //             const SizedBox(height: 20),
+  //             ElevatedButton(
+  //               onPressed: () {
+  //                 Navigator.push(
+  //                   context,
+  //                   MaterialPageRoute(builder: (context) => const LoginPage()),
+  //                 );
+  //               },
+  //               child: const Text("Go to Login Page"),
+  //             ),
+  //           ],
+  //         ),
+  //       ),
+  //     );
+  // }
 }
 /// add controller to check weather index through change or not. in page 1
 class Dashboard extends StatelessWidget {
@@ -177,81 +226,6 @@ class Dashboard extends StatelessWidget {
     );
   }
 }
-
-
-class Mattress extends StatelessWidget {
-  const Mattress({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(color: const Color.fromARGB(255, 248, 250, 248), child: const Center(child: Text('Mattress')));
-  }
-}
-
-class Type extends StatelessWidget {
-  const Type({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(color: const Color.fromARGB(255, 248, 250, 248), child: const Center(child: Text('Type')));
-  }
-}
-
-class Organisation extends StatelessWidget {
-  const Organisation({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(color: const Color.fromARGB(255, 248, 250, 248), child: const Center(child: Text('Organisation')));
-  }
-}
-
-@override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Login Page'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const MattressPage()),
-                );
-              },
-              child: const Text("Go to Mattress Page"),
-            ),
-             const SizedBox(height: 20),
-             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const RegisterPage()),
-                );
-              },
-              child: const Text("Go to Register Page"),
-            ),
-            const SizedBox(height: 20),
-             ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                );
-              },
-              child: const Text("Go to Login Page"),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
 
 
