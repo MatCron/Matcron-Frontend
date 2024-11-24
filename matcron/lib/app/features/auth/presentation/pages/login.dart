@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_event.dart';
+import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_auth_state.dart';
 import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 import 'package:matcron/app/features/auth/presentation/widgets/rounded_text_field.dart';
@@ -21,25 +22,37 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-
-    // Add listeners to the controllers
-    emailController.addListener(() {
-      debugPrint("Email field changed: ${emailController.text}");
-    });
-
-    passwordController.addListener(() {
-      debugPrint("Password field changed: ${passwordController.text}");
-    });
-  }
+  String selectedLanguage = 'English'; // Default language
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<RemoteLoginBloc>(
       create: (context) => sl(),
       child: Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 40, // Minimal height
+          backgroundColor: Colors.transparent, // Transparent background
+          elevation: 0, // No shadow
+          automaticallyImplyLeading: false, // No back button
+          actions: [
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.language), // Language icon
+              onSelected: (value) {
+                setState(() {
+                  selectedLanguage = value;
+                });
+              },
+              itemBuilder: (BuildContext context) {
+                return ['English', 'German', 'Spanish'].map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
+          ],
+        ),
         body: _buildBody(context),
       ),
     );
@@ -61,10 +74,22 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    Container(
+                    height: 75,
+                    alignment: Alignment.center,
+                    child: Image.asset(
+                      'assets/images/MATCRON_Logo.png',
+                      fit: BoxFit.contain,
+                      height: 100,
+                    ),
+                  ),
                     const SizedBox(height: 30),
                     const Text(
                       "Welcome Back!",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black),
                     ),
                     const SizedBox(height: 30),
 
@@ -108,7 +133,8 @@ class _LoginPageState extends State<LoginPage> {
                         login(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(0)),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         minimumSize: const Size(double.infinity, 60),
                         backgroundColor: matcronPrimaryColor,
@@ -132,7 +158,14 @@ class _LoginPageState extends State<LoginPage> {
                         GestureDetector(
                           onTap: () => Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const RegisterPage()),
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  BlocProvider<RemoteRegistrationBloc>(
+                                create: (context) => sl<
+                                    RemoteRegistrationBloc>(), // Assuming sl is your service locator or Bloc provider
+                                child: const RegisterPage(),
+                              ),
+                            ),
                           ),
                           child: Text(
                             "Sign Up",
@@ -167,14 +200,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void login(BuildContext context) {
-    context.read<RemoteLoginBloc>().add(
-      Login(
-        UserLoginEntity(
-          email: emailController.text, 
-          password: passwordController.text, 
-        )
-      )
-    );
+    context.read<RemoteLoginBloc>().add(Login(UserLoginEntity(
+          email: emailController.text,
+          password: passwordController.text,
+        )));
   }
 
   @override

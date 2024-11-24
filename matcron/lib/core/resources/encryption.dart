@@ -3,51 +3,39 @@ import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 
 class EncryptionService {
-  // Method to hash the password with the salt
-  String hashPassword(String password, String salt) {
-    // Combine password with the salt
-    String saltedPassword = password + salt;
-    
-    // Convert the salted password to bytes
-    List<int> bytes = utf8.encode(saltedPassword);
-    
-    // Compute the SHA-256 hash
-    var digest = sha256.convert(bytes);
-    
-    // Return the hash as a Base64 string
-    return base64.encode(digest.bytes);
+  // Step 1: Hash and salt the password
+  static String hashAndSaltPassword(String password, String salt) {
+    var bytes = utf8.encode(password + salt); // Combine password and salt
+    var hash = sha256.convert(bytes);
+    return hash.toString(); // Return the hashed password
   }
 
-  // Method to encrypt the timestamp (AES encryption)
-  String encryptTimestampAndPass(String pass, String encryptionKey) {
-    // Ensure the encryption key is 32 bytes (for AES-256)
-    final key = encrypt.Key.fromUtf8(encryptionKey.padRight(32, ' ')); // Padded to 32 bytes
-    final iv = encrypt.IV.fromLength(16); // You can use a random IV for better security
-
-    final encrypter = encrypt.Encrypter(encrypt.AES(key));
-
-    // Encrypt the pass
-    final encrypted = encrypter.encrypt(pass, iv: iv);
-
-    // Return the encrypted pass as Base64
-    return encrypted.base64;
+  // Step 2: Get the current datetime
+  String getCurrentDatetime() {
+    DateTime now = DateTime.now();
+    return now.toIso8601String(); // Returns a string of the current datetime
   }
 
-  // Method to encrypt the password (similar to your original encryption)
-  String encryptPassword(String password) {
-    // Static salt for example (can be customized or generated randomly)
-    String salt = "n0xfDfb0rN";
-    
-    // Hash the password using the provided salt
-    String hashedPassword = hashPassword(password, salt);
-    
-    // Get the current timestamp in milliseconds
-    String timestamp = DateTime.now().millisecondsSinceEpoch.toString();
-    
-    // Combine the hashed password and encrypted timestamp
-    String encryptedPassword = encryptTimestampAndPass("$hashedPassword-$timestamp", "encryptionKey");
+  // Step 3: Combine password and datetime with a delimiter
+  String combinePasswordAndDatetime(String passwordHash, String datetime) {
+    return '$passwordHash|$datetime'; // Combine with delimiter '|'
+  }
 
-    
-    return encryptedPassword;
+  // Step 4: Encrypt the combination of password hash and datetime
+  String encryptData(String data, String encryptionKey) {
+    final key = encrypt.Key.fromUtf8(encryptionKey.padRight(32, ' ')); // Encryption key needs to be 32 bytes
+    final iv = encrypt.IV.fromLength(16); // 16 bytes IV (Initialization Vector)
+
+    final encrypter = encrypt.Encrypter(encrypt.AES(key)); // Using AES encryption
+    final encrypted = encrypter.encrypt(data, iv: iv); // Encrypting data
+    return encrypted.base64; // Return the encrypted data in base64 format
+  }
+
+  // Combine all steps for encryption
+  String encryptPassword(String password, {String salt = "matrcronIsTheBest2024", String encryptionKey = "encryptPassword"}) {
+    String hashedPassword = hashAndSaltPassword(password, salt);
+    String datetime = getCurrentDatetime();
+    String combinedData = combinePasswordAndDatetime(hashedPassword, datetime);
+    return encryptData(combinedData, encryptionKey);
   }
 }
