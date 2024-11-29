@@ -13,7 +13,9 @@ class _DashboardApiService implements DashboardApiService {
     this._dio, {
     this.baseUrl,
     this.errorLogger,
-  });
+  }) {
+    baseUrl ??= 'http://192.168.1.17:8080/api/dashboard';
+  }
 
   final Dio _dio;
 
