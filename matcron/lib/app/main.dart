@@ -5,8 +5,10 @@ import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:matcron/app/features/organization/presentation/pages/organizations.dart';
 import 'package:matcron/core/components/header/header.dart';
+import 'package:matcron/core/components/splash_screen.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'dart:developer';
+import 'dart:async';
 import 'package:matcron/core/resources/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
@@ -30,9 +32,43 @@ class MyApp extends StatelessWidget {
       ),
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
       //home: const InitialScreens(),
-      home: const MyHomePage(),
+      home: const SplashScreenWrapper(),
     );
   }
+}
+
+//Splash Screen
+class SplashScreenWrapper extends StatefulWidget {
+   const SplashScreenWrapper({super.key});
+
+    @override
+  State<SplashScreenWrapper> createState() => _SplashScreenWrapper();
+}
+
+
+class _SplashScreenWrapper extends State<SplashScreenWrapper> {
+  @override
+  void initState() {
+    super.initState();
+
+    // Delay for 3 seconds before navigating
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        // Check if the widget is still in the tree
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const InitialScreens(), // Navigate to InitialScreens
+        ),
+      );
+      }
+    });
+  }
+   @override
+  Widget build(BuildContext context) {
+    return const SplashScreen(); // Show the SplashScreen while waiting
+  }
+
 }
 
 //AUTH SCREENS
