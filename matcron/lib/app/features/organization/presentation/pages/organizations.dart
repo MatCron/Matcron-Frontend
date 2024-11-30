@@ -10,13 +10,13 @@ import 'package:matcron/core/constants/constants.dart';
 
 class OrganizationPage extends StatefulWidget {
   final NotchBottomBarController? controller;
-  OrganizationPage({super.key, this.controller});
+  const OrganizationPage({super.key, this.controller});
 
   @override
-  _OrganizationPageState createState() => _OrganizationPageState();
+  OrganizationPageState createState() => OrganizationPageState();
 }
 
-class _OrganizationPageState extends State<OrganizationPage> {
+class OrganizationPageState extends State<OrganizationPage> {
   late RemoteOrganizationBloc _organizationBloc;
   final List<OrganizationEntity> hardcodedOrgs = [
     OrganizationEntity(id: "", name: "Gateway", type: "Hotel"),
