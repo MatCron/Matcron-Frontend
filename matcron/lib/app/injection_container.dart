@@ -12,6 +12,11 @@ import 'package:matcron/app/features/dashboard/data/repository/dashboard_reposit
 import 'package:matcron/app/features/dashboard/domain/repository/dashboard_repository.dart';
 import 'package:matcron/app/features/dashboard/domain/usecases/dashboard.dart';
 import 'package:matcron/app/features/dashboard/presentation/bloc/remote_dashboard_bloc.dart';
+import 'package:matcron/app/features/organization/data/data_sources/remote/organization_api_service.dart';
+import 'package:matcron/app/features/organization/data/repository/organization_repository_impl.dart';
+import 'package:matcron/app/features/organization/domain/repositories/organization_repository.dart';
+import 'package:matcron/app/features/organization/domain/usecases/get_organizations.dart';
+import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/core/resources/encryption.dart';
 
 final sl = GetIt.instance;
@@ -34,13 +39,20 @@ Future<void> initializeDependencies() async {
     DashboardApiService(sl())
   );
 
+  sl.registerSingleton<OrganizationApiService>(
+    OrganizationApiService(sl())
+  );
+
   sl.registerSingleton<AuthRepository>(
     AuthRepositoryImpl(sl(),sl())
   );
-
   
   sl.registerSingleton<DashboardRepository>(
     DashboardRepositoryImpl(sl())
+  );
+
+  sl.registerSingleton<OrganizationRepository>(
+    OrganizationRepositoryImpl(sl())
   );
 
   // UseCases
@@ -50,6 +62,10 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<GetLoginUseCase>(
     GetLoginUseCase(sl())
+  );
+
+  sl.registerSingleton<GetOrganizationsUseCase>(
+    GetOrganizationsUseCase(sl())
   );
 
   sl.registerSingleton<GetDashboardInfoUseCase>(
@@ -67,5 +83,9 @@ Future<void> initializeDependencies() async {
 
   sl.registerFactory<RemoteDashboardBloc>(
     () => RemoteDashboardBloc(sl())
+  );
+
+  sl.registerFactory<RemoteOrganizationBloc>(
+    () => RemoteOrganizationBloc(sl())
   );
 }

@@ -5,8 +5,9 @@ import 'package:matcron/config/config.dart';
 
 //Apis
 const String userAPIBaseURL = '${Config.devBaseUrl}/auth';
-const String mattressAPIBaseUrl = '';
-const String dashboardAPIBaseUrl = '';
+const String mattressAPIBaseUrl = '${Config.devBaseUrl}/mattress';
+const String dashboardAPIBaseUrl = '${Config.devBaseUrl}/dashboard';
+const String organizationBaseUrl = '${Config.devBaseUrl}/organization';
 
 // UI
 const double matcronTextFieldBorderRadius = 50;
