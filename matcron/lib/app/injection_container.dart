@@ -14,6 +14,7 @@ import 'package:matcron/app/features/dashboard/domain/usecases/dashboard.dart';
 import 'package:matcron/app/features/dashboard/presentation/bloc/remote_dashboard_bloc.dart';
 import 'package:matcron/app/features/organization/data/data_sources/remote/organization_api_service.dart';
 import 'package:matcron/app/features/organization/data/repository/organization_repository_impl.dart';
+import 'package:matcron/app/features/organization/domain/repositories/organization_repository.dart';
 import 'package:matcron/app/features/organization/domain/usecases/get_organizations.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/core/resources/encryption.dart';
@@ -50,7 +51,7 @@ Future<void> initializeDependencies() async {
     DashboardRepositoryImpl(sl())
   );
 
-  sl.registerSingleton<OrganizationRepositoryImpl>(
+  sl.registerSingleton<OrganizationRepository>(
     OrganizationRepositoryImpl(sl())
   );
 

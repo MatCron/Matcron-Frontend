@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:matcron/app/features/organization/presentation/pages/organizations.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'dart:developer';
@@ -28,7 +29,8 @@ class MyApp extends StatelessWidget {
             HexColor("#E5E5E5"), // Set background color for the whole app
       ),
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
-      home: const InitialScreens(),
+      //home: const InitialScreens(),
+      home: const MyHomePage(),
     );
   }
 }
@@ -77,10 +79,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    /// List of pages to display
+    /// List of NAVBAR PAGES ONLY
     final List<Widget> bottomBarPages = [
       DashboardPage(controller: _controller),
       MattressPage(),
+      SizedBox(),
+      OrganizationPage(),
     ];
 
     /// Page titles based on the index
