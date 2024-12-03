@@ -29,6 +29,7 @@ class _LoginPageState extends State<LoginPage> {
     return BlocProvider<RemoteLoginBloc>(
       create: (context) => sl(),
       child: Scaffold(
+        extendBodyBehindAppBar: true, // Extend the body behind the app bar
         appBar: AppBar(
           toolbarHeight: 40, // Minimal height
           backgroundColor: Colors.transparent, // Transparent background
@@ -57,16 +58,25 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
+Widget _buildBody(BuildContext context) {
+  return BlocBuilder<RemoteLoginBloc, RemoteAuthState>(
+    builder: (_, state) {
+      if (state is RemoteAuthLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
 
-  Widget _buildBody(BuildContext context) {
-    return BlocBuilder<RemoteLoginBloc, RemoteAuthState>(
-      builder: (_, state) {
-        if (state is RemoteAuthLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
-        if (state is RemoteAuthInitial) {
-          return Center(
+      if (state is RemoteAuthInitial) {
+        return Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/images/bed.jpg'), // Path to your image
+              fit: BoxFit.cover, // Cover the entire screen
+              colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0), BlendMode.darken
+              ),
+            ),
+          ),
+          child: Center(
             child: SizedBox(
               width: 325,
               child: SingleChildScrollView(
@@ -75,21 +85,22 @@ class _LoginPageState extends State<LoginPage> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                    height: 75,
-                    alignment: Alignment.center,
-                    child: Image.asset(
-                      'assets/images/MATCRON_Logo.png',
-                      fit: BoxFit.contain,
-                      height: 100,
+                      height: 75,
+                      alignment: Alignment.center,
+                      child: Image.asset(
+                        'assets/images/MATCRON_Logo.png',
+                        fit: BoxFit.contain,
+                        height: 100,
+                      ),
                     ),
-                  ),
                     const SizedBox(height: 30),
                     const Text(
                       "Welcome Back!",
                       style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black),
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                     const SizedBox(height: 30),
 
@@ -121,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(
                           color: matcronPrimaryColor,
                           fontWeight: FontWeight.bold,
-                          fontSize: 20,
+                          fontSize: 28,
                         ),
                       ),
                     ),
@@ -134,17 +145,17 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(0)),
+                            borderRadius: BorderRadius.circular(8)),
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        minimumSize: const Size(double.infinity, 60),
+                        minimumSize: const Size(double.infinity, 50),
                         backgroundColor: matcronPrimaryColor,
                       ),
                       child: const Text(
                         "Sign In",
-                        style: TextStyle(color: Colors.white, fontSize: 20),
+                        style: TextStyle(color: Colors.white, fontSize: 25),
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 25),
 
                     // Sign Up Link
                     Row(
@@ -161,8 +172,8 @@ class _LoginPageState extends State<LoginPage> {
                             MaterialPageRoute(
                               builder: (context) =>
                                   BlocProvider<RemoteRegistrationBloc>(
-                                create: (context) => sl<
-                                    RemoteRegistrationBloc>(), // Assuming sl is your service locator or Bloc provider
+                                create: (context) =>
+                                    sl<RemoteRegistrationBloc>(),
                                 child: const RegisterPage(),
                               ),
                             ),
@@ -172,7 +183,7 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(
                               color: matcronPrimaryColor,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              fontSize: 23,
                             ),
                           ),
                         ),
@@ -182,22 +193,26 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-          );
-        }
+          ),
+        );
+      }
 
-        if (state is RemoteAuthException) {
-          return Center(
-            child: Text(
-              "Error: ${state.exception}",
-              style: const TextStyle(color: Colors.red),
-            ),
-          );
-        }
+      if (state is RemoteAuthException) {
+        return Center(
+          child: Text(
+            "Error: ${state.exception}",
+            style: const TextStyle(color: Colors.red),
+          ),
+        );
+      }
 
-        return const SizedBox();
-      },
-    );
-  }
+      return const SizedBox();
+    },
+  );
+}
+
+
+
 
   void login(BuildContext context) {
     context.read<RemoteLoginBloc>().add(Login(UserLoginEntity(

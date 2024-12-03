@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
       ),
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
       //home: const InitialScreens(),
-      home: const SplashScreenWrapper(),
+      home: const MyHomePage(),
     );
   }
 }
@@ -80,7 +80,7 @@ class InitialScreens extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: HexColor("#E5E5E5"), // Set background color for the whole app
+        scaffoldBackgroundColor: Colors.transparent, // Set background color for the whole app
       ),
       home: BlocProvider<RemoteLoginBloc>(
         create: (_) => sl<RemoteLoginBloc>(), // Initialize the RemoteRegistrationBloc using your DI container

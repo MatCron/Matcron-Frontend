@@ -1,73 +1,97 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Initialize the fade-in animation
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2), // 2-second fade-in
+      vsync: this,
+    );
+
+    _animation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeIn,
+    );
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200], // Light grey background
       body: Stack(
         children: [
-          // Adjusted top-left overlapping circles
-          Positioned(
-            top: -100,
-            left: -10,
-            child: Stack(
-              children: [
-                Container(
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    color: Colors.teal.withOpacity(0.2), // Light teal circle
-                    shape: BoxShape.circle,
-                  ),
+          // Background Image
+          Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/bed.jpg'), // Background image
+                fit: BoxFit.cover, // Covers the entire screen
+                colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.2), // Optional darkening
+                  BlendMode.darken,
                 ),
-                Positioned(
-                  top: 100,
-                  left: -50,
-                  child: Container(
-                    width: 200,
-                    height: 250,
-                    decoration: BoxDecoration(
-                      color: Colors.teal.withOpacity(0.2), // Lighter teal circle
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-          // Center logo and text
+          // Center Logo and Text with Fade Animation
           Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Logo
-                Image.asset(
-                  'assets/images/MATCRON_Logo.png',
-                  width: 250,
-                  height: 250,
-                ),
-                const SizedBox(height: 30),
-                // App name
-                RichText(
-                  text: const TextSpan(
-                    style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                    children: [
-                      TextSpan(text: 'Mat'),
-                      TextSpan(
-                        text: 'Cron',
-                        style: TextStyle(color: Colors.teal),
-                      ),
-                    ],
+            child: FadeTransition(
+              opacity: _animation,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Logo
+                  Image.asset(
+                    'assets/images/MATCRON_Logo.png',
+                    width: 250,
+                    height: 250,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 20),
+                  // App Name with Custom Font
+                  RichText(
+                    text: TextSpan(
+                      style: GoogleFonts.lato(
+                        fontSize: 70,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                      children: [
+                        const TextSpan(text: 'Mat'),
+                        TextSpan(
+                          text: 'Cron',
+                          style: GoogleFonts.lato(
+                            fontSize: 50,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.teal,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
