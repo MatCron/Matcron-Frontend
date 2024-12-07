@@ -58,7 +58,7 @@ class _SplashScreenWrapper extends State<SplashScreenWrapper> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const InitialScreens(), // Navigate to InitialScreens
+          builder: (context) => const MyHomePage(), // Navigate to InitialScreens
         ),
       );
       }

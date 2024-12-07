@@ -1,8 +1,8 @@
 // lib/ui/components/bottom_drawer.dart
 import 'package:flutter/material.dart';
 
-class BottomDrawer extends StatelessWidget {
-  const BottomDrawer({super.key});
+class MattressBottomDrawer extends StatelessWidget {
+  const MattressBottomDrawer({super.key});
 
   @override
   Widget build(BuildContext context) {
