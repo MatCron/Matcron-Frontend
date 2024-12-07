@@ -4,6 +4,6 @@ import 'package:matcron/core/resources/data_state.dart';
 abstract class OrganizationRepository {
   Future<DataState<List<OrganizationEntity>>> getOrganizations();
   Future<DataState<void>> addOrganization(OrganizationEntity entity);
-  //Future<DataState<void>> updateOrganization(String id);
+  //Future<DataState<void>> updateOrganization(OrganizationEntity entity);
   Future<DataState<void>> deleteOrganization(String id);
 }

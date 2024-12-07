@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/organization/domain/entities/organization.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_state.dart';
+import 'package:matcron/app/features/organization/presentation/widgets/bottom_drawer.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/components/bottom_bar/controllers/notch_bottom_bar_controller.dart';
@@ -23,16 +24,6 @@ class OrganizationPageState extends State<OrganizationPage> {
     OrganizationEntity(id: "", name: "Bellingham", type: "Hotel"),
     OrganizationEntity(id: "", name: "Louth Hospital", type: "Hospital"),
     OrganizationEntity(id: "", name: "Fairways", type: "Hotel"),
-
-    OrganizationEntity(id: "", name: "Gateway", type: "Hotel"),
-    OrganizationEntity(id: "", name: "Bellingham", type: "Hotel"),
-    OrganizationEntity(id: "", name: "Louth Hospital", type: "Hospital"),
-    OrganizationEntity(id: "", name: "Fairways", type: "Hotel"),
-
-    OrganizationEntity(id: "", name: "Gateway", type: "Hotel"),
-    OrganizationEntity(id: "", name: "Bellingham", type: "Hotel"),
-    OrganizationEntity(id: "", name: "Louth Hospital", type: "Hospital"),
-    OrganizationEntity(id: "", name: "Fairways", type: "Hotel"),
   ];
   List<OrganizationEntity> filteredOrgs = [];
 
@@ -49,6 +40,21 @@ class OrganizationPageState extends State<OrganizationPage> {
     super.dispose();
   }
 
+  void _openBottomDrawer(BuildContext context,
+      {required OrganizationEntity organization, required bool isEditable}) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // Allows the drawer to take up full height
+      backgroundColor: Colors.transparent, // Matches design
+      builder: (context) {
+        return OrganizationBottomDrawer(
+          organization: organization,
+          isEditable: isEditable,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider<RemoteOrganizationBloc>(
@@ -56,7 +62,6 @@ class OrganizationPageState extends State<OrganizationPage> {
       child: Scaffold(
         body: BlocBuilder<RemoteOrganizationBloc, RemoteOrganizationState>(
           builder: (_, state) {
-            //THIS WHILL CHANGE BUT HARDCODED DATA WILL BE PLACED IN LOADING FN
             if (state is RemoteOrganizationsLoading) {
               return _buildLoadingState(context);
             }
@@ -106,28 +111,29 @@ class OrganizationPageState extends State<OrganizationPage> {
               const SizedBox(height: 10.0),
 
               // Add organization button
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // Add organization functionality
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: matcronPrimaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 14,
-                    ),
-                  ),
-                  child: const Text(
-                    "+ Add Organization",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ),
+             Align(
+  alignment: Alignment.centerRight,
+  child: ElevatedButton(
+    onPressed: () {
+      // Original Add Organization button functionality placeholder
+      // Feel free to implement your intended functionality here
+    },
+    style: ElevatedButton.styleFrom(
+      backgroundColor: matcronPrimaryColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 14,
+      ),
+    ),
+    child: const Text(
+      "+ Add Organization",
+      style: TextStyle(color: Colors.white),
+    ),
+  ),
+),
               const SizedBox(height: 18.0),
 
               // Table headers
@@ -159,26 +165,10 @@ class OrganizationPageState extends State<OrganizationPage> {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  SizedBox(width: 30.0), // Space between Type and Edit/Delete
-                  Text(
-                    "Edit",
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(width: 40.0), // Space between Edit and Delete
-                  Text(
-                    "Delete",
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
+                  const SizedBox(width: 30.0),
+                  const Text("Edit", style: TextStyle(fontSize: 16)),
+                  const SizedBox(width: 40.0),
+                  const Text("Delete", style: TextStyle(fontSize: 16)),
                 ],
               ),
 
@@ -188,76 +178,89 @@ class OrganizationPageState extends State<OrganizationPage> {
                   itemCount: filteredOrgs.length,
                   itemBuilder: (context, index) {
                     final org = filteredOrgs[index];
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 6.0),
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 2,
-                            child: Text(
-                              org.name!,
-                              style: const TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                    return GestureDetector(
+                      onTap: () {
+                        _openBottomDrawer(
+                          context,
+                          organization: org,
+                          isEditable: false,
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 6.0),
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 5,
+                              offset: Offset(0, 3),
                             ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              org.type!,
-                              style: const TextStyle(
-                                fontSize: 14.0,
-                                fontStyle: FontStyle.italic,
-                              ),
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          SizedBox(width: 30.0), // Space between Type and Edit/Delete
-                          GestureDetector(
-                            onTap: () {
-                              // Edit functionality
-                            },
-                            child: CircleAvatar(
-                              radius: 15,
-                              backgroundColor: Colors.blue,
-                              child: Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                                size: 14.0,
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Text(
+                                org.name!,
+                                style: const TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 40.0), // Space between Edit and Delete
-                          GestureDetector(
-                            onTap: () {
-                              // Delete functionality
-                            },
-                            child: CircleAvatar(
-                              radius: 15,
-                              backgroundColor: Colors.red,
-                              child: Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                                size: 14.0,
+                            Expanded(
+                              flex: 1,
+                              child: Text(
+                                org.type!,
+                                style: const TextStyle(
+                                  fontSize: 14.0,
+                                  fontStyle: FontStyle.italic,
+                                ),
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 30.0),
+                            GestureDetector(
+                              onTap: () {
+                                _openBottomDrawer(
+                                  context,
+                                  organization: org,
+                                  isEditable: true,
+                                );
+                              },
+                              child: const CircleAvatar(
+                                radius: 15,
+                                backgroundColor: Colors.blue,
+                                child: Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                  size: 14.0,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 40.0),
+                            GestureDetector(
+                              onTap: () {
+                                // Delete functionality
+                              },
+                              child: const CircleAvatar(
+                                radius: 15,
+                                backgroundColor: Colors.red,
+                                child: Icon(
+                                  Icons.delete,
+                                  color: Colors.white,
+                                  size: 14.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
