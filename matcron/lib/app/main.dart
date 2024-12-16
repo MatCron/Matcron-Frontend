@@ -12,6 +12,7 @@ import 'dart:async';
 import 'package:matcron/core/resources/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
+import 'package:matcron/core/resources/authorization.dart';
 import 'features/mattress/presentation/pages/mattress_page.dart';
 
 Future<void> main() async {
@@ -31,44 +32,53 @@ class MyApp extends StatelessWidget {
             HexColor("#E5E5E5"), // Set background color for the whole app
       ),
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
-      //home: const InitialScreens(),
-      home: const MyHomePage(),
+      home: const SplashScreenWrapper(),
     );
   }
 }
 
 //Splash Screen
 class SplashScreenWrapper extends StatefulWidget {
-   const SplashScreenWrapper({super.key});
+  const SplashScreenWrapper({super.key});
 
-    @override
-  State<SplashScreenWrapper> createState() => _SplashScreenWrapper();
+  @override
+  State<SplashScreenWrapper> createState() => _SplashScreenWrapperState();
 }
 
+class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
+  final AuthorizationService _authService = AuthorizationService();
 
-class _SplashScreenWrapper extends State<SplashScreenWrapper> {
   @override
   void initState() {
     super.initState();
+    _checkAuthToken(); // Check the token when the widget initializes
+  }
 
-    // Delay for 3 seconds before navigating
-    Future.delayed(const Duration(seconds: 3), () {
-      if (mounted) {
-        // Check if the widget is still in the tree
+  Future<void> _checkAuthToken() async {
+    String? token = await _authService.getToken();
+
+    // Check if the widget is still in the widget tree
+    if (!mounted) return;
+
+    if (token != null && token.isNotEmpty) {
+      // Token exists: Navigate to MyHomePage
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => const MyHomePage(), // Navigate to InitialScreens
-        ),
+        MaterialPageRoute(builder: (context) => const MyHomePage()),
       );
-      }
-    });
-  }
-   @override
-  Widget build(BuildContext context) {
-    return const SplashScreen(); // Show the SplashScreen while waiting
+    } else {
+      // No token: Navigate to InitialScreens
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const InitialScreens()),
+      );
+    }
   }
 
+  @override
+  Widget build(BuildContext context) {
+    return const SplashScreen(); // Display the splash screen while checking
+  }
 }
 
 //AUTH SCREENS
@@ -80,11 +90,14 @@ class InitialScreens extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.transparent, // Set background color for the whole app
+        scaffoldBackgroundColor:
+            Colors.transparent, // Set background color for the whole app
       ),
       home: BlocProvider<RemoteLoginBloc>(
-        create: (_) => sl<RemoteLoginBloc>(), // Initialize the RemoteRegistrationBloc using your DI container
-        child: const LoginPage(), // The RegisterPage is wrapped here with the bloc
+        create: (context) => sl<
+            RemoteLoginBloc>(), // Initialize the RemoteRegistrationBloc using your DI container
+        child:
+            const LoginPage(), // The RegisterPage is wrapped here with the bloc
       ),
     );
   }

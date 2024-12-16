@@ -17,6 +17,7 @@ import 'package:matcron/app/features/organization/data/repository/organization_r
 import 'package:matcron/app/features/organization/domain/repositories/organization_repository.dart';
 import 'package:matcron/app/features/organization/domain/usecases/get_organizations.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
+import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/encryption.dart';
 
 final sl = GetIt.instance;
@@ -29,6 +30,10 @@ Future<void> initializeDependencies() async {
   //Services
   sl.registerFactory<EncryptionService>(
     () => EncryptionService()
+  );
+
+  sl.registerSingleton<AuthorizationService>(
+    AuthorizationService()
   );
 
   sl.registerSingleton<AuthApiService>(

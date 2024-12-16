@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
-import 'package:matcron/app/features/auth/data/models/user.dart';
+import 'package:matcron/app/features/auth/data/models/login_response.dart';
+import 'package:matcron/app/features/auth/data/models/registration_response.dart';
 import 'package:matcron/app/features/auth/data/models/user_db.dart';
+import 'package:matcron/config/config.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:retrofit/retrofit.dart';
 
@@ -12,8 +14,8 @@ abstract class AuthApiService {
  
   
   @POST('/login')
-  Future<HttpResponse<UserModel>> login({@Body() required UserLoginDbModel model});
+  Future<HttpResponse<LoginResponseModel>> login({@Body() required UserLoginDbModel model});
 
   @POST('/register')
-  Future<HttpResponse<UserModel>> register({@Body() required UserRegistrationDbModel model});
+  Future<HttpResponse<RegistrationResponseModel>> register({@Body() required UserRegistrationDbModel model});
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:matcron/app/main.dart';
 import 'package:matcron/core/constants/constants.dart';
+import 'package:matcron/core/resources/authorization.dart';
+import 'package:matcron/app/features/auth/presentation/pages/login.dart'; // Replace with correct path for InitialScreens
 
 class Header extends StatefulWidget {
   final String title;
@@ -11,6 +14,18 @@ class Header extends StatefulWidget {
 }
 
 class HeaderState extends State<Header> {
+  final AuthorizationService _authService = AuthorizationService();
+
+  void _logout() async {
+    _authService.deleteToken(); // Delete token
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const InitialScreens()),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -24,29 +39,52 @@ class HeaderState extends State<Header> {
             style: TextStyle(
               fontSize: 30.0,
               fontWeight: FontWeight.normal,
-              color: matcronPrimaryColor
+              color: matcronPrimaryColor,
             ),
           ),
           
-          // Profile and Notification Icons
+          // Profile, Dropdown Menu, and Notifications
           Row(
             children: [
-              // {Profile
-              CircleAvatar(
-                radius: 20.0, // Small rounded profile icon
-                backgroundImage: AssetImage('assets/images/profile_image.png'), // Replace with actual image
+              // Dropdown for Profile & Logout
+              PopupMenuButton<String>(
+                icon: CircleAvatar(
+                  radius: 20.0, 
+                  backgroundImage: AssetImage('assets/images/profile_image.png'), // Replace with actual image
+                ),
+                onSelected: (value) {
+                  if (value == 'Logout') {
+                    _logout();
+                  } else if (value == 'Profile') {
+                    // Navigate to Profile Page (implement later)
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Profile page not implemented yet!")),
+                    );
+                  }
+                },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+                  const PopupMenuItem<String>(
+                    value: 'Profile',
+                    child: Text('Profile'),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'Logout',
+                    child: Text('Logout'),
+                  ),
+                ],
               ),
               
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
 
+              // Notification Icon
               Container(
                 width: 38.0,
                 height: 38.0,
                 decoration: BoxDecoration(
-                  color: matcronPrimaryColor, // Notification icon background color
+                  color: matcronPrimaryColor,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
+                child: const Icon(
                   Icons.notifications,
                   color: Colors.white,
                   size: 20.0,

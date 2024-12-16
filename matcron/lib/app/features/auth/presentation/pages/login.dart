@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
@@ -7,7 +8,9 @@ import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_auth_state.dart';
 import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 import 'package:matcron/app/features/auth/presentation/widgets/rounded_text_field.dart';
+import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:matcron/app/injection_container.dart';
+import 'package:matcron/app/main.dart';
 import 'package:matcron/core/constants/constants.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,9 +29,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<RemoteLoginBloc>(
-      create: (context) => sl(),
-      child: Scaffold(
+    return Scaffold(
         extendBodyBehindAppBar: true, // Extend the body behind the app bar
         appBar: AppBar(
           toolbarHeight: 40, // Minimal height
@@ -55,17 +56,35 @@ class _LoginPageState extends State<LoginPage> {
           ],
         ),
         body: _buildBody(context),
-      ),
-    );
+      );
   }
 Widget _buildBody(BuildContext context) {
   return BlocBuilder<RemoteLoginBloc, RemoteAuthState>(
     builder: (_, state) {
       if (state is RemoteAuthLoading) {
-        return const Center(child: CircularProgressIndicator());
-      }
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+              ),
+            ),
+          );
+        }
 
       if (state is RemoteAuthInitial) {
+        String? emailError;
+        String? passwordError;
+
+        switch (state.errorType) {
+          case 'EMAIL':
+            emailError = state.errorMessage;
+            break;
+          case 'PASSWORD':
+            passwordError = state.errorMessage;
+            break;
+        }
+
         return Container(
           decoration: BoxDecoration(
             image: DecorationImage(
@@ -111,6 +130,8 @@ Widget _buildBody(BuildContext context) {
                       inputType: TextInputType.emailAddress,
                       autofillHint: AutofillHints.email,
                     ),
+                    if (emailError != null)
+                      Text(emailError, style: const TextStyle(color: Colors.red, fontSize: 12),),
                     const SizedBox(height: 30),
 
                     // Password Field
@@ -120,6 +141,8 @@ Widget _buildBody(BuildContext context) {
                       inputType: TextInputType.visiblePassword,
                       autofillHint: AutofillHints.password,
                     ),
+                    if (passwordError != null)
+                      Text(passwordError, style: const TextStyle(color: Colors.red, fontSize: 12),),
                     const SizedBox(height: 15),
 
                     // Forgot Password
@@ -132,7 +155,7 @@ Widget _buildBody(BuildContext context) {
                         style: TextStyle(
                           color: matcronPrimaryColor,
                           fontWeight: FontWeight.bold,
-                          fontSize: 28,
+                          fontSize: 20,
                         ),
                       ),
                     ),
@@ -146,7 +169,7 @@ Widget _buildBody(BuildContext context) {
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8)),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 10),
                         minimumSize: const Size(double.infinity, 50),
                         backgroundColor: matcronPrimaryColor,
                       ),
@@ -195,6 +218,25 @@ Widget _buildBody(BuildContext context) {
             ),
           ),
         );
+      }
+
+      if (state is RemoteAuthDone) {
+        
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Welcome Back, ${state.user?.firstName} ${state.user?.lastName}!"),
+              duration: const Duration(seconds: 2),
+            )
+          );
+
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const MyHomePage()
+            )
+          );
+        });
       }
 
       if (state is RemoteAuthException) {

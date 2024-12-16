@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
@@ -32,36 +33,33 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<RemoteRegistrationBloc>(
-      create: (context) => sl<RemoteRegistrationBloc>(),
-      child: Scaffold(
-        extendBodyBehindAppBar: true, // Allow body to extend behind the app bar
-        appBar: AppBar(
-          toolbarHeight: 40, // Minimal height
-          backgroundColor: Colors.transparent, // Transparent background
-          elevation: 0, // No shadow
-          automaticallyImplyLeading: false, // No back button
-          actions: [
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.language), // Language icon
-              onSelected: (value) {
-                setState(() {
-                  selectedLanguage = value;
-                });
-              },
-              itemBuilder: (BuildContext context) {
-                return ['English', 'German', 'Spanish'].map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
-              },
-            ),
-          ],
-        ),
-        body: _buildBody(context),
+    return Scaffold(
+      extendBodyBehindAppBar: true, // Allow body to extend behind the app bar
+      appBar: AppBar(
+        toolbarHeight: 40, // Minimal height
+        backgroundColor: Colors.transparent, // Transparent background
+        elevation: 0, // No shadow
+        automaticallyImplyLeading: false, // No back button
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.language), // Language icon
+            onSelected: (value) {
+              setState(() {
+                selectedLanguage = value;
+              });
+            },
+            itemBuilder: (BuildContext context) {
+              return ['English', 'German', 'Spanish'].map((String choice) {
+                return PopupMenuItem<String>(
+                  value: choice,
+                  child: Text(choice),
+                );
+              }).toList();
+            },
+          ),
+        ],
       ),
+      body: _buildBody(context),
     );
   }
 
@@ -69,7 +67,14 @@ class _RegisterPageState extends State<RegisterPage> {
     return BlocBuilder<RemoteRegistrationBloc, RemoteAuthState>(
       builder: (_, state) {
         if (state is RemoteAuthLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+              ),
+            ),
+          );
         }
 
         if (state is RemoteAuthInitial) {
@@ -79,7 +84,8 @@ class _RegisterPageState extends State<RegisterPage> {
               Container(
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/images/bed.jpg'), // Path to your image
+                    image: AssetImage(
+                        'assets/images/bed.jpg'), // Path to your image
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
                       Colors.black.withOpacity(0.09), // Reduce opacity
@@ -88,38 +94,40 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ),
-              // Form Content with Blur Effect
-        //       Center(
-        //         child: SizedBox(
-        //           width: 325,
-        //           child: SingleChildScrollView(
-        //             child: ClipRRect(
-        //               borderRadius: BorderRadius.circular(20), // Rounded edges
-        //               child: BackdropFilter(
-        //                 filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Blur effect
-        //                 child: Container(
-        //                   color: Colors.white.withOpacity(0.6), // Semi-transparent white background
-        //                   padding: const EdgeInsets.all(16),
-        //                   child: _buildRegistrationForm(),
-        //                 ),
-        //               ),
-        //             ),
-        //           ),
-        //         ),
-        //       ),
-        //     ],
-        //   );
-        // }
-            Center(
+
+              Center(
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: _buildRegistrationForm(),
+                    child: _buildRegistrationForm(state),
                   ),
                 ),
               ),
             ],
           );
+        }
+
+        if (state is RemoteRegistrationDone) {
+          // Show a Snackbar after the build phase completes
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text("Registration successful!"),
+                duration: const Duration(seconds: 2),
+              ),
+            );
+
+            // Immediately navigate to the login screen
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => BlocProvider<RemoteLoginBloc>(
+                  create: (context) => sl<RemoteLoginBloc>(),
+                  child: const LoginPage(),
+                ),
+              ),
+            );
+          });
         }
 
         if (state is RemoteAuthException) {
@@ -136,7 +144,32 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  Widget _buildRegistrationForm() {
+  Widget _buildRegistrationForm(RemoteAuthInitial state) {
+    String? firstNameError;
+    String? lastNameError;
+    String? emailError;
+    String? orgCodeError;
+    String? passwordError;
+    String? confirmPasswordError;
+
+    switch (state.errorType) {
+      case 'NAME':
+        firstNameError = lastNameError = state.errorMessage;
+        break;
+      case 'EMAIL':
+        emailError = state.errorMessage;
+        break;
+      case 'PASSWORD':
+        passwordError = state.errorMessage;
+        break;
+      case 'CONFIRMPASSWORD':
+        confirmPasswordError = state.errorMessage;
+        break;
+      case 'ORGANIZATION':
+        orgCodeError = state.errorMessage;
+        break;
+    }
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -163,61 +196,128 @@ class _RegisterPageState extends State<RegisterPage> {
         const SizedBox(height: 8),
         Text(
           "Let's create an account",
-          style: TextStyle(fontSize: 28, fontWeight:FontWeight.bold, color: matcronPrimaryColor),
+          style: TextStyle(
+              fontSize: 28,
+              fontWeight: FontWeight.bold,
+              color: matcronPrimaryColor),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 20),
 
-        // First and Last Name Fields
+        // First and Last Name Fields with Errors
         Row(
           children: [
             Expanded(
-              child: RoundedTextField(
-                controller: firstNameController,
-                placeholder: "First Name",
-                inputType: TextInputType.name,
-                autofillHint: AutofillHints.givenName,
+              child: Column(
+                children: [
+                  RoundedTextField(
+                    controller: firstNameController,
+                    placeholder: "First Name",
+                    inputType: TextInputType.name,
+                    autofillHint: AutofillHints.givenName,
+                  ),
+                  if (firstNameError != null)
+                    Text(
+                      firstNameError,
+                      style: const TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                ],
               ),
             ),
             const SizedBox(width: 10),
             Expanded(
-              child: RoundedTextField(
-                controller: lastNameController,
-                placeholder: "Last Name",
-                inputType: TextInputType.name,
-                autofillHint: AutofillHints.familyName,
+              child: Column(
+                children: [
+                  RoundedTextField(
+                    controller: lastNameController,
+                    placeholder: "Last Name",
+                    inputType: TextInputType.name,
+                    autofillHint: AutofillHints.familyName,
+                  ),
+                  if (lastNameError != null)
+                    Text(
+                      lastNameError,
+                      style: const TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                ],
               ),
             ),
           ],
         ),
         const SizedBox(height: 20),
 
-        // Other Fields
-        RoundedTextField(
-          controller: emailController,
-          placeholder: "Enter email",
-          inputType: TextInputType.emailAddress,
-          autofillHint: AutofillHints.email,
+        // Email Field with Error
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RoundedTextField(
+              controller: emailController,
+              placeholder: "Enter email",
+              inputType: TextInputType.emailAddress,
+              autofillHint: AutofillHints.email,
+            ),
+            if (emailError != null)
+              Text(
+                emailError,
+                style: const TextStyle(color: Colors.red, fontSize: 12),
+              ),
+          ],
         ),
         const SizedBox(height: 20),
-        RoundedTextField(
-          controller: orgCodeController,
-          placeholder: "Enter organization code",
-          inputType: TextInputType.text,
+
+        // Organization Code Field with Error
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RoundedTextField(
+              controller: orgCodeController,
+              placeholder: "Enter organization code",
+              inputType: TextInputType.text,
+            ),
+            if (orgCodeError != null)
+              Text(
+                orgCodeError,
+                style: const TextStyle(color: Colors.red, fontSize: 12),
+              ),
+          ],
         ),
         const SizedBox(height: 20),
-        RoundedTextField(
-          controller: passwordController,
-          placeholder: "Enter a strong password",
-          inputType: TextInputType.visiblePassword,
-          autofillHint: AutofillHints.newPassword,
+
+        // Password Field with Error
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RoundedTextField(
+              controller: passwordController,
+              placeholder: "Enter a strong password",
+              inputType: TextInputType.visiblePassword,
+              autofillHint: AutofillHints.newPassword,
+            ),
+            if (passwordError != null)
+              Text(
+                passwordError,
+                style: const TextStyle(color: Colors.red, fontSize: 12),
+              ),
+          ],
         ),
         const SizedBox(height: 20),
-        RoundedTextField(
-          controller: confirmPasswordController,
-          placeholder: "Confirm password",
-          inputType: TextInputType.visiblePassword,
-          autofillHint: AutofillHints.newPassword,
+
+        // Confirm Password Field with Error
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RoundedTextField(
+              controller: confirmPasswordController,
+              placeholder: "Confirm password",
+              inputType: TextInputType.visiblePassword,
+              autofillHint: AutofillHints.newPassword,
+            ),
+            if (confirmPasswordError != null)
+              Text(
+                confirmPasswordError,
+                style: const TextStyle(color: Colors.red, fontSize: 12),
+              ),
+          ],
         ),
         const SizedBox(height: 10),
 
@@ -257,8 +357,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 }
               : null,
           style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             padding: const EdgeInsets.symmetric(vertical: 16),
             minimumSize: const Size(double.infinity, 50),
             backgroundColor: matcronPrimaryColor,
@@ -307,14 +407,14 @@ class _RegisterPageState extends State<RegisterPage> {
   void register(BuildContext context) {
     context.read<RemoteRegistrationBloc>().add(
           RegisterUser(
-            UserRegistrationEntity(
-              firstName: firstNameController.text,
-              lastName: lastNameController.text,
-              email: emailController.text,
-              password: passwordController.text,
-              organisationCode: orgCodeController.text,
-            ),
-          ),
+              UserRegistrationEntity(
+                firstName: firstNameController.text,
+                lastName: lastNameController.text,
+                email: emailController.text,
+                password: passwordController.text,
+                organisationCode: orgCodeController.text,
+              ),
+              confirmPasswordController.text),
         );
   }
 

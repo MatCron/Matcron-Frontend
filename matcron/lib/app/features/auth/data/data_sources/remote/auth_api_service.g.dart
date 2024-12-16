@@ -14,7 +14,7 @@ class _AuthApiService implements AuthApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://192.168.1.17:8080/api/auth';
+    baseUrl ??= '${Config.prodBaseUrl}/api/auth';
   }
 
   final Dio _dio;
@@ -24,14 +24,14 @@ class _AuthApiService implements AuthApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<UserModel>> login(
+  Future<HttpResponse<LoginResponseModel>> login(
       {required UserLoginDbModel model}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(model.toJson());
-    final _options = _setStreamType<HttpResponse<UserModel>>(Options(
+    final _options = _setStreamType<HttpResponse<LoginResponseModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -48,9 +48,9 @@ class _AuthApiService implements AuthApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late UserModel _value;
+    late LoginResponseModel _value;
     try {
-      _value = UserModel.fromJson(_result.data!);
+      _value = LoginResponseModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -60,14 +60,14 @@ class _AuthApiService implements AuthApiService {
   }
 
   @override
-  Future<HttpResponse<UserModel>> register(
+  Future<HttpResponse<RegistrationResponseModel>> register(
       {required UserRegistrationDbModel model}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(model.toJson());
-    final _options = _setStreamType<HttpResponse<UserModel>>(Options(
+    final _options = _setStreamType<HttpResponse<RegistrationResponseModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -84,9 +84,9 @@ class _AuthApiService implements AuthApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late UserModel _value;
+    late RegistrationResponseModel _value;
     try {
-      _value = UserModel.fromJson(_result.data!);
+      _value = RegistrationResponseModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

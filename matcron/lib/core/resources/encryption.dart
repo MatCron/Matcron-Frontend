@@ -24,11 +24,20 @@ class EncryptionService {
   // Step 4: Encrypt the combination of password hash and datetime
   String encryptData(String data, String encryptionKey) {
     final key = encrypt.Key.fromUtf8(encryptionKey.padRight(32, ' ')); // Encryption key needs to be 32 bytes
-    final iv = encrypt.IV.fromLength(16); // 16 bytes IV (Initialization Vector)
+    final iv = encrypt.IV.fromLength(16); // Generate random IV (16 bytes)
 
-    final encrypter = encrypt.Encrypter(encrypt.AES(key)); // Using AES encryption
+    final encrypter = encrypt.Encrypter(
+      encrypt.AES(key, mode: encrypt.AESMode.cbc, padding: 'PKCS7'),
+    );
+
     final encrypted = encrypter.encrypt(data, iv: iv); // Encrypting data
-    return encrypted.base64; // Return the encrypted data in base64 format
+
+    // Separate IV and ciphertext with a delimiter
+    final ivBase64 = base64Encode(iv.bytes); // Encode IV as Base64
+    final ciphertextBase64 = encrypted.base64; // Encode ciphertext as Base64
+
+    // Combine IV and ciphertext with a delimiter
+    return '$ivBase64:$ciphertextBase64'; // Use ':' as the delimiter
   }
 
   // Combine all steps for encryption
