@@ -8,7 +8,6 @@ import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_auth_state.dart';
 import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 import 'package:matcron/app/features/auth/presentation/widgets/rounded_text_field.dart';
-import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/app/main.dart';
 import 'package:matcron/core/constants/constants.dart';
