@@ -9,6 +9,7 @@ class UserModel extends UserEntity {
     String ? email,
     bool ? emailVerified,
     String ? image,
+    String ? token
   }) : super(
         id: id ?? "",
         firstName: firstName ?? "",
@@ -17,17 +18,19 @@ class UserModel extends UserEntity {
         email: email ?? "",
         emailVerified: emailVerified ?? false,
         image: image ?? "",
+        token: token ?? "",
       );
 
   factory UserModel.fromJson(Map <String, dynamic> map) {
     return UserModel(
-      id: map["userId"] ?? "",
+      id: map["id"] ?? "",
       firstName: map["firstName"] ?? "",
       lastName: map["lastName"] ?? "",
-      organizationId: map["organizationId"] ?? "",
+      organizationId: map["orgId"] ?? "",
       email: map["email"] ?? "",
-      emailVerified: map["emailVerified"] ?? false,
-      image: map["image"] ?? "",
+      emailVerified: map["emailVerified"] == 0 ? false : true,
+      image: map["profilePicture"] ?? "",
+      token: map["token"] ?? ""
     );
   } 
 }

@@ -1,19 +1,24 @@
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:matcron/app/features/auth/domain/entities/registration_response.dart';
 import 'package:matcron/app/features/auth/domain/entities/user.dart';
 
 abstract class RemoteAuthState extends Equatable {
-  final UserEntity ? user;
-  final DioException ? exception;
+  final UserEntity? user;
+  final DioException? exception;
+  final RegistrationResponseEntity? reg;
+  final String? errorMessage;
+  final String? errorType;
 
-  const RemoteAuthState({this.user, this.exception});
+  const RemoteAuthState({this.user, this.exception, this.reg, this.errorMessage, this.errorType});
 
   @override
-  List<Object> get props => [user!, exception!];
+  List<Object?> get props => [user, exception, reg];
 }
 
+
 class RemoteAuthInitial extends RemoteAuthState {
-  const RemoteAuthInitial(); // Represents the initial state
+  const RemoteAuthInitial(String? errorMessage, String? errorType) : super(errorMessage: errorMessage, errorType: errorType); // Represents the initial state
 }
 
 class RemoteAuthLoading extends RemoteAuthState {
@@ -21,7 +26,11 @@ class RemoteAuthLoading extends RemoteAuthState {
 }
 
 class RemoteAuthDone extends RemoteAuthState {
-  const RemoteAuthDone(UserEntity user) :super(user: user);
+  const RemoteAuthDone(UserEntity? user) :super(user: user);
+}
+
+class RemoteRegistrationDone extends RemoteAuthState {
+  const RemoteRegistrationDone(RegistrationResponseEntity reg) : super(reg: reg);
 }
 
 class RemoteAuthException extends RemoteAuthState {

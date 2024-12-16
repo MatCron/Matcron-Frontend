@@ -1,8 +1,8 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:matcron/app/features/auth/data/data_sources/remote/auth_api_service.dart';
-import 'package:matcron/app/features/auth/data/models/user.dart';
+import 'package:matcron/app/features/auth/data/models/login_response.dart';
+import 'package:matcron/app/features/auth/data/models/registration_response.dart';
 import 'package:matcron/app/features/auth/data/models/user_db.dart';
 import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/domain/repository/auth_repository.dart';
@@ -16,7 +16,7 @@ class AuthRepositoryImpl implements AuthRepository {
   AuthRepositoryImpl(this._authApiService, this._encryptionService);
 
   @override
-  Future<DataState<UserModel>> login(UserLoginEntity entity) async {
+  Future<DataState<LoginResponseModel>> login(UserLoginEntity entity) async {
     entity.password = _encryptionService.encryptPassword(entity.password);
     
     try {
@@ -40,7 +40,7 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<DataState<UserModel>> register(UserRegistrationEntity entity) async{
+  Future<DataState<RegistrationResponseModel>> register(UserRegistrationEntity entity) async{
     entity.password = _encryptionService.encryptPassword(entity.password);
     
     try {
