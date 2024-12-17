@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // for filtering input if needed
 
 class OrganizationFormPage extends StatefulWidget {
+  const OrganizationFormPage({super.key});
+
   @override
-  _OrganizationFormPageState createState() => _OrganizationFormPageState();
+  OrganizationFormPageState createState() => OrganizationFormPageState();
 }
 
-class _OrganizationFormPageState extends State<OrganizationFormPage> {
+class OrganizationFormPageState extends State<OrganizationFormPage> {
   final _formKey = GlobalKey<FormState>();
   
   String? _industryValue;
@@ -44,19 +45,17 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
 
   void _onAddOrganizationPressed() {
     if (_formKey.currentState!.validate()) {
-      // Perform any save operations, then navigate to the organization page
-      Navigator.pop(context); 
-      // Or use Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => OrganizationPage()));
+       Navigator.pop(context); 
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = Color(0xFFE5E5E5);
+    final backgroundColor = const Color(0xFFE5E5E5);
     final fieldColor = Colors.white;
-    final primaryColor = Color(0xFF70A8A1); // Adjust as needed
+    final primaryColor = const Color(0xFF70A8A1); 
     final hintTextStyle = TextStyle(color: Colors.grey[600]);
-    final labelStyle = TextStyle(fontSize: 16, color: Colors.black54);
+    final labelStyle = const TextStyle(fontSize: 16, color: Colors.black54);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -69,24 +68,24 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.black54),
+                    icon: const Icon(Icons.arrow_back, color: Colors.black54),
                     onPressed: () => Navigator.pop(context),
                   ),
-                  Expanded(
+                  const Expanded(
                     child: Text(
                       "Organisation",
                       style: TextStyle(fontSize: 24, color: Colors.black54),
                     ),
                   ),
-                  // Profile icon and notification
+                
                   Row(
                     children: [
                       CircleAvatar(
                         radius: 18,
                         backgroundColor: Colors.blueGrey[200],
-                        child: Icon(Icons.person, color: Colors.white),
+                        child: const Icon(Icons.person, color: Colors.white),
                       ),
-                      SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       Stack(
                         children: [
                           Icon(Icons.notifications, color: Colors.blueGrey[400], size: 30),
@@ -96,7 +95,7 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                             child: Container(
                               width: 14,
                               height: 14,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Colors.red,
                                 shape: BoxShape.circle,
                               ),
@@ -132,7 +131,7 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                           ),
                           hintText: "Enter organization name",
                           hintStyle: hintTextStyle,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -141,9 +140,9 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                      // E-Mail Address
+                     
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
@@ -157,22 +156,21 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                           ),
                           hintText: "Enter an email address",
                           hintStyle: hintTextStyle,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Please enter an email address";
                           }
-                          // Basic email check
+           
                           if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
                             return "Please enter a valid email";
                           }
                           return null;
                         },
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                      // Industry & Registration No. Row
                       Row(
                         children: [
                           Expanded(
@@ -188,9 +186,9 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                                   labelText: "Industry",
                                   labelStyle: labelStyle,
                                   border: InputBorder.none,
-                                  contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                                 ),
-                                icon: Icon(Icons.arrow_drop_down),
+                                icon: const Icon(Icons.arrow_drop_down),
                                 items: <String>["Hospital", "Hotel", "IT", "Retail"].map((String value) {
                                   return DropdownMenuItem<String>(
                                     value: value,
@@ -211,7 +209,7 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                               ),
                             ),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Expanded(
                             flex: 1,
                             child: TextFormField(
@@ -227,15 +225,15 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                                 ),
                                 hintText: "Enter registration no.",
                                 hintStyle: hintTextStyle,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                      // Address / Street (3 lines)
+            
                       TextFormField(
                         controller: _addressLine1Controller,
                         decoration: InputDecoration(
@@ -249,10 +247,10 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                           ),
                           hintText: "Address line 1",
                           hintStyle: hintTextStyle,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                         ),
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       TextFormField(
                         controller: _addressLine2Controller,
                         decoration: InputDecoration(
@@ -266,10 +264,10 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                           ),
                           hintText: "Address line 2",
                           hintStyle: hintTextStyle,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                         ),
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
                       TextFormField(
                         controller: _addressLine3Controller,
                         decoration: InputDecoration(
@@ -283,12 +281,12 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                           ),
                           hintText: "Address line 3",
                           hintStyle: hintTextStyle,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                         ),
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                      // EIR Code & County Row
+          
                       Row(
                         children: [
                           Expanded(
@@ -306,11 +304,11 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                                 ),
                                 hintText: "Enter EIR Code",
                                 hintStyle: hintTextStyle,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                               ),
                             ),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Expanded(
                             flex: 1,
                             child: TextFormField(
@@ -326,16 +324,15 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                                 ),
                                 hintText: "Enter County",
                                 hintStyle: hintTextStyle,
-                                contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                      // Description
-                      // Using a multiline TextField. We'll just validate word count.
+         
                       TextFormField(
                         controller: _descriptionController,
                         maxLines: 3,
@@ -350,7 +347,7 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                           ),
                           hintText: "Enter description",
                           hintStyle: hintTextStyle,
-                          contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                         ),
                         validator: (value) {
                           if (value == null) return null;
@@ -361,9 +358,9 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 12),
+                      const SizedBox(height: 12),
 
-                      // Same as Postal Address checkbox
+                   
                       Row(
                         children: [
                           Checkbox(
@@ -379,9 +376,9 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                         ],
                       ),
 
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
 
-                      // Add Organization button
+          
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -402,7 +399,7 @@ class _OrganizationFormPageState extends State<OrganizationFormPage> {
                         ),
                       ),
 
-                      SizedBox(height: 30),
+                      const SizedBox(height: 30),
                     ],
                   ),
                 ),
