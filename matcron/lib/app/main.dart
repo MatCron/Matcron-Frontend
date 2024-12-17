@@ -4,6 +4,7 @@ import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/re
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:matcron/app/features/organization/presentation/pages/organizations.dart';
+import 'package:matcron/app/features/type/presentation/pages/type.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/components/splash_screen.dart';
 import 'package:matcron/core/constants/constants.dart';
@@ -132,7 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final List<Widget> bottomBarPages = [
       DashboardPage(controller: _controller),
       MattressPage(),
-      SizedBox(),
+      MattressTypePage(),
       OrganizationPage(),
     ];
 

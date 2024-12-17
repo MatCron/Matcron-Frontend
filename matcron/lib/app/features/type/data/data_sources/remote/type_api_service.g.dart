@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'organization_api_service.dart';
+part of 'type_api_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,13 +8,13 @@ part of 'organization_api_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
-class _OrganizationApiService implements OrganizationApiService {
-  _OrganizationApiService(
+class _TypeApiService implements TypeApiService {
+  _TypeApiService(
     this._dio, {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://192.168.1.17:8080/api/organization';
+    baseUrl ??= 'http://192.168.1.17:8080/api/type';
   }
 
   final Dio _dio;
@@ -24,34 +24,32 @@ class _OrganizationApiService implements OrganizationApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<List<OrganizationModel>>> getOrganizations() async {
+  Future<HttpResponse<List<TypeModel>>> getTypes() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options =
-        _setStreamType<HttpResponse<List<OrganizationModel>>>(Options(
+    final _options = _setStreamType<HttpResponse<List<TypeModel>>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
-            .compose(
-              _dio.options,
-              '/organizations',
-              queryParameters: queryParameters,
-              data: _data,
-            )
-            .copyWith(
-                baseUrl: _combineBaseUrls(
-              _dio.options.baseUrl,
-              baseUrl,
-            )));
+        .compose(
+          _dio.options,
+          '/types',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
     final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<OrganizationModel> _value;
+    late List<TypeModel> _value;
     try {
       _value = _result.data!
-          .map((dynamic i) =>
-              OrganizationModel.fromJson(i as Map<String, dynamic>))
+          .map((dynamic i) => TypeModel.fromJson(i as Map<String, dynamic>))
           .toList();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
@@ -62,8 +60,7 @@ class _OrganizationApiService implements OrganizationApiService {
   }
 
   @override
-  Future<HttpResponse<void>> addOrganization(
-      {required OrganizationModel model}) async {
+  Future<HttpResponse<void>> addType({required TypeModel model}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -76,7 +73,7 @@ class _OrganizationApiService implements OrganizationApiService {
     )
         .compose(
           _dio.options,
-          '/organizations/add',
+          '/types/add',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -91,7 +88,35 @@ class _OrganizationApiService implements OrganizationApiService {
   }
 
   @override
-  Future<HttpResponse<void>> delete({required String id}) async {
+  Future<HttpResponse<void>> editType({required TypeModel model}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(model.toJson());
+    final _options = _setStreamType<HttpResponse<void>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/types/edit',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<void>(_options);
+    final httpResponse = HttpResponse(null, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<void>> deleteType({required String id}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -103,7 +128,7 @@ class _OrganizationApiService implements OrganizationApiService {
     )
         .compose(
           _dio.options,
-          '/organizations/delete',
+          '/types/delete',
           queryParameters: queryParameters,
           data: _data,
         )

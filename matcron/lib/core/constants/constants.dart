@@ -8,6 +8,7 @@ const String userAPIBaseURL = '${Config.devBaseUrl}/auth';
 const String mattressAPIBaseUrl = '${Config.devBaseUrl}/mattress';
 const String dashboardAPIBaseUrl = '${Config.devBaseUrl}/dashboard';
 const String organizationBaseUrl = '${Config.devBaseUrl}/organization';
+const String typeBaseUrl = '${Config.devBaseUrl}/type';
 
 // UI
 const double matcronTextFieldBorderRadius = 50;

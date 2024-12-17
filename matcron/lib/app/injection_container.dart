@@ -17,6 +17,9 @@ import 'package:matcron/app/features/organization/data/repository/organization_r
 import 'package:matcron/app/features/organization/domain/repositories/organization_repository.dart';
 import 'package:matcron/app/features/organization/domain/usecases/get_organizations.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
+import 'package:matcron/app/features/type/data/data_sources/remote/type_api_service.dart';
+import 'package:matcron/app/features/type/data/repository/type_repository_impl.dart';
+import 'package:matcron/app/features/type/domain/repositories/type_repository.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/encryption.dart';
 
@@ -48,6 +51,10 @@ Future<void> initializeDependencies() async {
     OrganizationApiService(sl())
   );
 
+  sl.registerSingleton<TypeApiService>(
+    TypeApiService(sl())
+  );
+
   sl.registerSingleton<AuthRepository>(
     AuthRepositoryImpl(sl(),sl())
   );
@@ -58,6 +65,10 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<OrganizationRepository>(
     OrganizationRepositoryImpl(sl())
+  );
+
+   sl.registerSingleton<TypeRepository>(
+    TypeRepositoryImpl(sl())
   );
 
   // UseCases
