@@ -8,22 +8,22 @@ class OrganizationModel extends OrganizationEntity {
     super.email,
     super.registrationNumber,
     super.description,
-    super.address,
-    super.eirCode,
-    super.county,
+    super.postalAddress,
+    super.normalAddress,
+    super.logo,
   });
 
   factory OrganizationModel.fromJson(Map<String, dynamic> map) {
     return OrganizationModel(
       id: map['id'] ?? "",
       name: map['name'] ?? "",
-      type: map['type'] ?? "",
+      type: map['organisationType'] ?? "",
       email: map['email'] ?? "",
-      registrationNumber: map['registrationNumber'] ?? "",
+      registrationNumber: map['registrationNo'] ?? "",
       description: map['description'] ?? "",
-      address: map['address'] ?? "",
-      eirCode: map['eirCode'] ?? "",
-      county: map['county'] ?? "",
+      postalAddress: map['postalAddress'] ?? "",
+      normalAddress: map['normalAddress'] ?? "",
+      logo: map['logo'] ?? "",  // Assuming 'logo' can be a URL or file path string
     );
   }
 
@@ -31,27 +31,27 @@ class OrganizationModel extends OrganizationEntity {
     return {
       'id': id,
       'name': name,
-      'type': type,
+      'organisationType': type,
       'email': email,
-      'registrationNumber': registrationNumber,
+      'registrationNo': registrationNumber,
       'description': description,
-      'address': address,
-      'eirCode': eirCode,
-      'county': county
+      'postalAddress': postalAddress,
+      'normalAddress': normalAddress,
+      'logo': logo,
     };
   }
 
   factory OrganizationModel.fromEntity(OrganizationEntity entity) {
     return OrganizationModel(
-        id: entity.id,
-        name: entity.name,
-        type: entity.type,
-        email: entity.email,
-        registrationNumber: entity.registrationNumber,
-        description: entity.description,
-        address: entity.address,
-        eirCode: entity.eirCode,
-        county: entity.county
-      );
+      id: entity.id,
+      name: entity.name,
+      type: entity.type,
+      email: entity.email,
+      registrationNumber: entity.registrationNumber,
+      description: entity.description,
+      postalAddress: entity.postalAddress,
+      normalAddress: entity.normalAddress,
+      logo: entity.logo,
+    );
   }
 }

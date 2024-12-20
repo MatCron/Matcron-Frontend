@@ -50,7 +50,6 @@ class _OrganizationApiService implements OrganizationApiService {
             )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late List<OrganizationModel> _value;
-    print(_result);
     try {
       _value = _result.data!['data']
           .map((dynamic i) =>
@@ -93,7 +92,8 @@ class _OrganizationApiService implements OrganizationApiService {
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late OrganizationModel _value;
     try {
-      _value = OrganizationModel.fromJson(_result.data!);
+      print(_result.data!['data']);
+      _value = OrganizationModel.fromJson(_result.data!['data']);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -153,7 +153,7 @@ class _OrganizationApiService implements OrganizationApiService {
     )
         .compose(
           _dio.options,
-          '/update',
+          '/${id}',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -178,13 +178,13 @@ class _OrganizationApiService implements OrganizationApiService {
     _headers.removeWhere((k, v) => v == null);
     final _data = id;
     final _options = _setStreamType<HttpResponse<void>>(Options(
-      method: 'POST',
+      method: 'DELETE',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/delete',
+          '/${id}',
           queryParameters: queryParameters,
           data: _data,
         )

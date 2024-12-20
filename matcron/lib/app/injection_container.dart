@@ -122,6 +122,6 @@ Future<void> initializeDependencies() async {
   );
 
   sl.registerFactory<RemoteOrganizationBloc>(
-    () => RemoteOrganizationBloc(sl(), sl(), sl(), sl(), sl())
+    () => RemoteOrganizationBloc(sl(), sl(), sl(), sl())
   );
 }
