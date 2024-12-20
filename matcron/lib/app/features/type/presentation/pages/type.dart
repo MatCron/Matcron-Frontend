@@ -3,6 +3,7 @@ import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/constants/constants.dart';
+import 'package:matcron/app/features/type/presentation/pages/type_form.dart';
 
 class MattressTypePage extends StatefulWidget {
   const MattressTypePage({super.key});
@@ -138,7 +139,10 @@ class MattressTypePageState extends State<MattressTypePage> {
               alignment: Alignment.centerRight,
               child: ElevatedButton(
                 onPressed: () {
-                  // Add functionality placeholder
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const AddMattressTypePage()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: matcronPrimaryColor,
