@@ -18,11 +18,11 @@ class OrganizationBottomDrawer extends StatefulWidget {
   });
 
   @override
-  _OrganizationBottomDrawerState createState() =>
-      _OrganizationBottomDrawerState();
+  OrganizationBottomDrawerState createState() =>
+      OrganizationBottomDrawerState();
 }
 
-class _OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
+class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
   late OrganizationEntity organization;
   late OrganizationRepository _organizationRepository;
   bool isLoading = true; // Add loading state
