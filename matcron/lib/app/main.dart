@@ -7,6 +7,7 @@ import 'package:matcron/app/features/organization/presentation/bloc/remote_org_b
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
 import 'package:matcron/app/features/organization/presentation/pages/organizations.dart';
 import 'package:matcron/app/features/type/presentation/pages/type.dart';
+import 'package:matcron/app/features/recycling_info/presentation/bloc/pages/recycling_info.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/components/splash_screen.dart';
 import 'package:matcron/core/constants/constants.dart';
@@ -17,6 +18,7 @@ import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'features/mattress/presentation/pages/mattress_page.dart';
+
 
 Future<void> main() async {
   await initializeDependencies(); // Initialize all dependencies
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
             HexColor("#E5E5E5"), // Set background color for the whole app
       ),
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
-      home: const MyHomePage(),
+      home: const MattressRecyclingInfoPage(),
     );
   }
 }
