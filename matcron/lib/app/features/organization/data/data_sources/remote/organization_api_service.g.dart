@@ -92,7 +92,6 @@ class _OrganizationApiService implements OrganizationApiService {
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late OrganizationModel _value;
     try {
-      print(_result.data!['data']);
       _value = OrganizationModel.fromJson(_result.data!['data']);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

@@ -1,11 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:matcron/app/features/organization/data/data_sources/remote/organization_api_service.dart';
-import 'package:matcron/app/features/organization/data/repository/organization_repository_impl.dart';
 import 'package:matcron/app/features/organization/domain/entities/organization.dart';
 import 'package:matcron/app/features/organization/domain/repositories/organization_repository.dart';
-import 'package:matcron/app/features/organization/domain/usecases/get_organization.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/core/resources/data_state.dart';
 

@@ -106,7 +106,6 @@ class OrganizationRepositoryImpl implements OrganizationRepository {
       }
 
     } on DioException catch(e) {
-      print(e.response?.data['message']);
       return DataFailed(e);
     } 
   }

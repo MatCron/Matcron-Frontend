@@ -48,19 +48,17 @@ class RemoteOrganizationBloc
     final organizations = await _organizationsUseCase();
 
     if (dataState is DataSuccess) {
-      print("Organization updated successfully");
       emit(RemoteOrganizationsDone(organizations.data!));
     }
 
     if (dataState is DataFailed) {
-      print("Error: ${dataState.error}");
       emit(RemoteOrganizationsException(dataState.error!));
     }
   }
 
   void onAddOrganization(
       AddOrganization event, Emitter<RemoteOrganizationState> emit) async {
-    final dataState = await _organizationsUseCase();
+    final dataState = await _addOrganizationUseCase();
 
     if (dataState is DataSuccess && dataState.data != null) {
       emit(RemoteOrganizationsDone(dataState.data!));
@@ -80,12 +78,10 @@ class RemoteOrganizationBloc
     final organizations = await _organizationsUseCase();
 
     if (dataState is DataSuccess) {
-      print("Organization deleted successfully");
       emit(RemoteOrganizationsDone(organizations.data!));
     }
 
     if (dataState is DataFailed) {
-      print("Error: ${dataState.error}");
       emit(RemoteOrganizationsException(dataState.error!));
     }
   }
