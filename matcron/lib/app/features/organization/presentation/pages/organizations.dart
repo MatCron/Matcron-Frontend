@@ -5,6 +5,7 @@ import 'package:matcron/app/features/organization/presentation/bloc/remote_org_b
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_state.dart';
 import 'package:matcron/app/features/organization/presentation/widgets/bottom_drawer.dart';
+import  'package:matcron/app/features/organization/presentation/pages/organization_form.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/components/bottom_bar/controllers/notch_bottom_bar_controller.dart';
 import 'package:matcron/core/constants/constants.dart';
@@ -158,12 +159,17 @@ class OrganizationPageState extends State<OrganizationPage> {
               const SizedBox(height: 10.0),
 
               // Add organization button
-              Align(
+             Align(
                 alignment: Alignment.centerRight,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Original Add Organization button functionality placeholder
-                    // Feel free to implement your intended functionality here
+                   // Navigate to the OrganizationFormPage
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => OrganizationFormPage(),
+                                    ),
+                                  );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: matcronPrimaryColor,

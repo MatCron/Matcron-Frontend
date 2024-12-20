@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
             HexColor("#E5E5E5"), // Set background color for the whole app
       ),
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
-      home: const SplashScreenWrapper(),
+      home: const MyHomePage(),
     );
   }
 }
