@@ -8,16 +8,20 @@ part 'organization_api_service.g.dart';
 @RestApi(baseUrl: organizationBaseUrl)
 abstract class OrganizationApiService {
   factory OrganizationApiService(Dio dio) = _OrganizationApiService;
+  
 
-  @GET('/organizations')
-  Future<HttpResponse<List<OrganizationModel>>> getOrganizations();
+  @GET('/')
+  Future<HttpResponse<List<OrganizationModel>>> getOrganizations({@Header('Authorization') required String token});
 
-  @POST('/organizations/add')
-  Future<HttpResponse<void>> addOrganization({@Body() required OrganizationModel model});
+  @GET('/{id}')
+  Future<HttpResponse<OrganizationModel>> getOrganization({@Path('id') required String id, @Header('Authorization') required String token});
 
-  // @POST('/organizations/update')
-  // Future<HttpResponse<void>> update({@Body() required String id});
+  @POST('/')
+  Future<HttpResponse<void>> addOrganization({@Body() required OrganizationModel model, @Header('Authorization') required String token});
 
-  @POST('/organizations/delete')
-  Future<HttpResponse<void>> delete({@Body() required String id});
+  @PUT('/{id}')
+  Future<HttpResponse<void>> update({@Path('id') required String id, @Body() required OrganizationModel model, @Header('Authorization') required String token});
+
+  @DELETE('/{id}')
+  Future<HttpResponse<void>> delete({@Path('id') required String id, @Header('Authorization') required String token});
 }

@@ -3,13 +3,13 @@ import 'package:matcron/app/features/organization/domain/repositories/organizati
 import 'package:matcron/core/resources/data_state.dart';
 import 'package:matcron/core/usecases/usecase.dart';
 
-class UpdateOrganizationUseCase implements Usecase<DataState<void>, OrganizationEntity> {
+class GetOrganizationUseCase implements Usecase<DataState<OrganizationEntity>, String> {
   final OrganizationRepository _organizationRepository;
 
-  UpdateOrganizationUseCase(this._organizationRepository);
+  GetOrganizationUseCase(this._organizationRepository);
 
   @override
-  Future<DataState<void>> call({OrganizationEntity? params}) {
-    return _organizationRepository.updateOrganization(params!);
+  Future<DataState<OrganizationEntity>> call({String? params}) {
+    return _organizationRepository.getOrganization(params!);
   }
 }

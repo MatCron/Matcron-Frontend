@@ -3,11 +3,11 @@ class OrganizationEntity {
   String ? name;
   String ? type;
   String ? email;
-  int ? registrationNumber;
+  String ? registrationNumber;
   String ? description;
-  String ? address;
-  String ? eirCode;
-  String ? county;
+  String ? postalAddress;
+  String ? normalAddress;
+  String ? logo;
 
   OrganizationEntity({
     this.id,
@@ -16,8 +16,29 @@ class OrganizationEntity {
     this.email,
     this.registrationNumber,
     this.description,
-    this.address,
-    this.eirCode,
-    this.county
+    this.postalAddress,
+    this.normalAddress,
+    this.logo,
   });
+
+  OrganizationEntity copyWith({
+    String? name,
+    String? type,
+    String? email,
+    String? registrationNumber,
+    String? postalAddress,
+    String? normalAddress,
+  }) {
+    return OrganizationEntity(
+      id: id,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      email: email ?? this.email,
+      registrationNumber: registrationNumber ?? this.registrationNumber,
+      description: description,
+      postalAddress: postalAddress ?? this.postalAddress,
+      normalAddress: normalAddress ?? this.normalAddress,
+      logo: logo,
+    );
+  }
 }

@@ -14,7 +14,7 @@ class _DashboardApiService implements DashboardApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://192.168.1.17:8080/api/dashboard';
+    baseUrl ??= 'https://matcron.duckdns.org/api/dashboard';
   }
 
   final Dio _dio;

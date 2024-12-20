@@ -15,7 +15,11 @@ import 'package:matcron/app/features/dashboard/presentation/bloc/remote_dashboar
 import 'package:matcron/app/features/organization/data/data_sources/remote/organization_api_service.dart';
 import 'package:matcron/app/features/organization/data/repository/organization_repository_impl.dart';
 import 'package:matcron/app/features/organization/domain/repositories/organization_repository.dart';
+import 'package:matcron/app/features/organization/domain/usecases/add_organization.dart';
+import 'package:matcron/app/features/organization/domain/usecases/delete_organization.dart';
+import 'package:matcron/app/features/organization/domain/usecases/get_organization.dart';
 import 'package:matcron/app/features/organization/domain/usecases/get_organizations.dart';
+import 'package:matcron/app/features/organization/domain/usecases/update_organization.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/app/features/type/data/data_sources/remote/type_api_service.dart';
 import 'package:matcron/app/features/type/data/repository/type_repository_impl.dart';
@@ -84,6 +88,22 @@ Future<void> initializeDependencies() async {
     GetOrganizationsUseCase(sl())
   );
 
+  sl.registerSingleton<GetOrganizationUseCase>(
+    GetOrganizationUseCase(sl())
+  );
+
+  sl.registerSingleton<AddOrganizationUseCase>(
+    AddOrganizationUseCase(sl())
+  );
+
+  sl.registerSingleton<UpdateOrganizationUseCase>(
+    UpdateOrganizationUseCase(sl())
+  );
+
+  sl.registerSingleton<DeleteOrganizationUseCase>(
+    DeleteOrganizationUseCase(sl())
+  );
+
   sl.registerSingleton<GetDashboardInfoUseCase>(
     GetDashboardInfoUseCase(sl())
   );
@@ -102,6 +122,6 @@ Future<void> initializeDependencies() async {
   );
 
   sl.registerFactory<RemoteOrganizationBloc>(
-    () => RemoteOrganizationBloc(sl())
+    () => RemoteOrganizationBloc(sl(), sl(), sl(), sl())
   );
 }
