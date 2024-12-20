@@ -14,7 +14,7 @@ class _AuthApiService implements AuthApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= '${Config.prodBaseUrl}/api/auth';
+    baseUrl ??= 'https://matcron.duckdns.org/api/auth';
   }
 
   final Dio _dio;
@@ -67,22 +67,23 @@ class _AuthApiService implements AuthApiService {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(model.toJson());
-    final _options = _setStreamType<HttpResponse<RegistrationResponseModel>>(Options(
+    final _options =
+        _setStreamType<HttpResponse<RegistrationResponseModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
     )
-        .compose(
-          _dio.options,
-          '/register',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
+            .compose(
+              _dio.options,
+              '/register',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late RegistrationResponseModel _value;
     try {

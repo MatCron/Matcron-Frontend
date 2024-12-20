@@ -4,17 +4,15 @@ import 'package:matcron/config/config.dart';
 
 
 //Apis
-const String userAPIBaseURL = '${Config.devBaseUrl}/auth';
-const String mattressAPIBaseUrl = '${Config.devBaseUrl}/mattress';
-const String dashboardAPIBaseUrl = '${Config.devBaseUrl}/dashboard';
-const String organizationBaseUrl = '${Config.devBaseUrl}/organization';
-const String typeBaseUrl = '${Config.devBaseUrl}/type';
+const String userAPIBaseURL = '${Config.prodBaseUrl}/auth';
+const String mattressAPIBaseUrl = '${Config.prodBaseUrl}/mattress';
+const String dashboardAPIBaseUrl = '${Config.prodBaseUrl}/dashboard';
+const String organizationBaseUrl = '${Config.prodBaseUrl}/Organisation';
+const String typeBaseUrl = '${Config.prodBaseUrl}/type';
 
 // UI
 const double matcronTextFieldBorderRadius = 50;
 Color matcronPrimaryColor = HexColor("#50C2C9");
-
-
 
 
 

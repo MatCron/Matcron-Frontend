@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:matcron/app/features/auth/data/models/login_response.dart';
 import 'package:matcron/app/features/auth/data/models/registration_response.dart';
 import 'package:matcron/app/features/auth/data/models/user_db.dart';
-import 'package:matcron/config/config.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:retrofit/retrofit.dart';
 
