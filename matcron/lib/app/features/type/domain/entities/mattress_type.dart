@@ -16,6 +16,7 @@ class MattressTypeEntity {
     this.name,
     this.width,
     this.height,
+    this.length,
     this.composition,
     this.rotationInterval,
     this.recyclingDetails,

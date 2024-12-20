@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 
-
 class MattressTypeBottomDrawer extends StatelessWidget {
   final MattressTypeEntity mattress;
   final bool isEditable;
@@ -62,37 +61,68 @@ class MattressTypeBottomDrawer extends StatelessWidget {
                   controller: scrollController,
                   children: [
                     const SizedBox(height: 16),
-                    _buildTextField(
-                      label: "Mattress Name",
-                      initialValue: mattress.name ?? '',
-                      enabled: isEditable,
+                    // Mattress Name and Expected Lifespan in one row
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: _buildTextField(
+                            label: "Mattress Name",
+                            initialValue: mattress.name ?? '',
+                            enabled: isEditable,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildTextField(
+                            label: "Expected Lifespan (years)",
+                            initialValue: mattress.expectedLifespan?.toString() ?? '',
+                            enabled: isEditable,
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
-                    _buildTextField(
-                      label: "Width (cm)",
-                      initialValue: mattress.width?.toString() ?? '',
-                      enabled: isEditable,
-                      keyboardType: TextInputType.number,
+                    // Length, Width, Height in one row with Info Button
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: _buildTextField(
+                            label: "Width (cm)",
+                            initialValue: mattress.width?.toString() ?? '',
+                            enabled: isEditable,
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildTextField(
+                            label: "Length (cm)",
+                            initialValue: mattress.length?.toString() ?? '',
+                            enabled: isEditable,
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: _buildTextField(
+                            label: "Height (cm)",
+                            initialValue: mattress.height?.toString() ?? '',
+                            enabled: isEditable,
+                            keyboardType: TextInputType.number,
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 20),
-                    _buildTextField(
-                      label: "Length (cm)",
-                      initialValue: mattress.length?.toString() ?? '',
-                      enabled: isEditable,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                      label: "Height (cm)",
-                      initialValue: mattress.height?.toString() ?? '',
-                      enabled: isEditable,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
+                    // Composition with multiline input
                     _buildTextField(
                       label: "Composition",
                       initialValue: mattress.composition ?? '',
                       enabled: isEditable,
+                      maxLines: null, // Allow multiline
                     ),
                     const SizedBox(height: 20),
                     _buildTextField(
@@ -106,27 +136,6 @@ class MattressTypeBottomDrawer extends StatelessWidget {
                       label: "Recycling Details",
                       initialValue: mattress.recyclingDetails ?? '',
                       enabled: isEditable,
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                      label: "Expected Lifespan (years)",
-                      initialValue: mattress.expectedLifespan?.toString() ?? '',
-                      enabled: isEditable,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                      label: "Warranty Period (years)",
-                      initialValue: mattress.warrantyPeriod?.toString() ?? '',
-                      enabled: isEditable,
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                      label: "Stock",
-                      initialValue: mattress.stock?.toString() ?? '',
-                      enabled: isEditable,
-                      keyboardType: TextInputType.number,
                     ),
                   ],
                 ),
@@ -171,11 +180,13 @@ class MattressTypeBottomDrawer extends StatelessWidget {
     required String initialValue,
     bool enabled = true,
     TextInputType keyboardType = TextInputType.text,
+    int? maxLines,
   }) {
     return TextFormField(
       initialValue: initialValue,
       enabled: enabled,
       keyboardType: keyboardType,
+      maxLines: maxLines,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
+import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/constants/constants.dart';
 
@@ -10,21 +12,91 @@ class MattressTypePage extends StatefulWidget {
 }
 
 class MattressTypePageState extends State<MattressTypePage> {
-  // Hardcoded mattress types data
-  final List<Map<String, String>> mattressTypes = [
-    {"name": "Single", "inches": "80 x 60 x 10", "stock": "15"},
-    {"name": "Double", "inches": "75 x 54 x 8", "stock": "20"},
-    {"name": "King", "inches": "80 x 76 x 12", "stock": "8"},
-    {"name": "Queen", "inches": "74 x 38 x 6", "stock": "30"},
+  
+  final List<MattressTypeEntity> mattressTypes = [
+    MattressTypeEntity(
+      id: "1",
+      name: "Single",
+      width: 80,
+      length: 60,
+      height: 10,
+      composition: "Foam",
+      rotationInterval: 3,
+      recyclingDetails: "Recycle",
+      expectedLifespan: 5,
+      warrantyPeriod: 1,
+      stock: 15,
+    ),
+    MattressTypeEntity(
+      id: "2",
+      name: "Double",
+      width: 75,
+      length: 54,
+      height: 8,
+      composition: "Foam",
+      rotationInterval: 3,
+      recyclingDetails: "Recycle",
+      expectedLifespan: 5,
+      warrantyPeriod: 1,
+      stock: 20,
+    ),
+    MattressTypeEntity(
+      id: "3",
+      name: "King",
+      width: 80,
+      length: 76,
+      height: 12,
+      composition: "Foam",
+      rotationInterval: 3,
+      recyclingDetails: "Recycle",
+      expectedLifespan: 5,
+      warrantyPeriod: 1,
+      stock: 8,
+    ),
+    MattressTypeEntity(
+      id: "4",
+      name: "Queen",
+      width: 74,
+      length: 38,
+      height: 6,
+      composition: "Foam",
+      rotationInterval: 3,
+      recyclingDetails: "Recycle",
+      expectedLifespan: 5,
+      warrantyPeriod: 1,
+      stock: 30,
+    ),
   ];
 
+  
+
   // Filtered list for searching
-  List<Map<String, String>> filteredTypes = [];
+  List<MattressTypeEntity> filteredTypes = [];
 
   @override
   void initState() {
     super.initState();
     filteredTypes = mattressTypes; // Initialize with all data
+  }
+
+  @override
+  void dispose() {
+    
+    super.dispose();
+  }
+
+  void _openBottomDrawer(BuildContext context, {required MattressTypeEntity type, required bool isEditable} ) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // Allows the drawer to take up full height
+      backgroundColor: Colors.transparent, // Matches design
+      builder: (context) {
+        return MattressTypeBottomDrawer(
+          mattress: type,
+          isEditable: isEditable,
+        );
+      },
+    );
   }
 
   @override
@@ -41,9 +113,8 @@ class MattressTypePageState extends State<MattressTypePage> {
               onChanged: (query) {
                 setState(() {
                   filteredTypes = mattressTypes
-                      .where((type) => type["name"]!
-                          .toLowerCase()
-                          .contains(query.toLowerCase()))
+                      .where((type) =>
+                          type.name!.toLowerCase().contains(query.toLowerCase()))
                       .toList();
                 });
               },
@@ -163,9 +234,9 @@ class MattressTypePageState extends State<MattressTypePage> {
                     child: Row(
                       children: [
                         Expanded(
-                          flex: 2,
+                          flex: 1,
                           child: Text(
-                            type["name"]!,
+                            type.name!,
                             style: const TextStyle(
                               fontSize: 14.0,
                               fontWeight: FontWeight.bold,
@@ -173,16 +244,16 @@ class MattressTypePageState extends State<MattressTypePage> {
                           ),
                         ),
                         Expanded(
-                          flex: 3,
+                          flex: 2,
                           child: Center(
+                            //make it fit in one line without squishing
                             child: Text(
-                              "(${type["inches"]!})",
+                              "(${type.width?.toInt()} x ${type.length?.toInt()} x ${type.height?.toInt()})",
                               style: const TextStyle(
                                 fontSize: 14.0,
                                 fontStyle: FontStyle.italic,
                                 color: Colors.grey,
                               ),
-                              overflow: TextOverflow.ellipsis,
                               maxLines: 1, // Prevent wrapping in data
                             ),
                           ),
@@ -191,7 +262,7 @@ class MattressTypePageState extends State<MattressTypePage> {
                           flex: 1,
                           child: Center(
                             child: Text(
-                              type["stock"]!,
+                              type.stock.toString(),
                               style: const TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.bold,
@@ -203,6 +274,7 @@ class MattressTypePageState extends State<MattressTypePage> {
                         GestureDetector(
                           onTap: () {
                             // Edit functionality placeholder
+                            _openBottomDrawer(context, type: type, isEditable: true);
                           },
                           child: const CircleAvatar(
                             radius: 15,
