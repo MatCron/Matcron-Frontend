@@ -14,7 +14,7 @@ class _TypeApiService implements TypeApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://matcron.duckdns.org/api/type';
+    baseUrl ??= 'https://matcron.duckdns.org/api/mattresstype';
   }
 
   final Dio _dio;
@@ -24,10 +24,11 @@ class _TypeApiService implements TypeApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<List<TypeModel>>> getTypes() async {
+  Future<HttpResponse<List<TypeModel>>> getTypes({required String token}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<HttpResponse<List<TypeModel>>>(Options(
       method: 'GET',
@@ -36,7 +37,7 @@ class _TypeApiService implements TypeApiService {
     )
         .compose(
           _dio.options,
-          '/types',
+          '/summaries',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -45,12 +46,12 @@ class _TypeApiService implements TypeApiService {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch<List<dynamic>>(_options);
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late List<TypeModel> _value;
     try {
-      _value = _result.data!
+      _value = _result.data!['data']
           .map((dynamic i) => TypeModel.fromJson(i as Map<String, dynamic>))
-          .toList();
+          .toList().cast<TypeModel>();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -60,20 +61,21 @@ class _TypeApiService implements TypeApiService {
   }
 
   @override
-  Future<HttpResponse<void>> addType({required TypeModel model}) async {
+  Future<HttpResponse<TypeModel>> getType(
+      {required String token, required String id}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(model.toJson());
-    final _options = _setStreamType<HttpResponse<void>>(Options(
-      method: 'POST',
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<TypeModel>>(Options(
+      method: 'GET',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/types/add',
+          '/${id}',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -82,63 +84,16 @@ class _TypeApiService implements TypeApiService {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch<void>(_options);
-    final httpResponse = HttpResponse(null, _result);
-    return httpResponse;
-  }
-
-  @override
-  Future<HttpResponse<void>> editType({required TypeModel model}) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(model.toJson());
-    final _options = _setStreamType<HttpResponse<void>>(Options(
-      method: 'POST',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          '/types/edit',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
-    final _result = await _dio.fetch<void>(_options);
-    final httpResponse = HttpResponse(null, _result);
-    return httpResponse;
-  }
-
-  @override
-  Future<HttpResponse<void>> deleteType({required String id}) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = id;
-    final _options = _setStreamType<HttpResponse<void>>(Options(
-      method: 'POST',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          '/types/delete',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
-    final _result = await _dio.fetch<void>(_options);
-    final httpResponse = HttpResponse(null, _result);
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late TypeModel _value;
+    print(_result.data!['data']);
+    try {
+      _value = TypeModel.fromJson(_result.data!['data']);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    final httpResponse = HttpResponse(_value, _result);
     return httpResponse;
   }
 
