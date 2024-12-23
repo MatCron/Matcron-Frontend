@@ -86,7 +86,7 @@ class _TypeApiService implements TypeApiService {
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late TypeModel _value;
-    print(_result.data!['data']);
+    //print(_result.data!['data']);
     try {
       _value = TypeModel.fromJson(_result.data!['data']);
     } on Object catch (e, s) {
