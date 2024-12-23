@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_state.dart';
 import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/constants/constants.dart';
@@ -13,63 +16,7 @@ class MattressTypePage extends StatefulWidget {
 }
 
 class MattressTypePageState extends State<MattressTypePage> {
-  
-  final List<MattressTypeEntity> mattressTypes = [
-    MattressTypeEntity(
-      id: "1",
-      name: "Single",
-      width: 80,
-      length: 60,
-      height: 10,
-      composition: "Foam",
-      rotationInterval: 3,
-      recyclingDetails: "Recycle",
-      expectedLifespan: 5,
-      warrantyPeriod: 1,
-      stock: 15,
-    ),
-    MattressTypeEntity(
-      id: "2",
-      name: "Double",
-      width: 75,
-      length: 54,
-      height: 8,
-      composition: "Foam",
-      rotationInterval: 3,
-      recyclingDetails: "Recycle",
-      expectedLifespan: 5,
-      warrantyPeriod: 1,
-      stock: 20,
-    ),
-    MattressTypeEntity(
-      id: "3",
-      name: "King",
-      width: 80,
-      length: 76,
-      height: 12,
-      composition: "Foam",
-      rotationInterval: 3,
-      recyclingDetails: "Recycle",
-      expectedLifespan: 5,
-      warrantyPeriod: 1,
-      stock: 8,
-    ),
-    MattressTypeEntity(
-      id: "4",
-      name: "Queen",
-      width: 74,
-      length: 38,
-      height: 6,
-      composition: "Foam",
-      rotationInterval: 3,
-      recyclingDetails: "Recycle",
-      expectedLifespan: 5,
-      warrantyPeriod: 1,
-      stock: 30,
-    ),
-  ];
-
-  
+  final List<MattressTypeEntity> mattressTypes = [];
 
   // Filtered list for searching
   List<MattressTypeEntity> filteredTypes = [];
@@ -82,11 +29,11 @@ class MattressTypePageState extends State<MattressTypePage> {
 
   @override
   void dispose() {
-    
     super.dispose();
   }
 
-  void _openBottomDrawer(BuildContext context, {required MattressTypeEntity type, required bool isEditable} ) {
+  void _openBottomDrawer(BuildContext context,
+      {required MattressTypeEntity type, required bool isEditable}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // Allows the drawer to take up full height
@@ -95,6 +42,9 @@ class MattressTypePageState extends State<MattressTypePage> {
         return MattressTypeBottomDrawer(
           mattress: type,
           isEditable: isEditable,
+          onSave: (mattress) {
+            // Save functionality placeholder
+          },
         );
       },
     );
@@ -102,6 +52,33 @@ class MattressTypePageState extends State<MattressTypePage> {
 
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: BlocBuilder<RemoteTypeBloc, RemoteTypeState>(
+        builder: (_, state) {
+          if (state is RemoteTypesLoading) {
+            return Scaffold(
+              backgroundColor: HexColor("#E5E5E5"),
+              body: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+                ),
+              ),
+            );
+          }
+
+          if (state is RemoteTypesDone) {
+            mattressTypes.clear();
+            mattressTypes.addAll(state.types!);
+            return _buildDoneState(context);
+          }
+
+          return const SizedBox();
+        },
+      ),
+    );
+  }
+
+  Widget _buildDoneState(BuildContext context) {
     return Scaffold(
       body: Container(
         color: HexColor("#E5E5E5"),
@@ -114,8 +91,9 @@ class MattressTypePageState extends State<MattressTypePage> {
               onChanged: (query) {
                 setState(() {
                   filteredTypes = mattressTypes
-                      .where((type) =>
-                          type.name!.toLowerCase().contains(query.toLowerCase()))
+                      .where((type) => type.name!
+                          .toLowerCase()
+                          .contains(query.toLowerCase()))
                       .toList();
                 });
               },
@@ -139,9 +117,10 @@ class MattressTypePageState extends State<MattressTypePage> {
               alignment: Alignment.centerRight,
               child: ElevatedButton(
                 onPressed: () {
-                    Navigator.push(
+                  Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const AddMattressTypePage()),
+                    MaterialPageRoute(
+                        builder: (context) => const AddMattressTypePage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -192,7 +171,8 @@ class MattressTypePageState extends State<MattressTypePage> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 40), // More spacing between Inches and Stock
+                const SizedBox(
+                    width: 40), // More spacing between Inches and Stock
                 Expanded(
                   flex: 2,
                   child: Center(
@@ -213,7 +193,7 @@ class MattressTypePageState extends State<MattressTypePage> {
                 const Text("Delete", style: TextStyle(fontSize: 16)),
               ],
             ),
-            const SizedBox(height: 10.0),
+            const Divider(color: Colors.black26),
 
             // Table rows with mattress types
             Expanded(
@@ -221,91 +201,99 @@ class MattressTypePageState extends State<MattressTypePage> {
                 itemCount: filteredTypes.length,
                 itemBuilder: (context, index) {
                   final type = filteredTypes[index];
-                  return Container(
-                    margin: const EdgeInsets.symmetric(vertical: 6.0),
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 1,
-                          child: Text(
-                            type.name!,
-                            style: const TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold,
-                            ),
+                  return GestureDetector(
+                    onTap: () {
+                      // Open bottom drawer with mattress type details
+                      _openBottomDrawer(context, type: type, isEditable: false);
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 6.0),
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.0),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
                           ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Center(
-                            //make it fit in one line without squishing
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
                             child: Text(
-                              "(${type.width?.toInt()} x ${type.length?.toInt()} x ${type.height?.toInt()})",
-                              style: const TextStyle(
-                                fontSize: 14.0,
-                                fontStyle: FontStyle.italic,
-                                color: Colors.grey,
-                              ),
-                              maxLines: 1, // Prevent wrapping in data
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Center(
-                            child: Text(
-                              type.stock.toString(),
+                              type.name!,
                               style: const TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 20),
-                        GestureDetector(
-                          onTap: () {
-                            // Edit functionality placeholder
-                            _openBottomDrawer(context, type: type, isEditable: true);
-                          },
-                          child: const CircleAvatar(
-                            radius: 15,
-                            backgroundColor: Colors.blue,
-                            child: Icon(
-                              Icons.edit,
-                              color: Colors.white,
-                              size: 14.0,
+                          Expanded(
+                            flex: 2,
+                            child: Center(
+                              //make it fit in one line without squishing
+                              child: Text(
+                                "(${type.width?.toInt()} x ${type.length?.toInt()} x ${type.height?.toInt()})",
+                                style: const TextStyle(
+                                  fontSize: 14.0,
+                                  fontStyle: FontStyle.italic,
+                                  color: Colors.grey,
+                                ),
+                                maxLines: 1, // Prevent wrapping in data
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 30),
-                        GestureDetector(
-                          onTap: () {
-                            // Delete functionality placeholder
-                          },
-                          child: const CircleAvatar(
-                            radius: 15,
-                            backgroundColor: Colors.red,
-                            child: Icon(
-                              Icons.delete,
-                              color: Colors.white,
-                              size: 14.0,
+                          Expanded(
+                            flex: 1,
+                            child: Center(
+                              child: Text(
+                                type.stock.toString(),
+                                style: const TextStyle(
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 20),
+                          GestureDetector(
+                            onTap: () {
+                              // Edit functionality placeholder
+                              _openBottomDrawer(context,
+                                  type: type, isEditable: true);
+                            },
+                            child: const CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.blue,
+                              child: Icon(
+                                Icons.edit,
+                                color: Colors.white,
+                                size: 14.0,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 30),
+                          GestureDetector(
+                            onTap: () {
+                              // Delete functionality placeholder
+                            },
+                            child: const CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.red,
+                              child: Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                                size: 14.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
