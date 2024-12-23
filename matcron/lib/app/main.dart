@@ -6,8 +6,9 @@ import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
 import 'package:matcron/app/features/organization/presentation/pages/organizations.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/pages/type.dart';
-import 'package:matcron/app/features/recycling_info/presentation/bloc/pages/recycling_info.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/components/splash_screen.dart';
 import 'package:matcron/core/constants/constants.dart';
@@ -37,7 +38,8 @@ class MyApp extends StatelessWidget {
             HexColor("#E5E5E5"), // Set background color for the whole app
       ),
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
-      home: const MattressRecyclingInfoPage(),
+      //home: const MattressRecyclingInfoPage(),
+      home: const SplashScreenWrapper(),
     );
   }
 }
@@ -137,7 +139,10 @@ class _MyHomePageState extends State<MyHomePage> {
     final List<Widget> bottomBarPages = [
       DashboardPage(controller: _controller),
       MattressPage(),
-      MattressTypePage(),
+      BlocProvider(
+        create: (context) => sl<RemoteTypeBloc>()..add(GetTypesTiles()),
+        child: MattressTypePage(),
+      ),
       BlocProvider(
         create: (context) => sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
         child: OrganizationPage(),
