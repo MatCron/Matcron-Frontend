@@ -9,15 +9,10 @@ part 'type_api_service.g.dart';
 abstract class TypeApiService {
   factory TypeApiService(Dio dio) = _TypeApiService;
 
-  @GET('/types')
-  Future<HttpResponse<List<TypeModel>>> getTypes();
+  @GET('/summaries')
+  Future<HttpResponse<List<TypeModel>>> getTypes({@Header('Authorization') required String token});
 
-  @POST('/types/add')
-  Future<HttpResponse<void>> addType({@Body() required TypeModel model});
-
-  @POST('/types/edit')
-  Future<HttpResponse<void>> editType({@Body() required TypeModel model});
-
-  @POST('/types/delete')
-  Future<HttpResponse<void>> deleteType({@Body() required String id});
+  @GET('/{id}')
+  Future<HttpResponse<TypeModel>> getType(
+      {@Header('Authorization') required String token, @Path('id') required String id});
 }
