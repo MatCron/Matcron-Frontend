@@ -8,11 +8,13 @@ const String userAPIBaseURL = '${Config.prodBaseUrl}/auth';
 const String mattressAPIBaseUrl = '${Config.prodBaseUrl}/mattress';
 const String dashboardAPIBaseUrl = '${Config.prodBaseUrl}/dashboard';
 const String organizationBaseUrl = '${Config.prodBaseUrl}/Organisation';
-const String typeBaseUrl = '${Config.prodBaseUrl}/type';
+const String typeBaseUrl = '${Config.prodBaseUrl}/mattresstype';
+const String mattressBaseUrl = '${Config.prodBaseUrl}/mattress';
 
 // UI
 const double matcronTextFieldBorderRadius = 50;
 Color matcronPrimaryColor = HexColor("#50C2C9");
+const progressBarLabels = ["Select", "Tap RFID", "Finished"];
 
 
 
