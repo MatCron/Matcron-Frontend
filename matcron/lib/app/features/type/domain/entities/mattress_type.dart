@@ -9,7 +9,7 @@ class MattressTypeEntity {
   String? recyclingDetails;
   double? expectedLifespan;
   double? warrantyPeriod;
-  double? stock;
+  int? stock;
 
   MattressTypeEntity({
     this.id,
