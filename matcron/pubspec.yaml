@@ -69,3 +69,6 @@ flutter:
     - assets/images/single.png
     - assets/images/vs.png
     - assets/images/rfid.png
+    - assets/images/add.png
+    - assets/images/import.png
+    - assets/images/transfer.png

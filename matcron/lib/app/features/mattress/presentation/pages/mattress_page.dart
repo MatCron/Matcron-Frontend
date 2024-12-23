@@ -59,9 +59,10 @@ class MattressPageState extends State<MattressPage> {
                       vertical: 14,
                     ),
                   ),
-                  child: const Text(
-                    "+ Add Mattress",
-                    style: TextStyle(color: Colors.white),
+                  child: const Image(
+                    image: AssetImage('assets/images/add.png'),
+                    width: 20,
+                    height: 20,
                   ),
                 ),
                 const SizedBox(width: 10.0),
@@ -82,9 +83,10 @@ class MattressPageState extends State<MattressPage> {
                       vertical: 14,
                     ),
                   ),
-                  child: const Text(
-                    "Import Mattress",
-                    style: TextStyle(color: Colors.white),
+                  child: const Image(
+                    image: AssetImage('assets/images/import.png'),
+                    width: 20,
+                    height: 20,
                   ),
                 ),
               ],
