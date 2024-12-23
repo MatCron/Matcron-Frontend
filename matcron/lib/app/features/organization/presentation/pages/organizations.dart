@@ -114,6 +114,7 @@ class OrganizationPageState extends State<OrganizationPage> {
             );
           }
           if (state is RemoteOrganizationsDone) {
+            hardcodedOrgs.clear();
             hardcodedOrgs.addAll(state.organizations!);
             return _buildDoneState(context);
           }
@@ -224,6 +225,7 @@ class OrganizationPageState extends State<OrganizationPage> {
                   const Text("Delete", style: TextStyle(fontSize: 16)),
                 ],
               ),
+              const Divider(color: Colors.black26),
 
               // Display filtered organizations
               Expanded(

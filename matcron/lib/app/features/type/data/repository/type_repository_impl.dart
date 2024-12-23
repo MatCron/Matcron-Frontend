@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:matcron/app/features/type/data/data_sources/remote/type_api_service.dart';
-import 'package:matcron/app/features/type/data/models/type_model.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/domain/repositories/type_repository.dart';
+import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/data_state.dart';
 
 class TypeRepositoryImpl implements TypeRepository {
@@ -13,33 +13,10 @@ class TypeRepositoryImpl implements TypeRepository {
 
   @override
   Future<DataState<List<MattressTypeEntity>>> getTypes() async {
-    try {
-      final httpResponse = await _typeApiService.getTypes();
+    final String token = 'Bearer ${await AuthorizationService().getToken()}';
 
-      if (httpResponse.response.statusCode == HttpStatus.ok) {
-        final types = (httpResponse.data as List)
-            .map((type) => TypeModel.fromJson(type))
-            .toList();
-        return DataSuccess(types);
-      } else {
-        return DataFailed(
-          DioException(
-            error: httpResponse.response.statusMessage,
-            response: httpResponse.response,
-            type: DioExceptionType.badResponse,
-            requestOptions: httpResponse.response.requestOptions,
-          ),
-        );
-      }
-    } on DioException catch (e) {
-      return DataFailed(e);
-    }
-  }
-
-  @override
-  Future<DataState<void>> addType(MattressTypeEntity type) async {
     try {
-      final httpResponse = await _typeApiService.addType(model: TypeModel.fromEntity(type));
+      final httpResponse = await _typeApiService.getTypes(token: token);
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         return DataSuccess(httpResponse.data);
@@ -59,31 +36,11 @@ class TypeRepositoryImpl implements TypeRepository {
   }
 
   @override
-  Future<DataState<void>> editType(MattressTypeEntity type) async {
-    try {
-      final httpResponse = await _typeApiService.editType(model: TypeModel.fromEntity(type));
+  Future<DataState<MattressTypeEntity>> getType(String id) async {
+    final String token = 'Bearer ${await AuthorizationService().getToken()}';
 
-      if (httpResponse.response.statusCode == HttpStatus.ok) {
-        return DataSuccess(httpResponse.data);
-      } else {
-        return DataFailed(
-          DioException(
-            error: httpResponse.response.statusMessage,
-            response: httpResponse.response,
-            type: DioExceptionType.badResponse,
-            requestOptions: httpResponse.response.requestOptions,
-          ),
-        );
-      }
-    } on DioException catch (e) {
-      return DataFailed(e);
-    }
-  }
-
-  @override
-  Future<DataState<void>> deleteType(MattressTypeEntity type) async {
     try {
-      final httpResponse = await _typeApiService.deleteType(id: type.id!);
+      final httpResponse = await _typeApiService.getType(token: token, id: id);
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         return DataSuccess(httpResponse.data);

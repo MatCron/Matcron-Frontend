@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'type_api_service.dart';
+part of 'mattress_api_service.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,13 +8,13 @@ part of 'type_api_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations
 
-class _TypeApiService implements TypeApiService {
-  _TypeApiService(
+class _MattressApiService implements MattressApiService {
+  _MattressApiService(
     this._dio, {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://matcron.duckdns.org/api/mattresstype';
+    baseUrl ??= 'https://matcron.duckdns.org/api/mattress';
   }
 
   final Dio _dio;
@@ -24,20 +24,24 @@ class _TypeApiService implements TypeApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<List<TypeModel>>> getTypes({required String token}) async {
+  Future<HttpResponse<String>> generateRfid({
+    required MattressModel model,
+    required String token,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<HttpResponse<List<TypeModel>>>(Options(
-      method: 'GET',
+    final _data = <String, dynamic>{};
+    _data.addAll(model.toJson());
+    final _options = _setStreamType<HttpResponse<String>>(Options(
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/summaries',
+          '/',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -46,12 +50,10 @@ class _TypeApiService implements TypeApiService {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late List<TypeModel> _value;
+    final _result = await _dio.fetch<String>(_options);
+    late String _value;
     try {
-      _value = _result.data!['data']
-          .map((dynamic i) => TypeModel.fromJson(i as Map<String, dynamic>))
-          .toList().cast<TypeModel>();
+      _value = _result.data!;
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -61,14 +63,16 @@ class _TypeApiService implements TypeApiService {
   }
 
   @override
-  Future<HttpResponse<TypeModel>> getType(
-      {required String token, required String id}) async {
+  Future<HttpResponse<MattressModel>> getMattressById({
+    required String id,
+    required String token,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<HttpResponse<TypeModel>>(Options(
+    final _options = _setStreamType<HttpResponse<MattressModel>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -85,10 +89,47 @@ class _TypeApiService implements TypeApiService {
           baseUrl,
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late TypeModel _value;
-    //print(_result.data!['data']);
+    late MattressModel _value;
     try {
-      _value = TypeModel.fromJson(_result.data!['data']);
+      _value = MattressModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<List<MattressModel>>> getMattresses(
+      {required String token}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<List<MattressModel>>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<MattressModel> _value;
+    try {
+      _value = _result.data!
+          .map((dynamic i) => MattressModel.fromJson(i as Map<String, dynamic>))
+          .toList();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

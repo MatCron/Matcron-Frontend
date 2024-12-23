@@ -3,13 +3,13 @@ import 'package:matcron/app/features/type/domain/repositories/type_repository.da
 import 'package:matcron/core/resources/data_state.dart';
 import 'package:matcron/core/usecases/usecase.dart';
 
-class EditTypeUseCase implements Usecase<DataState<void>, MattressTypeEntity> {
+class GetTypeUsecase implements Usecase<DataState<MattressTypeEntity>, String> {
   final TypeRepository _typeRepository;
 
-  EditTypeUseCase(this._typeRepository);
+  GetTypeUsecase(this._typeRepository);
 
   @override
-  Future<DataState<void>> call({MattressTypeEntity? params}) {
-    return _typeRepository.editType(params!);
+  Future<DataState<MattressTypeEntity>> call({String? params}) {
+    return _typeRepository.getType(params!);
   }
 }
