@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:matcron/app/features/mattress/data/data_sources/remote/mattress_api_service.dart';
 import 'package:matcron/app/features/mattress/data/models/matress.dart';
@@ -18,7 +17,7 @@ class MattressRepositoryImpl implements MattressRepository {
     final String token = 'Bearer ${await AuthorizationService().getToken()}';
     try {
       final httpResponse = await _mattressApiService.generateRfid(model: MattressModel.fromEntity(entity) ,token: token);
-
+     
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         return DataSuccess(httpResponse.data);
       } else {
@@ -81,6 +80,7 @@ class MattressRepositoryImpl implements MattressRepository {
         }
 
       } on DioException catch(e) {
+       // print(e.requestOptions.headers);
         return DataFailed(e);
       }
     }

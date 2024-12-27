@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
+import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_event.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
 import 'package:matcron/app/features/organization/presentation/pages/organizations.dart';
@@ -138,7 +140,10 @@ class _MyHomePageState extends State<MyHomePage> {
     /// List of NAVBAR PAGES ONLY
     final List<Widget> bottomBarPages = [
       DashboardPage(controller: _controller),
-      MattressPage(),
+      BlocProvider(
+        create: (context) => sl<RemoteMattressBloc>()..add(GetAllMattresses()),
+        child: MattressPage(),
+      ),
       BlocProvider(
         create: (context) => sl<RemoteTypeBloc>()..add(GetTypesTiles()),
         child: MattressTypePage(),

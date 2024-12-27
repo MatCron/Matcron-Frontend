@@ -16,6 +16,17 @@ const double matcronTextFieldBorderRadius = 50;
 Color matcronPrimaryColor = HexColor("#50C2C9");
 const progressBarLabels = ["Select", "Tap RFID", "Finished"];
 
+//status
+const mattressStatus = [
+  {"Text": "In Production", "Color": Colors.orange},
+  {"Text": "In Inventory", "Color": Colors.green},
+  {"Text": "Assigned", "Color": Colors.green},
+  {"Text": "In Use", "Color": Colors.green},
+  {"Text": "Cleaning Required", "Color": Colors.red},
+  {"Text": "Decommissioned", "Color": Colors.red},
+];
+
+
 
 
 /// margin

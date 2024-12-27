@@ -3,11 +3,13 @@ class MattressEntity {
   String? mattressTypeId;
   String? batchNo;
   DateTime? productionDate;
+  String? location;
   String? orgId;
   String? epcCode;
   int? status;
   DateTime? lifeCyclesEnd;
   int? daysToRotate;
+  String? type;
 
   MattressEntity({
     this.uid,
@@ -19,6 +21,8 @@ class MattressEntity {
     this.status,
     this.lifeCyclesEnd,
     this.daysToRotate,
+    this.location,
+    this.type
   });
 
   MattressEntity copyWith({
@@ -30,6 +34,8 @@ class MattressEntity {
     int? status,
     DateTime? lifeCyclesEnd,
     int? daysToRotate,
+    String? location,
+    String? type
   }) {
     return MattressEntity(
       uid: uid,
@@ -41,6 +47,8 @@ class MattressEntity {
       status: status ?? this.status,
       lifeCyclesEnd: lifeCyclesEnd ?? this.lifeCyclesEnd,
       daysToRotate: daysToRotate ?? this.daysToRotate,
+      location: location ?? this.location,
+      type: type ?? this.type
     );
   }
 }

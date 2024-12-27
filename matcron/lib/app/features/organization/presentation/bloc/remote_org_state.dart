@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:matcron/app/features/organization/domain/entities/organization.dart';
 

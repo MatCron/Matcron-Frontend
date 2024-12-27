@@ -31,6 +31,7 @@ dependencies:
   crypto: ^3.0.6
   encrypt: ^5.0.3
   flutter_secure_storage: ^8.1.0
+  nfc_manager: ^3.5.0
 
 dev_dependencies:
   flutter_test:
@@ -72,3 +73,4 @@ flutter:
     - assets/images/add.png
     - assets/images/import.png
     - assets/images/transfer.png
+    - assets/images/assign_page.png

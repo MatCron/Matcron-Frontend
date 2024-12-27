@@ -12,6 +12,12 @@ import 'package:matcron/app/features/dashboard/data/repository/dashboard_reposit
 import 'package:matcron/app/features/dashboard/domain/repository/dashboard_repository.dart';
 import 'package:matcron/app/features/dashboard/domain/usecases/dashboard.dart';
 import 'package:matcron/app/features/dashboard/presentation/bloc/remote_dashboard_bloc.dart';
+import 'package:matcron/app/features/mattress/data/data_sources/remote/mattress_api_service.dart';
+import 'package:matcron/app/features/mattress/data/repository/mattress_repository_impl.dart';
+import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
+import 'package:matcron/app/features/mattress/domain/usecases/generate_rfid_.dart';
+import 'package:matcron/app/features/mattress/domain/usecases/get_all_mattresses.dart';
+import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
 import 'package:matcron/app/features/organization/data/data_sources/remote/organization_api_service.dart';
 import 'package:matcron/app/features/organization/data/repository/organization_repository_impl.dart';
 import 'package:matcron/app/features/organization/domain/repositories/organization_repository.dart';
@@ -28,7 +34,6 @@ import 'package:matcron/app/features/type/domain/usecases/get_types.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/encryption.dart';
-import 'package:matcron/core/resources/nfc_service.dart';
 
 final sl = GetIt.instance;
 
@@ -44,10 +49,6 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<AuthorizationService>(
     AuthorizationService()
-  );
-
-  sl.registerSingleton<NfcService>(
-    NfcService()
   );
 
   sl.registerSingleton<AuthApiService>(
@@ -66,6 +67,12 @@ Future<void> initializeDependencies() async {
     TypeApiService(sl())
   );
 
+  sl.registerSingleton<MattressApiService>(
+    MattressApiService(sl())
+  );  
+
+  // Repositories
+
   sl.registerSingleton<AuthRepository>(
     AuthRepositoryImpl(sl(),sl())
   );
@@ -80,6 +87,10 @@ Future<void> initializeDependencies() async {
 
    sl.registerSingleton<TypeRepository>(
     TypeRepositoryImpl(sl())
+  );
+
+  sl.registerSingleton<MattressRepository>(
+    MattressRepositoryImpl(sl())
   );
 
   // UseCases
@@ -118,6 +129,14 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetTypesUseCase>(
     GetTypesUseCase(sl())
   );
+
+  sl.registerSingleton<GetAllMattressesUsecase>(
+    GetAllMattressesUsecase(sl())
+  );
+
+  sl.registerSingleton<GenerateRfidUsecase>(
+    GenerateRfidUsecase(sl())
+  );
   
   // Blocs
   sl.registerFactory<RemoteRegistrationBloc>(
@@ -138,5 +157,9 @@ Future<void> initializeDependencies() async {
 
   sl.registerFactory<RemoteTypeBloc>(
     () => RemoteTypeBloc(sl())
+  );
+
+  sl.registerFactory(
+    () => RemoteMattressBloc(sl(), sl(), sl())
   );
 }
