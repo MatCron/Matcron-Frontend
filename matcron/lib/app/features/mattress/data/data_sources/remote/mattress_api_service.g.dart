@@ -50,10 +50,10 @@ class _MattressApiService implements MattressApiService {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch<String>(_options);
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late String _value;
     try {
-      _value = _result.data!;
+      _value = _result.data!['data']['uid'];
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -124,12 +124,13 @@ class _MattressApiService implements MattressApiService {
           _dio.options.baseUrl,
           baseUrl,
         )));
-    final _result = await _dio.fetch<List<dynamic>>(_options);
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late List<MattressModel> _value;
     try {
-      _value = _result.data!
-          .map((dynamic i) => MattressModel.fromJson(i as Map<String, dynamic>))
-          .toList();
+      _value = _result.data!['data']
+          .map((dynamic i) =>
+              MattressModel.fromJson(i as Map<String, dynamic>))
+          .toList().cast<MattressModel>();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;

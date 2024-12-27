@@ -11,6 +11,8 @@ class MattressModel extends MattressEntity {
     super.status,
     super.lifeCyclesEnd,
     super.daysToRotate,
+    super.location,
+    super.type,
   });
 
   factory MattressModel.fromJson(Map<String, dynamic> map) {
@@ -18,12 +20,18 @@ class MattressModel extends MattressEntity {
       uid: map['uid'] ?? "",
       mattressTypeId: map['mattressTypeId'] ?? "",
       batchNo: map['batchNo'] ?? "",
-      productionDate: map['productionDate'] ?? "",
+      productionDate: map['productionDate'] != null
+          ? DateTime.parse(map['productionDate'])
+          : null,
       orgId: map['orgId'] ?? "",
       epcCode: map['epcCode'] ?? "",
       status: map['status'] ?? "",
-      lifeCyclesEnd: map['lifeCyclesEnd'] ?? "",
+      lifeCyclesEnd: map['lifeCyclesEnd'] != null
+          ? DateTime.parse(map['lifeCyclesEnd'])
+          : null,
       daysToRotate: map['daysToRotate'] ?? "",
+      location: map['location'] ?? "",
+      type: map['type'] ?? "",
     );
   }
 
@@ -32,12 +40,17 @@ class MattressModel extends MattressEntity {
       'uid': uid,
       'mattressTypeId': mattressTypeId,
       'batchNo': batchNo,
-      'productionDate': productionDate,
+      'productionDate': productionDate != null
+          ? "${productionDate!.year.toString().padLeft(4, '0')}-${productionDate!.month.toString().padLeft(2, '0')}-${productionDate!.day.toString().padLeft(2, '0')}"
+          : null,
       'orgId': orgId,
       'epcCode': epcCode,
       'status': status,
-      'lifeCyclesEnd': lifeCyclesEnd,
+      'lifeCyclesEnd': lifeCyclesEnd != null
+          ? "${lifeCyclesEnd!.year.toString().padLeft(4, '0')}-${lifeCyclesEnd!.month.toString().padLeft(2, '0')}-${lifeCyclesEnd!.day.toString().padLeft(2, '0')}"
+          : null,
       'daysToRotate': daysToRotate,
+      'location': location,
     };
   }
 
@@ -52,6 +65,7 @@ class MattressModel extends MattressEntity {
       status: entity.status,
       lifeCyclesEnd: entity.lifeCyclesEnd,
       daysToRotate: entity.daysToRotate,
+      location: entity.location,
     );
   }
 }
