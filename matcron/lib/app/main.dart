@@ -3,7 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
+import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_event.dart';
+import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
+import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
 import 'package:matcron/app/features/organization/presentation/pages/organizations.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/pages/type.dart';
 //import 'package:matcron/app/features/recycling_info/presentation/bloc/pages/recycling_info.dart';
 import 'package:matcron/app/features/LBH_info/presentation/bloc/pages/LBH_info.dart';
@@ -36,7 +42,9 @@ class MyApp extends StatelessWidget {
             HexColor("#E5E5E5"), // Set background color for the whole app
       ),
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
-      home: const MattressDimensionsPage(),
+
+      //home: const MattressRecyclingInfoPage(),
+      home: const SplashScreenWrapper(),
     );
   }
 }
@@ -135,9 +143,18 @@ class _MyHomePageState extends State<MyHomePage> {
     /// List of NAVBAR PAGES ONLY
     final List<Widget> bottomBarPages = [
       DashboardPage(controller: _controller),
-      MattressPage(),
-      MattressTypePage(),
-      OrganizationPage(),
+      BlocProvider(
+        create: (context) => sl<RemoteMattressBloc>()..add(GetAllMattresses()),
+        child: MattressPage(),
+      ),
+      BlocProvider(
+        create: (context) => sl<RemoteTypeBloc>()..add(GetTypesTiles()),
+        child: MattressTypePage(),
+      ),
+      BlocProvider(
+        create: (context) => sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
+        child: OrganizationPage(),
+      ),
     ];
 
     /// Page titles based on the index
@@ -158,8 +175,8 @@ class _MyHomePageState extends State<MyHomePage> {
         body: Column(
           children: [
             Header(
-                title:
-                    pageTitles[_selectedPageIndex]), // Pass the dynamic title
+              title: pageTitles[_selectedPageIndex]
+            ), // Pass the dynamic title
             Expanded(
               child: PageView(
                 controller: _pageController,

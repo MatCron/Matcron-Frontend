@@ -4,6 +4,7 @@ class TypeModel extends MattressTypeEntity {
   TypeModel({
     super.id,
     super.name,
+    super.length,
     super.width,
     super.height,
     super.composition,
@@ -18,13 +19,14 @@ class TypeModel extends MattressTypeEntity {
     return TypeModel(
       id: map['id'] ?? "",
       name: map['name'] ?? "",
-      width: map['width'] ?? 0.0,
-      height: map['height'] ?? 0.0,
+      length: (map['length'] is int ? (map['length'] as int).toDouble() : map['length']) ?? 0.0,
+      width: (map['width'] is int ? (map['width'] as int).toDouble() : map['width']) ?? 0.0,
+      height: (map['height'] is int ? (map['height'] as int).toDouble() : map['height']) ?? 0.0,
       composition: map['composition'] ?? "",
-      rotationInterval: map['rotationInterval'] ?? 0,
+      rotationInterval: (map['rotationInterval'] is int ? (map['rotationInterval'] as int).toDouble() : map['rotationInterval']) ?? 0.0,
       recyclingDetails: map['recyclingDetails'] ?? "",
-      expectedLifespan: map['expectedLifespan'] ?? 0,
-      warrantyPeriod: map['warrantyPeriod'] ?? 0,
+      expectedLifespan: (map['expectedLifespan'] is int ? (map['expectedLifespan'] as int).toDouble() : map['expectedLifespan']) ?? 0.0,
+      warrantyPeriod: (map['warrantyPeriod'] is int ? (map['warrantyPeriod'] as int).toDouble() : map['warrantyPeriod']) ?? 0.0,
       stock: map['stock'] ?? 0,
     );
   }
@@ -33,6 +35,7 @@ class TypeModel extends MattressTypeEntity {
     return {
       'id': id,
       'name': name,
+      'length': length,
       'width': width,
       'height': height,
       'composition': composition,
@@ -48,6 +51,7 @@ class TypeModel extends MattressTypeEntity {
     return TypeModel(
       id: entity.id,
       name: entity.name,
+      length: entity.length,
       width: entity.width,
       height: entity.height,
       composition: entity.composition,

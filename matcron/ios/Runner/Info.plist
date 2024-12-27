@@ -45,5 +45,16 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+    <!-- NFC Permissions -->
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>processing</string>
+    </array>
+    
+    <key>NFCReaderUsageDescription</key>
+    <string>We need NFC permission to scan NFC tags.</string>
+
 </dict>
 </plist>

@@ -31,6 +31,7 @@ dependencies:
   crypto: ^3.0.6
   encrypt: ^5.0.3
   flutter_secure_storage: ^8.1.0
+  nfc_manager: ^3.5.0
 
 dev_dependencies:
   flutter_test:
@@ -66,3 +67,12 @@ flutter:
     - assets/images/fabric-roll.jpg
     - assets/images/mattress1.jpg
     - assets/images/bedmeasuring.png
+    - assets/images/box.png
+    - assets/images/group.png
+    - assets/images/single.png
+    - assets/images/vs.png
+    - assets/images/rfid.png
+    - assets/images/add.png
+    - assets/images/import.png
+    - assets/images/transfer.png
+    - assets/images/assign_page.png

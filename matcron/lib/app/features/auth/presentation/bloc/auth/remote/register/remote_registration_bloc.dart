@@ -26,7 +26,7 @@ class RemoteRegistrationBloc extends Bloc<RemoteAuthEvent, RemoteAuthState> {
       }
 
       if (dataState is DataFailed) {
-        emit(RemoteAuthException(dataState.error!));
+        emit(RemoteAuthInitial(dataState.error!.message, 'CONFIRMPASSWORD'));
       }
     }
   }

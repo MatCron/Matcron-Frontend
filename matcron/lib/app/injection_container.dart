@@ -12,14 +12,26 @@ import 'package:matcron/app/features/dashboard/data/repository/dashboard_reposit
 import 'package:matcron/app/features/dashboard/domain/repository/dashboard_repository.dart';
 import 'package:matcron/app/features/dashboard/domain/usecases/dashboard.dart';
 import 'package:matcron/app/features/dashboard/presentation/bloc/remote_dashboard_bloc.dart';
+import 'package:matcron/app/features/mattress/data/data_sources/remote/mattress_api_service.dart';
+import 'package:matcron/app/features/mattress/data/repository/mattress_repository_impl.dart';
+import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
+import 'package:matcron/app/features/mattress/domain/usecases/generate_rfid_.dart';
+import 'package:matcron/app/features/mattress/domain/usecases/get_all_mattresses.dart';
+import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
 import 'package:matcron/app/features/organization/data/data_sources/remote/organization_api_service.dart';
 import 'package:matcron/app/features/organization/data/repository/organization_repository_impl.dart';
 import 'package:matcron/app/features/organization/domain/repositories/organization_repository.dart';
+import 'package:matcron/app/features/organization/domain/usecases/add_organization.dart';
+import 'package:matcron/app/features/organization/domain/usecases/delete_organization.dart';
+import 'package:matcron/app/features/organization/domain/usecases/get_organization.dart';
 import 'package:matcron/app/features/organization/domain/usecases/get_organizations.dart';
+import 'package:matcron/app/features/organization/domain/usecases/update_organization.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/app/features/type/data/data_sources/remote/type_api_service.dart';
 import 'package:matcron/app/features/type/data/repository/type_repository_impl.dart';
 import 'package:matcron/app/features/type/domain/repositories/type_repository.dart';
+import 'package:matcron/app/features/type/domain/usecases/get_types.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/encryption.dart';
 
@@ -55,6 +67,12 @@ Future<void> initializeDependencies() async {
     TypeApiService(sl())
   );
 
+  sl.registerSingleton<MattressApiService>(
+    MattressApiService(sl())
+  );  
+
+  // Repositories
+
   sl.registerSingleton<AuthRepository>(
     AuthRepositoryImpl(sl(),sl())
   );
@@ -71,6 +89,10 @@ Future<void> initializeDependencies() async {
     TypeRepositoryImpl(sl())
   );
 
+  sl.registerSingleton<MattressRepository>(
+    MattressRepositoryImpl(sl())
+  );
+
   // UseCases
   sl.registerSingleton<GetRegisterUseCase>(
     GetRegisterUseCase(sl())
@@ -84,8 +106,36 @@ Future<void> initializeDependencies() async {
     GetOrganizationsUseCase(sl())
   );
 
+  sl.registerSingleton<GetOrganizationUseCase>(
+    GetOrganizationUseCase(sl())
+  );
+
+  sl.registerSingleton<AddOrganizationUseCase>(
+    AddOrganizationUseCase(sl())
+  );
+
+  sl.registerSingleton<UpdateOrganizationUseCase>(
+    UpdateOrganizationUseCase(sl())
+  );
+
+  sl.registerSingleton<DeleteOrganizationUseCase>(
+    DeleteOrganizationUseCase(sl())
+  );
+
   sl.registerSingleton<GetDashboardInfoUseCase>(
     GetDashboardInfoUseCase(sl())
+  );
+
+  sl.registerSingleton<GetTypesUseCase>(
+    GetTypesUseCase(sl())
+  );
+
+  sl.registerSingleton<GetAllMattressesUsecase>(
+    GetAllMattressesUsecase(sl())
+  );
+
+  sl.registerSingleton<GenerateRfidUsecase>(
+    GenerateRfidUsecase(sl())
   );
   
   // Blocs
@@ -102,6 +152,14 @@ Future<void> initializeDependencies() async {
   );
 
   sl.registerFactory<RemoteOrganizationBloc>(
-    () => RemoteOrganizationBloc(sl())
+    () => RemoteOrganizationBloc(sl(), sl(), sl(), sl())
+  );
+
+  sl.registerFactory<RemoteTypeBloc>(
+    () => RemoteTypeBloc(sl())
+  );
+
+  sl.registerFactory(
+    () => RemoteMattressBloc(sl(), sl(), sl())
   );
 }

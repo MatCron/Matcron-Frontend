@@ -9,13 +9,14 @@ class MattressTypeEntity {
   String? recyclingDetails;
   double? expectedLifespan;
   double? warrantyPeriod;
-  double? stock;
+  int? stock;
 
   MattressTypeEntity({
     this.id,
     this.name,
     this.width,
     this.height,
+    this.length,
     this.composition,
     this.rotationInterval,
     this.recyclingDetails,

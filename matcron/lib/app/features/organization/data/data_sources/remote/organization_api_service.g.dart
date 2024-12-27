@@ -14,7 +14,7 @@ class _OrganizationApiService implements OrganizationApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'http://192.168.1.17:8080/api/organization';
+    baseUrl ??= 'https://matcron.duckdns.org/api/Organisation';
   }
 
   final Dio _dio;
@@ -24,10 +24,12 @@ class _OrganizationApiService implements OrganizationApiService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<List<OrganizationModel>>> getOrganizations() async {
+  Future<HttpResponse<List<OrganizationModel>>> getOrganizations(
+      {required String token}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
     final _options =
         _setStreamType<HttpResponse<List<OrganizationModel>>>(Options(
@@ -37,7 +39,7 @@ class _OrganizationApiService implements OrganizationApiService {
     )
             .compose(
               _dio.options,
-              '/organizations',
+              '/',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -46,13 +48,13 @@ class _OrganizationApiService implements OrganizationApiService {
               _dio.options.baseUrl,
               baseUrl,
             )));
-    final _result = await _dio.fetch<List<dynamic>>(_options);
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late List<OrganizationModel> _value;
     try {
-      _value = _result.data!
+      _value = _result.data!['data']
           .map((dynamic i) =>
               OrganizationModel.fromJson(i as Map<String, dynamic>))
-          .toList();
+          .toList().cast<OrganizationModel>();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -62,11 +64,52 @@ class _OrganizationApiService implements OrganizationApiService {
   }
 
   @override
-  Future<HttpResponse<void>> addOrganization(
-      {required OrganizationModel model}) async {
+  Future<HttpResponse<OrganizationModel>> getOrganization({
+    required String id,
+    required String token,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<HttpResponse<OrganizationModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late OrganizationModel _value;
+    try {
+      _value = OrganizationModel.fromJson(_result.data!['data']);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<void>> addOrganization({
+    required OrganizationModel model,
+    required String token,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     _data.addAll(model.toJson());
     final _options = _setStreamType<HttpResponse<void>>(Options(
@@ -76,7 +119,7 @@ class _OrganizationApiService implements OrganizationApiService {
     )
         .compose(
           _dio.options,
-          '/organizations/add',
+          '/add',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -91,19 +134,56 @@ class _OrganizationApiService implements OrganizationApiService {
   }
 
   @override
-  Future<HttpResponse<void>> delete({required String id}) async {
+  Future<HttpResponse<void>> update({
+    required String id,
+    required OrganizationModel model,
+    required String token,
+  }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = id;
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(model.toJson());
     final _options = _setStreamType<HttpResponse<void>>(Options(
-      method: 'POST',
+      method: 'PUT',
       headers: _headers,
       extra: _extra,
     )
         .compose(
           _dio.options,
-          '/organizations/delete',
+          '/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<void>(_options);
+    final httpResponse = HttpResponse(null, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<void>> delete({
+    required String id,
+    required String token,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = id;
+    final _options = _setStreamType<HttpResponse<void>>(Options(
+      method: 'DELETE',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/${id}',
           queryParameters: queryParameters,
           data: _data,
         )

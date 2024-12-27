@@ -4,16 +4,27 @@ import 'package:matcron/config/config.dart';
 
 
 //Apis
-const String userAPIBaseURL = '${Config.devBaseUrl}/auth';
-const String mattressAPIBaseUrl = '${Config.devBaseUrl}/mattress';
-const String dashboardAPIBaseUrl = '${Config.devBaseUrl}/dashboard';
-const String organizationBaseUrl = '${Config.devBaseUrl}/organization';
-const String typeBaseUrl = '${Config.devBaseUrl}/type';
+const String userAPIBaseURL = '${Config.prodBaseUrl}/auth';
+const String mattressAPIBaseUrl = '${Config.prodBaseUrl}/mattress';
+const String dashboardAPIBaseUrl = '${Config.prodBaseUrl}/dashboard';
+const String organizationBaseUrl = '${Config.prodBaseUrl}/Organisation';
+const String typeBaseUrl = '${Config.prodBaseUrl}/mattresstype';
+const String mattressBaseUrl = '${Config.prodBaseUrl}/mattress';
 
 // UI
 const double matcronTextFieldBorderRadius = 50;
 Color matcronPrimaryColor = HexColor("#50C2C9");
+const progressBarLabels = ["Select", "Tap RFID", "Finished"];
 
+//status
+const mattressStatus = [
+  {"Text": "In Production", "Color": Colors.orange},
+  {"Text": "In Inventory", "Color": Colors.green},
+  {"Text": "Assigned", "Color": Colors.green},
+  {"Text": "In Use", "Color": Colors.green},
+  {"Text": "Cleaning Required", "Color": Colors.red},
+  {"Text": "Decommissioned", "Color": Colors.red},
+];
 
 
 
