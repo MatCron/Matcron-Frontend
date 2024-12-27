@@ -98,7 +98,7 @@ class MattressPageState extends State<MattressPage> {
               if (selectedMattresses.isNotEmpty)
                 ElevatedButton(
                   onPressed: () {
-                    print("Transfer Out: ${selectedMattresses.length} items");
+                    //print("Transfer Out: ${selectedMattresses.length} items");
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: matcronPrimaryColor,
