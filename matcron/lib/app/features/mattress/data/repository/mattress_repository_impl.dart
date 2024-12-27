@@ -80,7 +80,7 @@ class MattressRepositoryImpl implements MattressRepository {
         }
 
       } on DioException catch(e) {
-        print(e.requestOptions.headers);
+       // print(e.requestOptions.headers);
         return DataFailed(e);
       }
     }
