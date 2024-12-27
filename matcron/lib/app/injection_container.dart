@@ -34,7 +34,6 @@ import 'package:matcron/app/features/type/domain/usecases/get_types.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/encryption.dart';
-import 'package:matcron/core/resources/nfc_service.dart';
 
 final sl = GetIt.instance;
 
@@ -50,10 +49,6 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<AuthorizationService>(
     AuthorizationService()
-  );
-
-  sl.registerSingleton<NfcService>(
-    NfcService()
   );
 
   sl.registerSingleton<AuthApiService>(
