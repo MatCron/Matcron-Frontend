@@ -220,23 +220,24 @@ Widget _buildBody(BuildContext context) {
       }
 
       if (state is RemoteAuthDone) {
-        
-        SchedulerBinding.instance.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text("Welcome Back, ${state.user?.firstName} ${state.user?.lastName}!"),
-              duration: const Duration(seconds: 2),
-            )
-          );
+  SchedulerBinding.instance.addPostFrameCallback((_) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text("Welcome Back, ${state.user?.firstName} ${state.user?.lastName}!"),
+        duration: const Duration(seconds: 2),
+      ),
+    );
 
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const MyHomePage()
-            )
-          );
-        });
-      }
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MyHomePage(),
+      ),
+      (Route<dynamic> route) => false,
+    );
+  });
+}
+
 
       if (state is RemoteAuthException) {
         return Center(
