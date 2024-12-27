@@ -11,8 +11,6 @@ import 'package:matcron/app/features/organization/presentation/pages/organizatio
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/pages/type.dart';
-//import 'package:matcron/app/features/recycling_info/presentation/bloc/pages/recycling_info.dart';
-import 'package:matcron/app/features/LBH_info/presentation/bloc/pages/LBH_info.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/components/splash_screen.dart';
 import 'package:matcron/core/constants/constants.dart';
