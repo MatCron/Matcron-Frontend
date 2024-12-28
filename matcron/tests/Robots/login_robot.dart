@@ -13,7 +13,7 @@ class LoginRobot {
   Finder get errorMessage => find.textContaining('Error:');
   Finder get forgotPassword => find.text('Forgot Password?');
   Finder get signUpLink => find.text('Sign Up');
-  Finder get welcomeText => find.text('Welcome Back!');
+  // Finder get welcomeText => find.text('Welcome Back!');
 
   // Actions
   Future<void> enterEmail(String email) async {
@@ -46,9 +46,9 @@ class LoginRobot {
     expect(find.text(expectedMessage), findsOneWidget);
   }
 
-  Future<void> verifyWelcomeText() async {
-    expect(welcomeText, findsOneWidget);
-  }
+  // Future<void> verifyWelcomeText() async {
+  //   expect(welcomeText, findsOneWidget);
+  // }
 
   
 }

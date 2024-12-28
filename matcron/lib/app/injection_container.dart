@@ -101,7 +101,10 @@ Future<void> initializeDependencies() async {
   sl.registerSingleton<GetLoginUseCase>(
     GetLoginUseCase(sl())
   );
-
+  
+sl.registerFactory<RemoteLoginBloc>(
+  () => RemoteLoginBloc(sl()),
+);
   sl.registerSingleton<GetOrganizationsUseCase>(
     GetOrganizationsUseCase(sl())
   );
@@ -155,9 +158,7 @@ Future<void> initializeDependencies() async {
     () => RemoteOrganizationBloc(sl(), sl(), sl(), sl())
   );
 
-  sl.registerFactory<RemoteTypeBloc>(
-    () => RemoteTypeBloc(sl())
-  );
+
 
   sl.registerFactory(
     () => RemoteMattressBloc(sl(), sl(), sl())
