@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' ;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
@@ -9,6 +9,7 @@ import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/constants/constants.dart';
+import  'package:matcron/core/components/search_bar/search_bar.dart' as custom;
 
 class MattressPage extends StatefulWidget {
   const MattressPage({super.key});
@@ -63,8 +64,8 @@ class MattressPageState extends State<MattressPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Search bar
-          TextField(
-            onChanged: (query) {
+          custom.SearchBar(
+            onSearchChanged: (query) {
               setState(() {
                 filteredMattresses = mattresses
                     .where((mattress) =>
@@ -77,19 +78,8 @@ class MattressPageState extends State<MattressPage> {
                     .toList();
               });
             },
-            decoration: InputDecoration(
-              hintText: "Search mattresses",
-              hintStyle: const TextStyle(color: Colors.grey),
-              prefixIcon: const Icon(Icons.search, color: Colors.grey),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(30.0),
-                borderSide: BorderSide.none,
-              ),
-              filled: true,
-              fillColor: Colors.white,
-              contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
-            ),
           ),
+          
           const SizedBox(height: 10.0),
           // Buttons
           Row(
