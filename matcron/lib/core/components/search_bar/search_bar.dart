@@ -41,17 +41,17 @@ class SearchBar extends StatelessWidget {
           // Scan Icon
           IconButton(
             icon: Image.asset(
-              'assets/icons/scan_icon.png', // Path to your scan icon asset
-              width: 24,
-              height: 24,
-              errorBuilder: (context, error, stackTrace) {
-                // Fallback if the asset is not found
-                return const Icon(
-                  Icons.qr_code_scanner,
-                  size: 24,
-                  color: Colors.grey,
-                );
-              },
+              'assets/images/scan_icon.png', // Path to your scan icon asset 
+              height: 36,
+              width:50,
+              // errorBuilder: (context, error, stackTrace) {
+              //   // Fallback if the asset is not found
+              //   return const Icon(
+              //     Icons.qr_code_scanner,
+              //     size: 24,
+              //     color: Colors.grey,
+              //   );
+              // },
             ),
             onPressed: () {
               // Navigate to ScanImportPage with a "typeOfImport" parameter
