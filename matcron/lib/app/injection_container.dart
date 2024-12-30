@@ -34,6 +34,7 @@ import 'package:matcron/app/features/type/domain/usecases/get_types.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/encryption.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -146,9 +147,12 @@ sl.registerFactory<RemoteLoginBloc>(
     () => RemoteRegistrationBloc(sl())
   );
 
-  sl.registerFactory<RemoteLoginBloc>(
-    () => RemoteLoginBloc(sl())
-  );
+  // sl.registerFactory<RemoteLoginBloc>(
+  //   () => RemoteLoginBloc(sl())
+  // );
+  sl.registerFactory<RemoteTypeBloc>(
+  () => RemoteTypeBloc(sl()),
+);
 
   sl.registerFactory<RemoteDashboardBloc>(
     () => RemoteDashboardBloc(sl())

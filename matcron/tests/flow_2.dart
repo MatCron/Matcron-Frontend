@@ -36,6 +36,7 @@ void main() async {
       await loginRobot.enterEmail('matcron@gmail.com');
       await loginRobot.enterPassword('password');
       await loginRobot.tapSignInButton();
+     
 
       // Verify navigation to MattressTypePage
       await mattressRobot.tapOnType();
@@ -51,16 +52,16 @@ void main() async {
       mattressTypeFormRobot = AddMattressTypeFormRobot(tester);
 
       // Launch the app
-      await tester.pumpWidget(MyApp());
-      await tester.pumpAndSettle();
+      // await tester.pumpWidget(MyApp());
+      // await tester.pumpAndSettle();
 
-      // Perform login
-      await loginRobot.enterEmail('user@example.com');
-      await loginRobot.enterPassword('correctpassword');
-      await loginRobot.tapSignInButton();
+      // // Perform login
+      // await loginRobot.enterEmail('user@example.com');
+      // await loginRobot.enterPassword('correctpassword');
+      // await loginRobot.tapSignInButton();
 
       // Verify navigation to MattressTypePage
-      await tester.pumpAndSettle();
+      // await tester.pumpAndSettle();
 
       // Search for a specific mattress type
       await mattressRobot.tapOnType();

@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
+import 'package:matcron/core/resources/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:matcron/app/main.dart';
 
 class MattressTypeRobot {
   final WidgetTester tester;
@@ -9,7 +11,7 @@ class MattressTypeRobot {
   // Locators
   Finder get searchField => find.byType(TextField);
   Finder get addTypeButton => find.text('+ Add Type');
-  Finder get typeTab => find.text('Type');
+  Finder get typeTab => find.byWidgetPredicate((widget) => widget is BottomBarItem && widget.itemLabel=='Type',);
   Finder get editIcons => find.byIcon(Icons.edit);
   Finder get deleteIcons => find.byIcon(Icons.delete);
   Finder get typeFormButton => find.text('Type Form');
@@ -61,3 +63,5 @@ class MattressTypeRobot {
     await tester.pumpAndSettle();     // Wait for animations to complete
   }
 }
+
+

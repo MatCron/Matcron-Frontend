@@ -16,9 +16,46 @@ void main() async {
     print('Error during dependency initialization: $e');
     return;
   }
-  group("mattress page and sub page testing ", (){
-    late LoginRobot loginRobot;
+  group("mattress page and sub page testing ", () {
+     late LoginRobot loginRobot;
     late MattressTypeRobot mattressRobot;
+    late AddMattressTypeFormRobot mattressTypeFormRobot;
 
-  })
+
+    testWidgets('Enter the navigate to matress type page and go to tyoe form  and enter values', (tester) async {
+      // Initialize robots
+      loginRobot = LoginRobot(tester);
+      mattressRobot = MattressTypeRobot(tester);
+      mattressTypeFormRobot = AddMattressTypeFormRobot(tester);
+      // Launch the app
+      // await tester.pumpWidget(MyApp());
+      // await tester.pumpAndSettle();
+      await tester.pumpWidget(MyApp());
+      await tester.pumpAndSettle();
+
+      // // Perform login
+      // await loginRobot.enterEmail('user@example.com');
+      // await loginRobot.enterPassword('correctpassword');
+      // await loginRobot.tapSignInButton();
+
+      // Verify navigation to MattressTypePage
+      // await tester.pumpAndSettle();
+
+      // Search for a specific mattress type
+      await mattressRobot.tapOnType();
+      await mattressRobot.tapTypeFormButton();
+
+      await mattressTypeFormRobot.enterTypeName("Premium Memory Foam");
+      await mattressTypeFormRobot.enterDimensions("200", "150", "20");
+      await mattressTypeFormRobot.enterMaterialComposition("Memory foam, cotton cover");
+      await mattressTypeFormRobot.enterAllergenInfo("Hypoallergenic materials");
+      await mattressTypeFormRobot.enterManufacturer("DreamCo");
+      await mattressTypeFormRobot.selectLifeSpan("10 years");
+      await mattressTypeFormRobot.enterRecycleInfo("Eco-friendly recyclable materials");
+      await mattressTypeFormRobot.enterRotationTimer("6 months");
+      await mattressTypeFormRobot.selectWashable("Yes");
+      await mattressTypeFormRobot.submitForm();
+      //await mattressRobot.verifyRowCount(1);
+    });
+  });
 }
