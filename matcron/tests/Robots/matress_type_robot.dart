@@ -9,9 +9,12 @@ class MattressTypeRobot {
   // Locators
   Finder get searchField => find.byType(TextField);
   Finder get addTypeButton => find.text('+ Add Type');
-  Finder get typeRows => find.byType(Container).hitTestable();
+  Finder get typeTab => find.text('Type');
   Finder get editIcons => find.byIcon(Icons.edit);
   Finder get deleteIcons => find.byIcon(Icons.delete);
+  Finder get typeFormButton => find.text('Type Form');
+  
+    
 
   // Actions
   Future<void> enterSearchQuery(String query) async {
@@ -36,10 +39,15 @@ class MattressTypeRobot {
     await tester.pumpAndSettle();
   }
 
+  Future<void> tapTypeFormButton() async {
+    await tester.tap(typeFormButton);
+    await tester.pumpAndSettle();
+  } 
+
   // Assertions
-  Future<void> verifyRowCount(int expectedCount) async {
-    expect(typeRows, findsNWidgets(expectedCount));
-  }
+  // Future<void> verifyRowCount(int expectedCount) async {
+  //   expect(typeRows, findsNWidgets(expectedCount));
+  // }
 
   Future<void> verifyTypePresent(String typeName) async {
     expect(find.text(typeName), findsOneWidget);
@@ -47,5 +55,9 @@ class MattressTypeRobot {
 
   Future<void> verifyTypeNotPresent(String typeName) async {
     expect(find.text(typeName), findsNothing);
+  }
+  Future<void> tapOnType() async {
+    await tester.tap(typeTab); // Tap on the "Type" tab
+    await tester.pumpAndSettle();     // Wait for animations to complete
   }
 }

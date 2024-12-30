@@ -195,14 +195,15 @@ void main() async {
 
       // Verify navigation to the home page
       try {
-        print('Verifying navigation to the home page...');
-        expect(find.text('Home Page'), findsOneWidget);
+        print('Verifying navigation to the dashboard page...');
+        expect(find.text('Dashboard Page'), findsOneWidget);
         print('Navigation to the home page verified successfully.');
       } catch (e) {
         print('Error during home page navigation verification: $e');
         throw e; // Re-throw the error to fail the test
       }
     });
+
   });
 }
 
