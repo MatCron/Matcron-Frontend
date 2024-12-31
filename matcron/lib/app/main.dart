@@ -12,7 +12,6 @@ import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dar
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/pages/type.dart';
 import 'package:matcron/core/components/header/header.dart';
-import 'package:matcron/core/components/transfer_out/transfer_reason.dart';
 import 'package:matcron/core/components/transfer_out/transfer_confirm.dart';	
 import 'package:matcron/core/components/splash_screen.dart';
 
