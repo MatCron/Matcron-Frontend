@@ -35,6 +35,8 @@ dependencies:
   intl: ^0.20.1
 
 dev_dependencies:
+  integration_test:
+    sdk: flutter
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
@@ -66,6 +68,8 @@ flutter:
     - assets/images/redheart.png
     - assets/images/Screwdriver.png
     - assets/images/fabric-roll.jpg
+    - assets/images/mattress1.jpg
+    - assets/images/bedmeasuring.png
     - assets/images/box.png
     - assets/images/group.png
     - assets/images/single.png
