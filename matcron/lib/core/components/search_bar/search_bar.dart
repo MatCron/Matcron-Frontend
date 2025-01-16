@@ -3,9 +3,10 @@ import 'package:matcron/app/features/mattress/presentation/pages/scan_page.dart'
 
 class SearchBar extends StatelessWidget {
   final Function(String)? onSearchChanged; // Callback for text changes
+  final String placeholder;
   const SearchBar({
     super.key,
-    this.onSearchChanged,
+    this.onSearchChanged, required this.placeholder,
   });
 
   @override
@@ -30,10 +31,10 @@ class SearchBar extends StatelessWidget {
           Expanded(
             child: TextField(
               onChanged: onSearchChanged,
-              decoration: const InputDecoration(
-                hintText: "Search Mattress",
+              decoration: InputDecoration(
+                hintText: placeholder,
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.symmetric(horizontal: 20.0),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 20.0),
               ),
             ),
           ),
