@@ -37,7 +37,7 @@ class HeaderState extends State<Header> {
             widget.title,
             style: TextStyle(
               fontSize: 30.0,
-              fontWeight: FontWeight.normal,
+              fontWeight: FontWeight.bold,
               color: matcronPrimaryColor,
             ),
           ),
