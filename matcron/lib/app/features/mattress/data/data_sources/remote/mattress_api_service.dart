@@ -17,4 +17,7 @@ abstract class MattressApiService {
 
   @GET('/')
   Future<HttpResponse<List<MattressModel>>> getMattresses({@Header('Authorization') required String token});
+
+  @PUT('/{id}')
+  Future<HttpResponse<void>> updateMattress({@Path('id') required String id, @Body() required MattressModel model, @Header('Authorization') required String token});
 }

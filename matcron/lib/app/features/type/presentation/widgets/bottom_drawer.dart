@@ -88,10 +88,10 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                     widget.isEditable
                         ? "Edit Mattress Details"
                         : "View Mattress Details",
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.teal,
+                      color: matcronPrimaryColor,
                     ),
                   ),
                   IconButton(
@@ -219,7 +219,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                         _buildActionButton(
                           context,
                           label: "Save",
-                          color: Colors.teal,
+                          color: matcronPrimaryColor,
                           onPressed: () {
                             // Save action placeholder
                           },

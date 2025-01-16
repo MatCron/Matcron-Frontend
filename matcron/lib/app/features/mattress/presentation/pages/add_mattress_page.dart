@@ -6,6 +6,7 @@ import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_state.dart';
 import 'package:matcron/app/features/mattress/presentation/pages/assign_page.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
+import 'package:matcron/app/features/type/presentation/pages/type_form.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/constants/constants.dart';
@@ -134,7 +135,7 @@ class AddMattressPageState extends State<AddMattressPage> {
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const Placeholder(), // Replace with your page
+                                const AddMattressTypePage(), // Replace with your page
                           ),
                         );
                       } else {
