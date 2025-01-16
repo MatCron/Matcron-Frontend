@@ -373,7 +373,7 @@ class MattressPageState extends State<MattressPage> {
                                                     ),
                                                     TextSpan(
                                                       text:
-                                                          "${DateFormat('dd-MM-yyyy').format(mattress.lifeCyclesEnd!)}",
+                                                          DateFormat('dd-MM-yyyy').format(mattress.lifeCyclesEnd!),
                                                     ),
                                                   ],
                                                 ),
