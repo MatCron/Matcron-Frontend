@@ -187,6 +187,12 @@ import 'package:matcron/core/constants/constants.dart';
 
 import 'package:flutter/material.dart';
 import 'package:matcron/config/theme/app_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:matcron/config/theme/app_theme.dart';
+import 'drawer_page.dart'; // Import GroupDrawer widget
+import 'package:flutter/material.dart';
+import 'package:matcron/config/theme/app_theme.dart';
+import 'drawer_page.dart'; // Import GroupDrawer widget
 
 class GroupPage extends StatefulWidget {
   const GroupPage({super.key});
@@ -204,24 +210,21 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
   void initState() {
     super.initState();
     filteredGroups = groups;
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this); // Initialize here
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _tabController.dispose(); // Dispose of the controller to avoid memory leaks
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text("Groups"),
-      //   backgroundColor: matcronPrimaryColor,
-      // ),
       body: Column(
         children: [
+          // Search bar and Add button
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
@@ -231,9 +234,8 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
                     onChanged: (query) {
                       setState(() {
                         filteredGroups = groups
-                            .where((group) => group
-                                .toLowerCase()
-                                .contains(query.toLowerCase()))
+                            .where((group) =>
+                                group.toLowerCase().contains(query.toLowerCase()))
                             .toList();
                       });
                     },
@@ -271,8 +273,9 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
               ],
             ),
           ),
+          // Tabs
           TabBar(
-            controller: _tabController,
+            controller: _tabController, // Ensure it's initialized before use
             labelColor: matcronPrimaryColor,
             unselectedLabelColor: Colors.grey,
             indicatorColor: matcronPrimaryColor,
@@ -282,9 +285,10 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
             ],
           ),
           const SizedBox(height: 10.0),
+          // TabBarView
           Expanded(
             child: TabBarView(
-              controller: _tabController,
+              controller: _tabController, // Ensure it's initialized before use
               children: [
                 // Active Tab
                 filteredGroups.isEmpty
@@ -299,45 +303,65 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
                         itemBuilder: (context, index) {
                           final group = filteredGroups[index];
 
-                          return Card(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 16.0, vertical: 8.0),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            color: Colors.white,
-                            elevation: 3,
-                            child: ListTile(
-                              title: Text(
-                                group,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              subtitle: const Text("5454 mattresses"),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (index == 0)
-                                    IconButton(
-                                      icon: const Icon(Icons.replay, color: Colors.blue),
-                                      onPressed: () {
-                                        // Handle rollback action
-                                      },
-                                    ),
-                                  const SizedBox(width: 10.0),
-                                  Text(
-                                    "Active",
-                                    style: const TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                          return GestureDetector(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              backgroundColor: Colors.transparent, // Ensures the background is visible
+                              builder: (context) => GroupDrawer(
+                                groupName: "Group A",
+                                date: "2025-01-16",
+                                fromOrganization: "Organization A",
+                                toOrganization: "Organization B",
+                                fromDate: "2025-01-10",
+                                toDate: "2025-01-15",
+                                mattresses: [
+                                  {"type": "Memory Foam", "location": "Room 101"},
+                                  {"type": "Spring Mattress", "location": "Room 202"},
+                                  {"type": "Latex Mattress", "location": "Room 303"},
                                 ],
                               ),
-                              onTap: () {
-                                // Handle group tap
-                              },
+                            );
+                          },
+                            child: Card(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 16.0, vertical: 8.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              color: Colors.white,
+                              elevation: 3,
+                              child: ListTile(
+                                title: Text(
+                                  group,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                subtitle: const Text("5454 mattresses"),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    if (index == 0)
+                                      IconButton(
+                                        icon: const Icon(Icons.replay,
+                                            color: Colors.blue),
+                                        onPressed: () {
+                                          // Handle rollback action
+                                        },
+                                      ),
+                                    const SizedBox(width: 10.0),
+                                    const Text(
+                                      "Active",
+                                      style: TextStyle(
+                                        color: Colors.green,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           );
                         },
