@@ -17,6 +17,7 @@ import 'package:matcron/app/features/mattress/data/repository/mattress_repositor
 import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
 import 'package:matcron/app/features/mattress/domain/usecases/generate_rfid_.dart';
 import 'package:matcron/app/features/mattress/domain/usecases/get_all_mattresses.dart';
+import 'package:matcron/app/features/mattress/domain/usecases/update_mattress.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
 import 'package:matcron/app/features/organization/data/data_sources/remote/organization_api_service.dart';
 import 'package:matcron/app/features/organization/data/repository/organization_repository_impl.dart';
@@ -138,6 +139,10 @@ Future<void> initializeDependencies() async {
     GenerateRfidUsecase(sl())
   );
   
+  sl.registerSingleton<UpdateMattressUseCase>(
+    UpdateMattressUseCase(sl())
+  );
+  
   // Blocs
   sl.registerFactory<RemoteRegistrationBloc>(
     () => RemoteRegistrationBloc(sl())
@@ -160,6 +165,6 @@ Future<void> initializeDependencies() async {
   );
 
   sl.registerFactory(
-    () => RemoteMattressBloc(sl(), sl(), sl())
+    () => RemoteMattressBloc(sl(), sl(), sl(), sl())
   );
 }

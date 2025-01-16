@@ -1,4 +1,5 @@
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
+import 'package:matcron/app/features/type/data/models/type_model.dart';
 
 class MattressModel extends MattressEntity {
   MattressModel({
@@ -13,11 +14,12 @@ class MattressModel extends MattressEntity {
     super.daysToRotate,
     super.location,
     super.type,
+    super.mattressType,
   });
 
   factory MattressModel.fromJson(Map<String, dynamic> map) {
     return MattressModel(
-      uid: map['uid'] ?? "",
+      uid: map['id'] ?? "",
       mattressTypeId: map['mattressTypeId'] ?? "",
       batchNo: map['batchNo'] ?? "",
       productionDate: map['productionDate'] != null
@@ -25,19 +27,20 @@ class MattressModel extends MattressEntity {
           : null,
       orgId: map['orgId'] ?? "",
       epcCode: map['epcCode'] ?? "",
-      status: map['status'] ?? "",
+      status: map['status'] ?? 0,
       lifeCyclesEnd: map['lifeCyclesEnd'] != null
           ? DateTime.parse(map['lifeCyclesEnd'])
           : null,
-      daysToRotate: map['daysToRotate'] ?? "",
+      daysToRotate: map['daysToRotate'] ?? 0,
       location: map['location'] ?? "",
       type: map['type'] ?? "",
+      mattressType: map['mattressType'] != null ? TypeModel.fromJson(map['mattressType']) : TypeModel(),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'uid': uid,
+      'id': uid,
       'mattressTypeId': mattressTypeId,
       'batchNo': batchNo,
       'productionDate': productionDate != null

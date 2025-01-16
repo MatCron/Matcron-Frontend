@@ -91,7 +91,7 @@ class _MattressApiService implements MattressApiService {
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late MattressModel _value;
     try {
-      _value = MattressModel.fromJson(_result.data!);
+      _value = MattressModel.fromJson(_result.data!['data']);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -128,9 +128,9 @@ class _MattressApiService implements MattressApiService {
     late List<MattressModel> _value;
     try {
       _value = _result.data!['data']
-          .map((dynamic i) =>
-              MattressModel.fromJson(i as Map<String, dynamic>))
-          .toList().cast<MattressModel>();
+          .map((dynamic i) => MattressModel.fromJson(i as Map<String, dynamic>))
+          .toList()
+          .cast<MattressModel>();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
@@ -167,5 +167,37 @@ class _MattressApiService implements MattressApiService {
     }
 
     return Uri.parse(dioBaseUrl).resolveUri(url).toString();
+  }
+
+  @override
+  Future<HttpResponse<void>> updateMattress(
+      {required String id,
+      required MattressModel model,
+      required String token}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(model.toJson());
+    final _options = _setStreamType<HttpResponse<void>>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<void>(_options);
+    final httpResponse = HttpResponse(null, _result);
+    return httpResponse;
   }
 }

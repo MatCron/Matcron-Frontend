@@ -5,4 +5,5 @@ abstract class MattressRepository {
   Future<DataState<List<MattressEntity>>> getMattresses();
   Future<DataState<String>> generateRfid(MattressEntity entity);
   Future<DataState<MattressEntity>> getMattressById(String id);
+  Future<DataState<void>> updateMattress(String id, MattressEntity entity);
 }

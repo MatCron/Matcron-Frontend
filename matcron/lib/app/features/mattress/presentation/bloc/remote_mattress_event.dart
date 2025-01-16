@@ -18,3 +18,7 @@ class GetAllMattresses extends RemoteMattressEvent {
 class GenerateRfid extends RemoteMattressEvent {
   const GenerateRfid(MattressEntity mattress) : super(mattress: mattress);
 }
+
+class UpdateMattress extends RemoteMattressEvent {
+  const UpdateMattress(MattressEntity mattress) : super(mattress: mattress);
+}
