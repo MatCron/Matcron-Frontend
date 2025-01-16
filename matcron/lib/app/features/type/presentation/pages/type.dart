@@ -89,6 +89,7 @@ class MattressTypePageState extends State<MattressTypePage> {
           children: [
             // Search bar
             custom.SearchBar(
+              placeholder: "Search Mattress Type",
               onSearchChanged: (query) {
                 setState(() {
                   filteredTypes = mattressTypes
