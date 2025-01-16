@@ -7,6 +7,7 @@ import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dar
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/app/features/type/presentation/pages/type_form.dart';
+import  'package:matcron/core/components/search_bar/search_bar.dart' as custom;
 
 class MattressTypePage extends StatefulWidget {
   const MattressTypePage({super.key});
@@ -87,8 +88,8 @@ class MattressTypePageState extends State<MattressTypePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Search bar
-            TextField(
-              onChanged: (query) {
+            custom.SearchBar(
+              onSearchChanged: (query) {
                 setState(() {
                   filteredTypes = mattressTypes
                       .where((type) => type.name!
@@ -97,18 +98,7 @@ class MattressTypePageState extends State<MattressTypePage> {
                       .toList();
                 });
               },
-              decoration: InputDecoration(
-                hintText: "Search Mattress Types",
-                hintStyle: const TextStyle(color: Colors.grey),
-                prefixIcon: Icon(Icons.search, color: Colors.grey),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30.0),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: Colors.white,
-                contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
-              ),
+         
             ),
             const SizedBox(height: 10.0),
 
