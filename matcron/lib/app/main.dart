@@ -45,6 +45,7 @@ class MyApp extends StatelessWidget {
       //home: const MattressRecyclingInfoPage(),
        // home: const SplashScreenWrapper(),
       home: const ProfileSettings(),
+      
     );
   }
 }
