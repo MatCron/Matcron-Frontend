@@ -72,13 +72,13 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
     if (!mounted) return;
 
     if (token != null && token.isNotEmpty) {
-      // Token exists: Navigate to MyHomePage
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MyHomePage()),
       );
     } else {
-      // No token: Navigate to InitialScreens
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const InitialScreens()),
@@ -213,28 +213,29 @@ class _MyHomePageState extends State<MyHomePage> {
                     inActiveItem: Icon(Icons.home_filled,
                         color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.home_filled,
-                      color: Color.fromRGBO(30, 167, 169, 1)),
+                      color:Colors.blue),
+                      //  backgroundColor: Colors.blue,
                     itemLabel: 'Dashboard',
                   ),
                   BottomBarItem(
                     inActiveItem: Icon(Icons.star,
                         color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.star,
-                        color: Color.fromRGBO(30, 167, 169, 1)),
+                     color:Colors.blue),
                     itemLabel: 'Mattress',
                   ),
                   BottomBarItem(
                     inActiveItem: Icon(Icons.settings,
                          color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.settings,
-                        color: Color.fromRGBO(30, 167, 169, 1)),
+                       color:Colors.blue),
                     itemLabel: 'Type',
                   ),
                   BottomBarItem(
                     inActiveItem: Icon(Icons.person,
                          color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.person,
-                        color: Color.fromRGBO(30, 167, 169, 1)),
+                       color:Colors.blue),
                     itemLabel: 'Group',
                   ),
                 ],
