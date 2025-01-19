@@ -1,8 +1,7 @@
+
 // import 'package:flutter/material.dart';
-// import 'package:matcron/config/theme/app_theme.dart';
-
-// import 'package:matcron/core/constants/constants.dart';
-
+// import '../widgets/group_card_widget.dart';
+// import '../widgets/drawer_page.dart'; // Import the DrawerPage widget
 
 // class GroupPage extends StatefulWidget {
 //   const GroupPage({super.key});
@@ -11,15 +10,55 @@
 //   GroupPageState createState() => GroupPageState();
 // }
 
-// class GroupPageState extends State<GroupPage> {
-//   final List<String> groups = ["Group A", "Group B", "Group C", "Group D"];
-//   List<String> filteredGroups = [];
-//   int selectedGroupIndex = -1;
+// class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixin {
+//   final List<Map<String, dynamic>> activeGroups = [
+//     {
+//       "groupName": "Group A",
+//       "organisationName": "Organisation X",
+//       "mattressCount": 10,
+//       "isExport": true
+//     },
+//     {
+//       "groupName": "Group B",
+//       "organisationName": "Organisation Y",
+//       "mattressCount": 15,
+//       "isExport": true
+//     },
+//   ];
+
+//   final List<Map<String, dynamic>> archivedGroups = [
+//     {
+//       "groupName": "Group C",
+//       "organisationName": "Organisation Z",
+//       "mattressCount": 5,
+//       "isExport": false
+//     },
+//     {
+//       "groupName": "Group D",
+//       "organisationName": "Organisation W",
+//       "mattressCount": 8,
+//       "isExport": true
+//     },
+//     {
+//       "groupName": "Group E",
+//       "organisationName": "Organisation V",
+//       "mattressCount": 12,
+//       "isExport": false
+//     },
+//   ];
+
+//   late TabController _tabController;
 
 //   @override
 //   void initState() {
 //     super.initState();
-//     filteredGroups = groups;
+//     _tabController = TabController(length: 2, vsync: this); // Two tabs: Active and Archived
+//   }
+
+//   @override
+//   void dispose() {
+//     _tabController.dispose(); // Dispose of the TabController
+//     super.dispose();
 //   }
 
 //   @override
@@ -27,172 +66,137 @@
 //     return Scaffold(
 //       // appBar: AppBar(
 //       //   title: const Text("Groups"),
-//       //   backgroundColor: matcronPrimaryColor,
+//       //   backgroundColor: Colors.blue,
 //       // ),
-//       body: Container(
-//         color: HexColor("#E5E5E5"),
-//         padding: const EdgeInsets.all(16.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             // Search bar
-//             TextField(
-//               onChanged: (query) {
-//                 setState(() {
-//                   filteredGroups = groups
-//                       .where((group) => group
-//                           .toLowerCase()
-//                           .contains(query.toLowerCase()))
-//                       .toList();
-//                 });
-//               },
-//               decoration: InputDecoration(
-//                 hintText: "Search groups",
-//                 hintStyle: const TextStyle(color: Colors.grey),
-//                 prefixIcon: const Icon(Icons.search, color: Colors.grey),
-//                 border: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(30.0),
-//                   borderSide: BorderSide.none,
-//                 ),
-//                 filled: true,
-//                 fillColor: Colors.white,
-//                 contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
-//               ),
-//             ),
-//             const SizedBox(height: 10.0),
-//             // Buttons
-//             Row(
-//               mainAxisAlignment: MainAxisAlignment.end,
-//               children: [
-//                 ElevatedButton(
-//                   onPressed: () {
-//                     // Navigate to Add Group Page
-//                   },
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: matcronPrimaryColor,
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(8.0),
-//                     ),
-//                     padding: const EdgeInsets.symmetric(
-//                       horizontal: 20,
-//                       vertical: 14,
-//                     ),
-//                   ),
-//                   child: const Icon(Icons.add),
-//                 ),
-//                 const SizedBox(width: 10.0),
-//                 ElevatedButton(
-//                   onPressed: () {
-//                     // Navigate to Import Group Page
-//                   },
-//                   style: ElevatedButton.styleFrom(
-//                     backgroundColor: matcronPrimaryColor,
-//                     shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(8.0),
-//                     ),
-//                     padding: const EdgeInsets.symmetric(
-//                       horizontal: 20,
-//                       vertical: 14,
-//                     ),
-//                   ),
-//                   child: const Icon(Icons.import_export),
-//                 ),
-//               ],
-//             ),
-//             const SizedBox(height: 15.0),
-//             // Table headers
-//             Row(
+//       body: Column(
+//         children: [
+//           // Search bar and Add button
+//           Padding(
+//             padding: const EdgeInsets.all(16.0),
+//             child: Row(
 //               children: [
 //                 Expanded(
-//                   child: Text("Group Name", style: _headerStyle),
+//                   child: TextField(
+//                     decoration: InputDecoration(
+//                       hintText: "Search groups",
+//                       hintStyle: const TextStyle(color: Colors.grey),
+//                       prefixIcon: const Icon(Icons.search, color: Colors.grey),
+//                       border: OutlineInputBorder(
+//                         borderRadius: BorderRadius.circular(30.0),
+//                         borderSide: BorderSide.none,
+//                       ),
+//                       filled: true,
+//                       fillColor: Colors.grey[200],
+//                       contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+//                     ),
+//                   ),
+//                 ),
+//                 const SizedBox(width: 10.0),
+//                 ElevatedButton.icon(
+//                   onPressed: () {
+//                     // Handle Add Group Action
+//                   },
+//                   icon: const Icon(Icons.add, color: Colors.white),
+//                   label: const Text(
+//                     "Add",
+//                     style: TextStyle(color: Colors.white),
+//                   ),
+//                   style: ElevatedButton.styleFrom(
+//                     backgroundColor: Colors.blue,
+//                     shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(30.0),
+//                     ),
+//                   ),
 //                 ),
 //               ],
 //             ),
-//             const Divider(color: Colors.black26),
-//             // Groups List
-//             Expanded(
-//               child: filteredGroups.isEmpty
-//                   ? Center(
-//                       child: Text(
-//                         "No groups available",
-//                         style: TextStyle(color: Colors.grey),
-//                       ),
-//                     )
-//                   : ListView.builder(
-//                       itemCount: filteredGroups.length,
-//                       itemBuilder: (context, index) {
-//                         final group = filteredGroups[index];
-//                         final isSelected = selectedGroupIndex == index;
+//           ),
+//           // Tabs
+//           TabBar(
+//             controller: _tabController,
+//             labelColor: Colors.blue,
+//             unselectedLabelColor: Colors.grey,
+//             indicatorColor: Colors.blue,
+//             tabs: const [
+//               Tab(text: "Active"),
+//               Tab(text: "Archived"),
+//             ],
+//           ),
+//           const SizedBox(height: 10.0),
+//           // TabBarView
+//           Expanded(
+//             child: TabBarView(
+//               controller: _tabController,
+//               children: [
+//                 // Active Tab
+//                 _buildGroupList(activeGroups),
 
-//                         return GestureDetector(
-//                           onTap: () {
-//                             setState(() {
-//                               selectedGroupIndex = isSelected ? -1 : index;
-//                             });
-//                           },
-//                           child: Container(
-//                             margin: const EdgeInsets.symmetric(vertical: 8.0),
-//                             padding: const EdgeInsets.symmetric(
-//                                 horizontal: 16.0, vertical: 20.0),
-//                             decoration: BoxDecoration(
-//                               color: Colors.white,
-//                               borderRadius: BorderRadius.circular(10.0),
-//                               boxShadow: [
-//                                 BoxShadow(
-//                                   color: Colors.black12,
-//                                   blurRadius: 5,
-//                                   offset: const Offset(0, 3),
-//                                 ),
-//                               ],
-//                             ),
-//                             child: Row(
-//                               children: [
-//                                 Expanded(
-//                                   child: Text(
-//                                     group,
-//                                     style: _itemTextStyle,
-//                                   ),
-//                                 ),
-//                               ],
-//                             ),
-//                           ),
-//                         );
-//                       },
-//                     ),
+//                 // Archived Tab
+//                 _buildGroupList(archivedGroups),
+//               ],
 //             ),
-//           ],
-//         ),
+//           ),
+//         ],
 //       ),
 //     );
 //   }
 
-//   static const TextStyle _headerStyle = TextStyle(
-//     fontSize: 16.0,
-//     fontStyle: FontStyle.italic,
-//     fontWeight: FontWeight.bold,
-//     color: Colors.black,
-//   );
+//   Widget _buildGroupList(List<Map<String, dynamic>> groups) {
+//     if (groups.isEmpty) {
+//       return Center(
+//         child: Text(
+//           "No groups available",
+//           style: TextStyle(color: Colors.grey[600]),
+//         ),
+//       );
+//     }
 
-//   static const TextStyle _itemTextStyle = TextStyle(
-//     fontSize: 14.0,
-//     fontWeight: FontWeight.bold,
-//   );
+//     return ListView.builder(
+//       itemCount: groups.length,
+//       itemBuilder: (context, index) {
+//         final group = groups[index];
+//         return GroupCardWidget(
+//           groupName: group["groupName"],
+//           organisationName: group["organisationName"],
+//           mattressCount: group["mattressCount"],
+//           isExport: group["isExport"],
+//           onTap: () {
+//             _openDrawer(context, group);
+//           },
+//         );
+//       },
+//     );
+//   }
+
+//   void _openDrawer(BuildContext context, Map<String, dynamic> group) {
+//     showModalBottomSheet(
+//       context: context,
+//       isScrollControlled: true,
+//       backgroundColor: Colors.transparent, // Transparent background
+//       builder: (context) => GroupDrawer(
+//         groupName: group["groupName"],
+//         date: "2025-01-19", // Example date (use dynamic value if needed)
+//         fromOrganization: group["organisationName"],
+//         toOrganization: group["organisationName"], // Adjust as per your data
+//         fromDate: "2025-01-10", // Example start date
+//         toDate: "2025-01-15", // Example end date
+//         mattresses: [
+//           {"type": "Memory Foam", "location": "Room 101"},
+//           {"type": "Spring Mattress", "location": "Room 202"},
+//           {"type": "Latex Mattress", "location": "Room 303"},
+//         ],
+//       ),
+//     );
+//   }
 // }
 
+import 'package:flutter/material.dart';
+import '../widgets/add_group_drawer.dart';
+import '../widgets/group_card_widget.dart';
+import '../widgets/group_details_page.dart';
+import 'package:flutter/material.dart';
 
-
-import 'package:flutter/material.dart';
-import 'package:matcron/config/theme/app_theme.dart';
-import 'package:matcron/core/constants/constants.dart';
-
-import 'package:flutter/material.dart';
-import 'package:matcron/config/theme/app_theme.dart';
-import 'package:flutter/material.dart';
-import 'package:matcron/config/theme/app_theme.dart';
-import 'drawer_page.dart'; // Import GroupDrawer widget
-import 'package:flutter/material.dart';
-import 'package:matcron/config/theme/app_theme.dart';
-import 'drawer_page.dart'; // Import GroupDrawer widget
+import '../widgets/group_card_widget.dart';
 
 class GroupPage extends StatefulWidget {
   const GroupPage({super.key});
@@ -202,20 +206,53 @@ class GroupPage extends StatefulWidget {
 }
 
 class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixin {
-  final List<String> groups = ["Group A", "Group B", "Group C", "Group D"];
-  List<String> filteredGroups = [];
+  final List<Map<String, dynamic>> activeGroups = [
+    {
+      "groupName": "Group A",
+      "organisationName": "Organisation X",
+      "mattressCount": 10,
+      "isExport": true,
+    },
+    {
+      "groupName": "Group B",
+      "organisationName": "Organisation Y",
+      "mattressCount": 15,
+      "isExport": true,
+    },
+  ];
+
+  final List<Map<String, dynamic>> archivedGroups = [
+    {
+      "groupName": "Group C",
+      "organisationName": "Organisation Z",
+      "mattressCount": 5,
+      "isExport": false,
+    },
+    {
+      "groupName": "Group D",
+      "organisationName": "Organisation W",
+      "mattressCount": 8,
+      "isExport": true,
+    },
+    {
+      "groupName": "Group E",
+      "organisationName": "Organisation V",
+      "mattressCount": 12,
+      "isExport": false,
+    },
+  ];
+
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    filteredGroups = groups;
-    _tabController = TabController(length: 2, vsync: this); // Initialize here
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
   void dispose() {
-    _tabController.dispose(); // Dispose of the controller to avoid memory leaks
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -231,14 +268,6 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
               children: [
                 Expanded(
                   child: TextField(
-                    onChanged: (query) {
-                      setState(() {
-                        filteredGroups = groups
-                            .where((group) =>
-                                group.toLowerCase().contains(query.toLowerCase()))
-                            .toList();
-                      });
-                    },
                     decoration: InputDecoration(
                       hintText: "Search groups",
                       hintStyle: const TextStyle(color: Colors.grey),
@@ -253,18 +282,15 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
                     ),
                   ),
                 ),
-                const SizedBox(width: 10.0),
+                const SizedBox(width: 10),
                 ElevatedButton.icon(
                   onPressed: () {
-                    // Handle Add Group Action
+                    // Placeholder for add group functionality
                   },
                   icon: const Icon(Icons.add, color: Colors.white),
-                  label: const Text(
-                    "Add",
-                    style: TextStyle(color: Colors.white),
-                  ),
+                  label: const Text("Add"),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: matcronPrimaryColor,
+                    backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30.0),
                     ),
@@ -275,109 +301,58 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
           ),
           // Tabs
           TabBar(
-            controller: _tabController, // Ensure it's initialized before use
-            labelColor: matcronPrimaryColor,
+            controller: _tabController,
+            labelColor: Colors.blue,
             unselectedLabelColor: Colors.grey,
-            indicatorColor: matcronPrimaryColor,
+            indicatorColor: Colors.blue,
             tabs: const [
               Tab(text: "Active"),
               Tab(text: "Archived"),
             ],
           ),
-          const SizedBox(height: 10.0),
-          // TabBarView
           Expanded(
             child: TabBarView(
-              controller: _tabController, // Ensure it's initialized before use
+              controller: _tabController,
               children: [
-                // Active Tab
-                filteredGroups.isEmpty
-                    ? Center(
-                        child: Text(
-                          "No active groups available",
-                          style: TextStyle(color: Colors.grey[600]),
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: filteredGroups.length,
-                        itemBuilder: (context, index) {
-                          final group = filteredGroups[index];
-
-                          return GestureDetector(
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              backgroundColor: Colors.transparent, // Ensures the background is visible
-                              builder: (context) => GroupDrawer(
-                                groupName: "Group A",
-                                date: "2025-01-16",
-                                fromOrganization: "Organization A",
-                                toOrganization: "Organization B",
-                                fromDate: "2025-01-10",
-                                toDate: "2025-01-15",
-                                mattresses: [
-                                  {"type": "Memory Foam", "location": "Room 101"},
-                                  {"type": "Spring Mattress", "location": "Room 202"},
-                                  {"type": "Latex Mattress", "location": "Room 303"},
-                                ],
-                              ),
-                            );
-                          },
-                            child: Card(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 8.0),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              color: Colors.white,
-                              elevation: 3,
-                              child: ListTile(
-                                title: Text(
-                                  group,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                subtitle: const Text("5454 mattresses"),
-                                trailing: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    if (index == 0)
-                                      IconButton(
-                                        icon: const Icon(Icons.replay,
-                                            color: Colors.blue),
-                                        onPressed: () {
-                                          // Handle rollback action
-                                        },
-                                      ),
-                                    const SizedBox(width: 10.0),
-                                    const Text(
-                                      "Active",
-                                      style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                // Archived Tab
-                Center(
-                  child: Text(
-                    "No archived groups available",
-                    style: TextStyle(color: Colors.grey[600]),
-                  ),
-                ),
+                _buildGroupList(activeGroups),
+                _buildGroupList(archivedGroups),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildGroupList(List<Map<String, dynamic>> groups) {
+    return ListView.builder(
+      itemCount: groups.length,
+      itemBuilder: (context, index) {
+        final group = groups[index];
+        return GroupCardWidget(
+          groupName: group["groupName"],
+          organisationName: group["organisationName"],
+          mattressCount: group["mattressCount"],
+          isExport: group["isExport"],
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (_) => GroupDetailsPage(
+                groupName: group["groupName"],
+                date: "2025-01-19",
+                fromOrganization: group["organisationName"],
+                toOrganization: group["organisationName"],
+                fromDate: "2025-01-10",
+                toDate: "2025-01-15",
+                mattresses: [
+                  {"type": "Memory Foam", "location": "Room 101"},
+                  {"type": "Spring Mattress", "location": "Room 202"},
+                  {"type": "Latex Mattress", "location": "Room 303"},
+                ],
+              ),
+            ));
+          },
+        );
+      },
     );
   }
 }
