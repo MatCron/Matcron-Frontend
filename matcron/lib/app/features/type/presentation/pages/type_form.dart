@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:matcron/app/features/recycling_info/presentation/recycling_info.dart';
+import 'package:matcron/app/features/rotation_info/presentation/pages/rotation_info.dart';
 import 'package:matcron/core/components/header/header.dart'; // Adjust import as needed
 
 class AddMattressTypePage extends StatefulWidget {
@@ -16,11 +18,13 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
   final TextEditingController _widthController = TextEditingController();
   final TextEditingController _lengthController = TextEditingController();
   final TextEditingController _heightController = TextEditingController();
-  final TextEditingController _materialCompositionController = TextEditingController();
+  final TextEditingController _materialCompositionController =
+      TextEditingController();
   final TextEditingController _allergenInfoController = TextEditingController();
   final TextEditingController _manufacturerController = TextEditingController();
   final TextEditingController _recycleInfoController = TextEditingController();
-  final TextEditingController _rotationTimerController = TextEditingController();
+  final TextEditingController _rotationTimerController =
+      TextEditingController();
 
   String? _lifeSpanValue;
   String? _washableValue;
@@ -86,7 +90,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         ),
                         hintText: "Enter mattress type name",
                         hintStyle: hintTextStyle,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 14),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -96,7 +101,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                       },
                     ),
                     const SizedBox(height: 12),
-      
+
                     // Width x Length x Height with an info icon to the right
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -116,7 +121,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                               ),
                               hintText: "Width",
                               hintStyle: hintTextStyle,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 14),
                             ),
                           ),
                         ),
@@ -138,7 +144,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                               ),
                               hintText: "Length",
                               hintStyle: hintTextStyle,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 14),
                             ),
                           ),
                         ),
@@ -160,24 +167,31 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                               ),
                               hintText: "Height",
                               hintStyle: hintTextStyle,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 14),
                             ),
                           ),
                         ),
                         const SizedBox(width: 8),
                         // Info icon
-                        Container(
-                          decoration: BoxDecoration(
-                            color: fieldColor,
-                            shape: BoxShape.circle,
+                        GestureDetector(
+                          onTap: () {
+                            
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: fieldColor,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(4.0),
+                            child: const Icon(Icons.info_outline,
+                                size: 20, color: Colors.black54),
                           ),
-                          padding: const EdgeInsets.all(4.0),
-                          child: const Icon(Icons.info_outline, size: 20, color: Colors.black54),
-                        ),
+                        )
                       ],
                     ),
                     const SizedBox(height: 12),
-      
+
                     // Material Composition (max 100 words)
                     TextFormField(
                       controller: _materialCompositionController,
@@ -193,10 +207,12 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         ),
                         hintText: "Enter material composition",
                         hintStyle: hintTextStyle,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 14),
                         // Display max 100 words note
                         suffixText: "(Max: 100 word)",
-                        suffixStyle: TextStyle(color: Colors.grey[600], fontSize: 12),
+                        suffixStyle:
+                            TextStyle(color: Colors.grey[600], fontSize: 12),
                       ),
                       validator: (value) {
                         if (value == null) return null;
@@ -207,26 +223,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                       },
                     ),
                     const SizedBox(height: 12),
-      
-                    // Allergen Information
-                    TextFormField(
-                      controller: _allergenInfoController,
-                      decoration: InputDecoration(
-                        labelText: "Allergen Information",
-                        labelStyle: labelStyle,
-                        filled: true,
-                        fillColor: fieldColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        hintText: "Enter allergen information",
-                        hintStyle: hintTextStyle,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-      
+
                     // Manufacturer and Life Span (dropdown)
                     Row(
                       children: [
@@ -243,10 +240,16 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                                 borderRadius: BorderRadius.circular(20.0),
                                 borderSide: BorderSide.none,
                               ),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 14),
                             ),
                             icon: const Icon(Icons.arrow_drop_down),
-                            items: <String>["1 year", "2 years", "5 years", "10 years"].map((String value) {
+                            items: <String>[
+                              "1 year",
+                              "2 years",
+                              "5 years",
+                              "10 years"
+                            ].map((String value) {
                               return DropdownMenuItem<String>(
                                 value: value,
                                 child: Text(value),
@@ -262,7 +265,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                       ],
                     ),
                     const SizedBox(height: 12),
-      
+
                     // Recycle Information (max 100 words) + info icon
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -283,9 +286,11 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                               ),
                               hintText: "Enter recycle information",
                               hintStyle: hintTextStyle,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 14),
                               suffixText: "(Max: 100 word)",
-                              suffixStyle: TextStyle(color: Colors.grey[600], fontSize: 12),
+                              suffixStyle: TextStyle(
+                                  color: Colors.grey[600], fontSize: 12),
                             ),
                             validator: (value) {
                               if (value == null) return null;
@@ -298,19 +303,30 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         ),
                         const SizedBox(width: 8),
                         // Info icon for recycle info
-                        Container(
-                          decoration: BoxDecoration(
-                            color: fieldColor,
-                            shape: BoxShape.circle,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const MattressRecyclingInfoPage()),
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: fieldColor,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(4.0),
+                            margin: const EdgeInsets.only(top: 8),
+                            child: const Icon(Icons.info_outline,
+                                size: 20, color: Colors.black54),
                           ),
-                          padding: const EdgeInsets.all(4.0),
-                          margin: const EdgeInsets.only(top: 8),
-                          child: const Icon(Icons.info_outline, size: 20, color: Colors.black54),
                         ),
                       ],
                     ),
                     const SizedBox(height: 12),
-      
+
                     // Rotation Timer + clock icon
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -330,7 +346,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                               ),
                               hintText: "Enter rotation timer",
                               hintStyle: hintTextStyle,
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 14),
                             ),
                           ),
                         ),
@@ -342,12 +359,13 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                             shape: BoxShape.circle,
                           ),
                           padding: const EdgeInsets.all(8.0),
-                          child: const Icon(Icons.access_time_outlined, size: 20, color: Colors.black54),
+                          child: const Icon(Icons.access_time_outlined,
+                              size: 20, color: Colors.black54),
                         ),
                       ],
                     ),
                     const SizedBox(height: 12),
-      
+
                     // Washable dropdown
                     DropdownButtonFormField<String>(
                       value: _washableValue,
@@ -359,7 +377,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                           borderRadius: BorderRadius.circular(20.0),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 14),
                       ),
                       hint: const Text("washable", style: labelStyle),
                       icon: const Icon(Icons.arrow_drop_down),
@@ -376,7 +395,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                       },
                     ),
                     const SizedBox(height: 20),
-      
+
                     // Add Mattress Type button
                     SizedBox(
                       width: double.infinity,
@@ -392,12 +411,12 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                           ),
                         ),
                         child: const Text(
-                          "+Add Mattress Type",
+                          "+ Add Mattress Type",
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
                     ),
-      
+
                     const SizedBox(height: 30),
                   ],
                 ),
