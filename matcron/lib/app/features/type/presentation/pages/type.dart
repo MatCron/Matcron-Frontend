@@ -111,7 +111,8 @@ class MattressTypePageState extends State<MattressTypePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AddMattressTypePage()),
+                        builder: (context) => const AddMattressTypePage()
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
