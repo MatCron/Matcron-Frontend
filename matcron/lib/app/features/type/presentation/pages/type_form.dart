@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matcron/app/features/LBH_info/presentation/bloc/pages/lbh_info.dart';
 import 'package:matcron/app/features/recycling_info/presentation/recycling_info.dart';
-import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/core/components/header/header.dart'; // Adjust import as needed
 
 class AddMattressTypePage extends StatefulWidget {
@@ -53,19 +52,19 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
 
   void _onAddMattressTypePressed() {
     if (_formKey.currentState!.validate()) {
-      MattressTypeEntity entity = MattressTypeEntity(
-        name: _typeNameController.text.trim(),
-        width: double.tryParse(_widthController.text.trim()),
-        length: double.tryParse(_lengthController.text.trim()),
-        height: double.tryParse(_heightController.text.trim()),
-        composition: _materialCompositionController.text.trim(),
-        rotationInterval: double.tryParse(_rotationTimerController.text.trim()),
-        recyclingDetails: _recycleInfoController.text.trim(),
-        expectedLifespan: _lifeSpanValue != null
-            ? double.tryParse(_lifeSpanValue!.split(' ').first)
-            : null,
-        warrantyPeriod: _washableValue == "Yes" ? 1.0 : 0.0, // Example
-      );
+      // MattressTypeEntity entity = MattressTypeEntity(
+      //   name: _typeNameController.text.trim(),
+      //   width: double.tryParse(_widthController.text.trim()),
+      //   length: double.tryParse(_lengthController.text.trim()),
+      //   height: double.tryParse(_heightController.text.trim()),
+      //   composition: _materialCompositionController.text.trim(),
+      //   rotationInterval: double.tryParse(_rotationTimerController.text.trim()),
+      //   recyclingDetails: _recycleInfoController.text.trim(),
+      //   expectedLifespan: _lifeSpanValue != null
+      //       ? double.tryParse(_lifeSpanValue!.split(' ').first)
+      //       : null,
+      //   warrantyPeriod: _washableValue == "Yes" ? 1.0 : 0.0, // Example
+      // );
 
     }
 
