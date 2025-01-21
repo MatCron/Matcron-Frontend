@@ -14,6 +14,7 @@ import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.da
 import 'package:matcron/app/features/type/presentation/pages/type.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/components/splash_screen.dart';
+
 import 'package:matcron/core/constants/constants.dart';
 import 'dart:developer';
 import 'dart:async';
@@ -42,7 +43,6 @@ class MyApp extends StatelessWidget {
       ),
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
 
-      //home: const MattressRecyclingInfoPage(),
       home: const SplashScreenWrapper(),
    
     );

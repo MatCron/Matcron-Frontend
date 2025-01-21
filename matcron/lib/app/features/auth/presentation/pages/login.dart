@@ -90,7 +90,7 @@ Widget _buildBody(BuildContext context) {
               image: AssetImage('assets/images/bed.jpg'), // Path to your image
               fit: BoxFit.cover, // Cover the entire screen
               colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0), BlendMode.darken
+                  Colors.black.withOpacity(0.35), BlendMode.darken
               ),
             ),
           ),
@@ -117,7 +117,7 @@ Widget _buildBody(BuildContext context) {
                       style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 30),
@@ -173,7 +173,7 @@ Widget _buildBody(BuildContext context) {
                         backgroundColor: matcronPrimaryColor,
                       ),
                       child: const Text(
-                        "Sign In",
+                        "Log In",
                         style: TextStyle(color: Colors.white, fontSize: 25),
                       ),
                     ),
@@ -185,7 +185,7 @@ Widget _buildBody(BuildContext context) {
                       children: [
                         const Text(
                           "Don't have an account?",
-                          style: TextStyle(color: Colors.black, fontSize: 16),
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                         const SizedBox(width: 5),
                         GestureDetector(

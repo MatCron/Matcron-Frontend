@@ -92,12 +92,12 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     "Edit Mattress",
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.teal,
+                      color: matcronPrimaryColor,
                     ),
                   ),
                   IconButton(
@@ -178,7 +178,7 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
                       _buildActionButton(
                         context,
                         label: "Save",
-                        color: Colors.teal,
+                        color: matcronPrimaryColor,
                         onPressed: () {
                           _saveMattress(context);
                         },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:matcron/app/main.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/core/resources/authorization.dart';
+import 'package:matcron/app/features/profile_settings/presentation/pages/profile_settings.dart';
 
 class Header extends StatefulWidget {
   final String title;
@@ -37,7 +38,7 @@ class HeaderState extends State<Header> {
             widget.title,
             style: TextStyle(
               fontSize: 30.0,
-              fontWeight: FontWeight.normal,
+              fontWeight: FontWeight.bold,
               color: matcronPrimaryColor,
             ),
           ),
@@ -51,14 +52,16 @@ class HeaderState extends State<Header> {
                   radius: 20.0, 
                   backgroundImage: AssetImage('assets/images/profile_image.png'), // Replace with actual image
                 ),
-                onSelected: (value) {
-                  if (value == 'Logout') {
-                    _logout();
-                  } else if (value == 'Profile') {
-                    // Navigate to Profile Page (implement later)
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Profile page not implemented yet!")),
-                    );
+                 onSelected: (value) {
+                  switch (value) {
+                    case 'Profile':
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const ProfileSettings(),
+                      ));
+                      break;
+                    case 'Logout':
+                      _logout();
+                      break;
                   }
                 },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[

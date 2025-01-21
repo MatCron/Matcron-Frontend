@@ -88,7 +88,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         'assets/images/bed.jpg'), // Path to your image
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.09), // Reduce opacity
+                      Colors.black.withOpacity(0.35), // Reduce opacity
                       BlendMode.darken,
                     ),
                   ),
@@ -190,7 +190,7 @@ class _RegisterPageState extends State<RegisterPage> {
         const Text(
           "Welcome to Matcron!",
           style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
@@ -199,7 +199,8 @@ class _RegisterPageState extends State<RegisterPage> {
           style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: matcronPrimaryColor),
+              color: matcronPrimaryColor,
+            ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 20),
@@ -390,7 +391,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
               ),
               child: Text(
-                "Sign In",
+                "Log In",
                 style: TextStyle(
                   color: matcronPrimaryColor,
                   fontWeight: FontWeight.bold,
