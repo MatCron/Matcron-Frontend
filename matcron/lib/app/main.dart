@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_event.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
@@ -22,7 +23,6 @@ import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'features/mattress/presentation/pages/mattress_page.dart';
-
 
 Future<void> main() async {
   await initializeDependencies(); // Initialize all dependencies
@@ -114,14 +114,17 @@ class InitialScreens extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  final MattressEntity? searchedEntity;
+  final int startPageIndex; // Added parameter for the start page index
+
+  const MyHomePage({super.key, this.searchedEntity, this.startPageIndex = 0});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _pageController = PageController(initialPage: 0);
+  final _pageController = PageController(); // No initial page here
   final NotchBottomBarController _controller =
       NotchBottomBarController(index: 0);
 
@@ -129,6 +132,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// To track the selected page index
   int _selectedPageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPageIndex = widget
+        .startPageIndex; // Set initial page index from the widget parameter// Jump to the selected page index
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _pageController
+          .jumpToPage(_selectedPageIndex); // Jump to the desired page
+    });
+  }
 
   @override
   void dispose() {
@@ -143,14 +157,15 @@ class _MyHomePageState extends State<MyHomePage> {
       DashboardPage(controller: _controller),
       BlocProvider(
         create: (context) => sl<RemoteMattressBloc>()..add(GetAllMattresses()),
-        child: MattressPage(),
+        child: MattressPage(widget.searchedEntity),
       ),
       BlocProvider(
         create: (context) => sl<RemoteTypeBloc>()..add(GetTypesTiles()),
         child: MattressTypePage(),
       ),
       BlocProvider(
-        create: (context) => sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
+        create: (context) =>
+            sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
         child: OrganizationPage(),
       ),
     ];
@@ -166,15 +181,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor:
-            HexColor("#E5E5E5"), // Set background color for the whole app
+        scaffoldBackgroundColor: HexColor("#E5E5E5"),
       ),
       home: Scaffold(
         body: Column(
           children: [
-            Header(
-              title: pageTitles[_selectedPageIndex]
-            ), // Pass the dynamic title
+            Header(title: pageTitles[_selectedPageIndex]),
             Expanded(
               child: PageView(
                 controller: _pageController,

@@ -14,7 +14,7 @@ class _TypeApiService implements TypeApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://matcron.duckdns.org/api/mattresstype';
+    baseUrl ??= 'https://matcron.online/api/mattresstype';
   }
 
   final Dio _dio;
@@ -86,7 +86,6 @@ class _TypeApiService implements TypeApiService {
         )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late TypeModel _value;
-    //print(_result.data!['data']);
     try {
       _value = TypeModel.fromJson(_result.data!['data']);
     } on Object catch (e, s) {
@@ -95,6 +94,33 @@ class _TypeApiService implements TypeApiService {
     }
     final httpResponse = HttpResponse(_value, _result);
     return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<void>> addType({required TypeModel model, required String token}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = model.toJson();
+    final _options = _setStreamType<HttpResponse<void>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<void>(_options);
+    return HttpResponse(_result.data, _result);
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

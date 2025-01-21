@@ -14,7 +14,7 @@ class _MattressApiService implements MattressApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://matcron.duckdns.org/api/mattress';
+    baseUrl ??= 'https://matcron.online/api/mattress';
   }
 
   final Dio _dio;

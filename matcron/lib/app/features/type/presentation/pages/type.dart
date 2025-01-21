@@ -51,6 +51,8 @@ class MattressTypePageState extends State<MattressTypePage> {
     );
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,6 +92,8 @@ class MattressTypePageState extends State<MattressTypePage> {
             // Search bar
             custom.SearchBar(
               placeholder: "Search Mattress Type",
+              searchMattress: (m) => {},
+              canRefreshList: false,
               onSearchChanged: (query) {
                 setState(() {
                   filteredTypes = mattressTypes
@@ -111,7 +115,8 @@ class MattressTypePageState extends State<MattressTypePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AddMattressTypePage()),
+                        builder: (context) => AddMattressTypePage()
+                    ),
                   );
                 },
                 style: ElevatedButton.styleFrom(
