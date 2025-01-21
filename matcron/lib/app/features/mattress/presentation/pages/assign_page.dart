@@ -4,6 +4,8 @@ import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:vibration/vibration.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 class AssignPage extends StatefulWidget {
   final String? uid;
@@ -18,6 +20,7 @@ class AssignPageState extends State<AssignPage> {
   bool isScanning = true; // NFC scanning status
   bool isWriting = false; // NFC writing status
   bool isFinished = false; // Finished writing status
+   final AudioPlayer _audioPlayer = AudioPlayer(); // Audio player instance
 
   @override
   void initState() {
@@ -55,6 +58,12 @@ class AssignPageState extends State<AssignPage> {
         try {
           // Write the message to the tag
           await ndef.write(message);
+            // Vibrate on success
+          if (await Vibration.hasVibrator() ?? false) {
+            Vibration.vibrate(duration: 500);
+          }
+            // Play success sound
+          await _audioPlayer.play(AssetSource('assets/sounds/sucess2.wav'));
           // Successfully written to the tag
           setState(() {
             isFinished = true;
@@ -80,24 +89,52 @@ class AssignPageState extends State<AssignPage> {
           setState(() {
             isWriting = false;
           });
-          NfcManager.instance
-              .stopSession(errorMessage: "Error while writing to badge");
-        }
-      } else {
-        // Tag is not writable
-        setState(() {
-          isScanning = false;
-          isWriting = false;
-          isFinished = false;
-        });
-        NfcManager.instance.stopSession(errorMessage: "Tag is not writable");
+                  // Vibrate and play error sound
+        _handleError("Error while writing to badge");
       }
-    });
+    } else {
+      // Tag is not writable
+      setState(() {
+        isScanning = false;
+        isWriting = false;
+        isFinished = false;
+      });
+
+      // Vibrate and play error sound
+      _handleError("Tag is not writable");
+    }
+  });
+}
+
+  // Handle error scenarios with vibration and sound
+void _handleError(String errorMessage) async {
+  // Vibrate on error
+  if (await Vibration.hasVibrator() ?? false) {
+    Vibration.vibrate(duration: 1000);
   }
+
+  // Play error sound
+  try {
+    await _audioPlayer.play(AssetSource('assets/sounds/error.wav'));
+  } catch (e) {
+    debugPrint("Error playing sound: $e");
+  }
+
+  // Stop NFC session with error message
+  NfcManager.instance.stopSession(errorMessage: errorMessage);
+
+  // Update UI
+  setState(() {
+    isScanning = false;
+    isWriting = false;
+    isFinished = false;
+  });
+}
 
   @override
   void dispose() {
     // Ensure the NFC session is stopped when the page is disposed
+   _audioPlayer.dispose();
     super.dispose();
   }
 
