@@ -33,6 +33,7 @@ dependencies:
   flutter_secure_storage: ^8.1.0
   nfc_manager: ^3.5.0
   intl: ^0.20.1
+  dartz: ^0.10.1
 
 dev_dependencies:
   integration_test:
@@ -80,3 +81,5 @@ flutter:
     - assets/images/transfer.png
     - assets/images/assign_page.png
     - assets/images/minus-button.png
+    - assets/images/exportIcon.png
+    - assets/images/importIcon.png

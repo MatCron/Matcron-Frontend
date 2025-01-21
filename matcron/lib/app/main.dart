@@ -3,12 +3,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:matcron/app/features/group/presentation/pages/group_page.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_event.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
 import 'package:matcron/app/features/organization/presentation/pages/organizations.dart';
-import 'package:matcron/app/features/group/presentation/pages/group_page.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/pages/type.dart';
@@ -44,6 +44,7 @@ class MyApp extends StatelessWidget {
 
       //home: const MattressRecyclingInfoPage(),
       home: const SplashScreenWrapper(),
+   
     );
   }
 }
@@ -72,13 +73,13 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
     if (!mounted) return;
 
     if (token != null && token.isNotEmpty) {
-
+      // Token exists: Navigate to MyHomePage
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const MyHomePage()),
       );
     } else {
-
+      // No token: Navigate to InitialScreens
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const InitialScreens()),
@@ -195,13 +196,13 @@ class _MyHomePageState extends State<MyHomePage> {
         bottomNavigationBar: bottomBarPages.length <= maxCount
             ? AnimatedNotchBottomBar(
                 notchBottomBarController: _controller,
-                color:  const Color.fromARGB(226, 255, 255, 255),
+                   color: Color.fromRGBO(255, 255, 255, 1),
                 showLabel: true,
                 textOverflow: TextOverflow.visible,
                 maxLine: 1,
                 shadowElevation: 5,
                 kBottomRadius: 28.0,
-                notchColor: const Color.fromARGB(226, 255, 255, 255),
+                notchColor: const Color.fromARGB(227, 255, 255, 255),
                 removeMargins: false,
                 bottomBarWidth: 500,
                 showShadow: false,
@@ -213,30 +214,29 @@ class _MyHomePageState extends State<MyHomePage> {
                     inActiveItem: Icon(Icons.home_filled,
                         color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.home_filled,
-                      color:Colors.blue),
-                      //  backgroundColor: Colors.blue,
+                          color: Color.fromRGBO(30, 167, 169, 1)),
                     itemLabel: 'Dashboard',
                   ),
                   BottomBarItem(
                     inActiveItem: Icon(Icons.star,
                         color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.star,
-                     color:Colors.blue),
+                        color: Color.fromRGBO(30, 167, 169, 1)),
                     itemLabel: 'Mattress',
                   ),
                   BottomBarItem(
                     inActiveItem: Icon(Icons.settings,
-                         color: Color.fromARGB(255, 0, 0, 0)),
+                        color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.settings,
-                       color:Colors.blue),
+                          color: Color.fromRGBO(30, 167, 169, 1)),
                     itemLabel: 'Type',
                   ),
                   BottomBarItem(
                     inActiveItem: Icon(Icons.person,
-                         color: Color.fromARGB(255, 0, 0, 0)),
+                        color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.person,
-                       color:Colors.blue),
-                    itemLabel: 'Group',
+                         color: Color.fromRGBO(30, 167, 169, 1)),
+                    itemLabel: 'Firm',
                   ),
                 ],
                 onTap: (index) {

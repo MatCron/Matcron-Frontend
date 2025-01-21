@@ -1,17 +1,192 @@
 
 
-import 'package:flutter/material.dart';
-import 'package:matcron/config/theme/app_theme.dart';
-import 'package:flutter/material.dart';
-import 'package:matcron/config/theme/app_theme.dart';
-import 'package:matcron/core/constants/constants.dart';
-import 'package:flutter/material.dart';
-import 'package:matcron/config/theme/app_theme.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:matcron/config/theme/app_theme.dart';
+// import 'package:flutter/material.dart';
+// import 'package:matcron/config/theme/app_theme.dart';
+// import 'package:flutter/material.dart';
+// import 'package:matcron/config/theme/app_theme.dart';
+// import 'package:flutter/material.dart';
+// import 'package:matcron/config/theme/app_theme.dart';
+// import 'package:matcron/core/constants/constants.dart';
+// import 'package:flutter/material.dart';
+// import 'package:matcron/config/theme/app_theme.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/material.dart';
+// import 'package:matcron/config/theme/app_theme.dart';
 
-class GroupDetailsPage extends StatelessWidget {
+// class GroupDetailsPage extends StatefulWidget {
+//   final String groupName;
+//   final String date;
+//   final String fromOrganization;
+//   final String toOrganization;
+//   final String fromDate;
+//   final String toDate;
+//   final List<Map<String, String>> mattresses;
+
+//   const GroupDetailsPage({
+//     super.key,
+//     required this.groupName,
+//     required this.date,
+//     required this.fromOrganization,
+//     required this.toOrganization,
+//     required this.fromDate,
+//     required this.toDate,
+//     required this.mattresses,
+//   });
+
+//   @override
+//   GroupDetailsPageState createState() => GroupDetailsPageState();
+// }
+
+// class GroupDetailsPageState extends State<GroupDetailsPage> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(widget.groupName),
+//         backgroundColor: matcronPrimaryColor,
+//       ),
+//       body: Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+//         child: Column(
+//           crossAxisAlignment: CrossAxisAlignment.start,
+//           children: [
+//             // Header with group name and date
+//             Text(
+//               "Group Details",
+//               style: const TextStyle(
+//                 fontSize: 24,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             const SizedBox(height: 10),
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 Text("Date: ${widget.date}",
+//                     style: const TextStyle(
+//                       fontSize: 16,
+//                       color: Colors.grey,
+//                     )),
+//               ],
+//             ),
+//             const SizedBox(height: 20),
+//             // From and To Information
+//             Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: [
+//                 _buildInfoBox(
+//                   title: "From",
+//                   organization: widget.fromOrganization,
+//                   date: widget.fromDate,
+//                   icon: Icons.upload,
+//                 ),
+//                 _buildInfoBox(
+//                   title: "To",
+//                   organization: widget.toOrganization,
+//                   date: widget.toDate,
+//                   icon: Icons.download,
+//                 ),
+//               ],
+//             ),
+//             const SizedBox(height: 20),
+//             // Mattress List Header
+//             Text(
+//               "Mattresses (${widget.mattresses.length})",
+//               style: const TextStyle(
+//                 fontSize: 18,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             const SizedBox(height: 10),
+//             // Mattress List
+//             Expanded(
+//               child: ListView.builder(
+//                 itemCount: widget.mattresses.length,
+//                 itemBuilder: (context, index) {
+//                   final mattress = widget.mattresses[index];
+//                   return Container(
+//                     margin: const EdgeInsets.symmetric(vertical: 8.0),
+//                     padding: const EdgeInsets.all(16.0),
+//                     decoration: BoxDecoration(
+//                       color: Colors.grey[200],
+//                       borderRadius: BorderRadius.circular(8.0),
+//                     ),
+//                     child: Row(
+//                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                       children: [
+//                         Expanded(
+//                           child: Column(
+//                             crossAxisAlignment: CrossAxisAlignment.start,
+//                             children: [
+//                               Text(
+//                                 mattress["type"] ?? "Unknown",
+//                                 style: const TextStyle(
+//                                   fontSize: 16,
+//                                   fontWeight: FontWeight.bold,
+//                                 ),
+//                               ),
+//                               const SizedBox(height: 5),
+//                               Text(
+//                                 mattress["location"] ?? "Unknown",
+//                                 style: const TextStyle(
+//                                   fontSize: 14,
+//                                   color: Colors.grey,
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ),
+//                       ],
+//                     ),
+//                   );
+//                 },
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+
+//   Widget _buildInfoBox({
+//     required String title,
+//     required String organization,
+//     required String date,
+//     required IconData icon,
+//   }) {
+//     return Expanded(
+//       child: Container(
+//         padding: const EdgeInsets.all(16.0),
+//         decoration: BoxDecoration(
+//           color: Colors.grey[200],
+//           borderRadius: BorderRadius.circular(10.0),
+//         ),
+//         child: Column(
+//           children: [
+//             Icon(icon, color: matcronPrimaryColor, size: 30),
+//             const SizedBox(height: 8),
+//             Text(title, style: const TextStyle(fontSize: 16)),
+//             const SizedBox(height: 4),
+//             Text(
+//               organization,
+//               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+//             ),
+//             const SizedBox(height: 4),
+//             Text(
+//               date,
+//               style: const TextStyle(fontSize: 14, color: Colors.grey),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+import 'package:flutter/material.dart';
+import 'package:matcron/core/constants/constants.dart';
+
+class GroupDetailsPage extends StatefulWidget {
   final String groupName;
   final String date;
   final String fromOrganization;
@@ -21,7 +196,7 @@ class GroupDetailsPage extends StatelessWidget {
   final List<Map<String, String>> mattresses;
 
   const GroupDetailsPage({
-    super.key,
+    Key? key,
     required this.groupName,
     required this.date,
     required this.fromOrganization,
@@ -29,162 +204,199 @@ class GroupDetailsPage extends StatelessWidget {
     required this.fromDate,
     required this.toDate,
     required this.mattresses,
-  });
+  }) : super(key: key);
+
+  @override
+  GroupDetailsPageState createState() => GroupDetailsPageState();
+}
+
+class GroupDetailsPageState extends State<GroupDetailsPage> {
+  void _removeMattress(int index) {
+    setState(() {
+      widget.mattresses.removeAt(index);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(groupName),
-        backgroundColor: matcronPrimaryColor,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        title: Text(
+          widget.groupName,
+          style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Sender and Receiver Information
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildInfoBox(
-                  icon: Icons.upload_outlined,
-                  iconColor: matcronPrimaryColor,
-                  title: "From",
-                  organization: fromOrganization,
-                  date: fromDate,
-                ),
-                Column(
-                  children: [
-                    Icon(
-                      Icons.arrow_forward,
-                      color: Colors.grey[600],
-                      size: 30.0,
-                    ),
-                    const SizedBox(height: 4.0),
-                    Text(
-                      "Sending",
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-                _buildInfoBox(
-                  icon: Icons.download_outlined,
-                  iconColor: Colors.green,
-                  title: "To",
-                  organization: toOrganization,
-                  date: toDate,
-                ),
-              ],
-            ),
-            const SizedBox(height: 20.0),
-            // Mattresses List Heading
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Mattresses",
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  "${mattresses.length} mattresses",
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            // Mattresses List
-            Expanded(
-              child: ListView.builder(
-                itemCount: mattresses.length + 1, // Includes Add Mattress Button
-                itemBuilder: (context, index) {
-                  if (index < mattresses.length) {
-                    final mattress = mattresses[index];
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8.0),
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  mattress["type"] ?? "Unknown Type",
-                                  style: const TextStyle(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                                const SizedBox(height: 4.0),
-                                Text(
-                                  mattress["location"] ?? "Unknown Location",
-                                  style: TextStyle(
-                                    fontSize: 12.0,
-                                    color: Colors.grey[600],
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 1,
-                                ),
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.remove_circle,
-                              color: Colors.red,
-                            ),
-                            onPressed: () {
-                              _removeMattress(context, mattress);
-                            },
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    // Add Mattress Button
-                    return GestureDetector(
-                      onTap: () {
-                        // Handle Add Mattress Action
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(vertical: 8.0),
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: matcronPrimaryColor,
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "Add Mattress",
-                            style: const TextStyle(
-                              fontSize: 16.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  }
-                },
+            // Header with group name and date
+            const Text(
+              "Group Details",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              "Date: ${widget.date}",
+              style: const TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+
+            // From and To section with an arrow in between
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _buildInfoBox(
+                  title: "From",
+                  organization: widget.fromOrganization,
+                  date: widget.fromDate,
+                  icon: Icons.upload_rounded,
+                ),
+                const SizedBox(width: 8),
+                Icon(Icons.arrow_forward, color: matcronPrimaryColor, size: 30),
+                const SizedBox(width: 8),
+                _buildInfoBox(
+                  title: "To",
+                  organization: widget.toOrganization,
+                  date: widget.toDate,
+                  icon: Icons.download_rounded,
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+            // Mattress List Header
+            Text(
+              "Mattresses (${widget.mattresses.length})",
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            // Mattress List
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: widget.mattresses.length,
+              itemBuilder: (context, index) {
+                final mattress = widget.mattresses[index];
+                return Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8.0),
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey[300]!),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.03),
+                        blurRadius: 6,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Mattress Details
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              mattress["type"] ?? "Unknown",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 5),
+                            Text(
+                              mattress["location"] ?? "Unknown",
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      // Remove Button
+                      GestureDetector(
+                        onTap: () {
+                          _removeMattress(index);
+                        },
+                        child: Image.asset(
+                          "assets/images/minus-button.png",
+                          width: 24,
+                          height: 24,
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            const SizedBox(height: 20),
+
+            // Bottom Buttons
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      // Transfer out logic
+                    },
+                    icon: const Icon(Icons.exit_to_app, color: Colors.white),
+                    label: const Text(
+                      "Transfer Out",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: matcronPrimaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      // Add mattresses logic
+                    },
+                    icon: const Icon(Icons.add, color: Colors.white),
+                    label: const Text(
+                      "Add Mattresses",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: matcronPrimaryColor,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -192,46 +404,49 @@ class GroupDetailsPage extends StatelessWidget {
     );
   }
 
+  // Helper to build info boxes (From/To)
   Widget _buildInfoBox({
-    required IconData icon,
-    required Color iconColor,
     required String title,
     required String organization,
     required String date,
+    required IconData icon,
   }) {
-    return Container(
-      width: 140.0,
-      padding: const EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: iconColor, size: 30.0),
-          const SizedBox(height: 8.0),
-          Text(title, style: TextStyle(fontSize: 12.0, color: Colors.grey[600])),
-          const SizedBox(height: 4.0),
-          Text(organization,
-              style: const TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.bold,
-              )),
-          const SizedBox(height: 4.0),
-          Text(date,
-              style: TextStyle(
-                fontSize: 12.0,
-                color: Colors.grey[600],
-              )),
-        ],
-      ),
-    );
-  }
-
-  void _removeMattress(BuildContext context, Map<String, String> mattress) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("${mattress["type"]} removed from group."),
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.grey[300]!),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 6,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: Colors.blue, size: 30),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              organization,
+              style: const TextStyle(fontSize: 14, color: Colors.black),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 4),
+            Text(
+              date,
+              style: const TextStyle(fontSize: 14, color: Colors.grey),
+            ),
+          ],
+        ),
       ),
     );
   }
