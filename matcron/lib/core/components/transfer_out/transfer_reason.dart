@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matcron/config/theme/app_theme.dart';
+import 'package:matcron/core/components/transfer_out/transfer_confirm.dart';
 
 class TransferOutMattressPage extends StatelessWidget {
   const TransferOutMattressPage({super.key});
@@ -54,11 +55,11 @@ class TransferOutMattressPage extends StatelessWidget {
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                 ),
-                hint: const Text("Select Purpose"),
+                hint: const Text("Select Group"),
                 items: <String>[
-                  'Washing',
-                  'Recycling',
-                  'Delivery',
+                  'Group A',
+                  'Group B',
+                  'Group C',
                 ].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -111,7 +112,9 @@ class TransferOutMattressPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    // Handle save action
+                    Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => TransferDonePage(), 
+                  ));
                   },
                   child: const Text(
                     "Save",
