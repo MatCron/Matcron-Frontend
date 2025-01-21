@@ -130,10 +130,10 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
                     widget.isEditable
                         ? "Edit Organization"
                         : "View Organization",
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: Colors.teal,
+                      color: matcronPrimaryColor,
                     ),
                   ),
                   IconButton(
@@ -228,7 +228,7 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
                         _buildActionButton(
                           context,
                           label: "Save",
-                          color: Colors.teal,
+                          color: matcronPrimaryColor,
                           onPressed: () {
                             _saveOrganization(context);
                           },

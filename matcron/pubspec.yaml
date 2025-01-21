@@ -8,11 +8,19 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.5.3
+  sdk: ">=3.0.0 <4.0.0"
+
 
 dependencies:
   flutter:
     sdk: flutter
+
+
+  url_launcher: ^6.0.12   
+
+  vibration: ^1.7.5
+
+  audioplayers: ^6.1.0
 
   google_fonts: ^4.0.3
 
@@ -32,6 +40,7 @@ dependencies:
   encrypt: ^5.0.3
   flutter_secure_storage: ^8.1.0
   nfc_manager: ^3.5.0
+  intl: ^0.20.1
 
 dev_dependencies:
   integration_test:
@@ -79,3 +88,8 @@ flutter:
     - assets/images/transfer.png
     - assets/images/assign_page.png
     - assets/images/soap.png
+    - assets/images/scan_icon.png
+    - assets/sounds/success1.wav
+    - assets/sounds/sucess2.wav
+    - assets/sounds/notification.wav
+    - assets/sounds/error.wav

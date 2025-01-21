@@ -1,3 +1,5 @@
+import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
+
 class MattressEntity {
   String? uid;
   String? mattressTypeId;
@@ -10,6 +12,7 @@ class MattressEntity {
   DateTime? lifeCyclesEnd;
   int? daysToRotate;
   String? type;
+  MattressTypeEntity? mattressType;
 
   MattressEntity({
     this.uid,
@@ -22,7 +25,8 @@ class MattressEntity {
     this.lifeCyclesEnd,
     this.daysToRotate,
     this.location,
-    this.type
+    this.type,
+    this.mattressType,
   });
 
   MattressEntity copyWith({
@@ -35,7 +39,8 @@ class MattressEntity {
     DateTime? lifeCyclesEnd,
     int? daysToRotate,
     String? location,
-    String? type
+    String? type,
+    MattressTypeEntity? mattressType
   }) {
     return MattressEntity(
       uid: uid,
@@ -48,7 +53,8 @@ class MattressEntity {
       lifeCyclesEnd: lifeCyclesEnd ?? this.lifeCyclesEnd,
       daysToRotate: daysToRotate ?? this.daysToRotate,
       location: location ?? this.location,
-      type: type ?? this.type
+      type: type ?? this.type,
+      mattressType: mattressType ?? this.mattressType,
     );
   }
 }

@@ -8,6 +8,7 @@ import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
 import 'package:matcron/app/features/organization/presentation/pages/organizations.dart';
+import 'package:matcron/app/features/profile_settings/presentation/pages/profile_settings.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/pages/type.dart';
@@ -43,9 +44,7 @@ class MyApp extends StatelessWidget {
       ),
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
 
-       //home: const MattressRecyclingInfoPage(),
-       // home: const SplashScreenWrapper(),
-       home: TransferDonePage(),
+      home: const SplashScreenWrapper(),
     );
   }
 }

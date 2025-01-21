@@ -84,4 +84,30 @@ class MattressRepositoryImpl implements MattressRepository {
         return DataFailed(e);
       }
     }
+    
+      @override
+      Future<DataState<void>> updateMattress(String id, MattressEntity entity) async{
+        final String token = 'Bearer ${await AuthorizationService().getToken()}';
+
+        try {
+        final httpResponse = await _mattressApiService.updateMattress(id: id, model: MattressModel.fromEntity(entity), token: token);
+
+        if (httpResponse.response.statusCode == HttpStatus.ok) {
+          return DataSuccess(httpResponse.data);
+        } else {
+          return DataFailed(
+            DioException(
+              error: httpResponse.response.statusMessage,
+              response: httpResponse.response,
+              type: DioExceptionType.badResponse,
+              requestOptions: httpResponse.response.requestOptions, 
+            )
+          );
+        }
+
+      } on DioException catch(e) {
+       // print(e.requestOptions.headers);
+        return DataFailed(e);
+      }
+      }
 }
