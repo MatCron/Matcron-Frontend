@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:matcron/config/theme/app_theme.dart';
 
 class TransferOutMattressPage extends StatelessWidget {
   const TransferOutMattressPage({super.key});
@@ -6,7 +7,7 @@ class TransferOutMattressPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: HexColor("#E5E5E5"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -46,7 +47,7 @@ class TransferOutMattressPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               decoration: BoxDecoration(
-                color: Colors.lightBlueAccent.shade100.withOpacity(0.5),
+                color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
               child: DropdownButtonFormField<String>(

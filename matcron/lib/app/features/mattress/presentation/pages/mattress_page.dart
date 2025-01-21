@@ -5,12 +5,12 @@ import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_event.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_state.dart';
 import 'package:matcron/app/features/mattress/presentation/pages/add_mattress_page.dart';
-import 'package:matcron/app/features/mattress/presentation/pages/import_page.dart';
 import 'package:matcron/app/features/mattress/presentation/pages/scan_page.dart';
 import 'package:matcron/app/features/mattress/presentation/widgets/bottom_drawer.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
+import 'package:matcron/core/components/transfer_out/transfer_reason.dart';
 import 'package:matcron/core/constants/constants.dart';
 import  'package:matcron/core/components/search_bar/search_bar.dart' as custom;
 import 'package:intl/intl.dart';
@@ -113,7 +113,14 @@ class MattressPageState extends State<MattressPage> {
               if (selectedMattresses.isNotEmpty)
                 ElevatedButton(
                   onPressed: () {
-                    //print("Transfer Out: ${selectedMattresses.length} items");
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BlocProvider<RemoteMattressBloc>(
+                          create: (context) => sl<RemoteMattressBloc>(),
+                          child: TransferOutMattressPage(),
+                        ),
+                      ));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: matcronPrimaryColor,
