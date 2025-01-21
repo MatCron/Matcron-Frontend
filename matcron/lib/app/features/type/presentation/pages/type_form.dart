@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:matcron/app/features/LBH_info/presentation/bloc/pages/lbh_info.dart';
 import 'package:matcron/app/features/recycling_info/presentation/recycling_info.dart';
-import 'package:matcron/app/features/rotation_info/presentation/pages/rotation_info.dart';
+import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/core/components/header/header.dart'; // Adjust import as needed
 
 class AddMattressTypePage extends StatefulWidget {
-  const AddMattressTypePage({super.key});
+  const AddMattressTypePage({
+    super.key,
+  });
 
   @override
   AddMattressTypePageState createState() => AddMattressTypePageState();
@@ -50,9 +53,22 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
 
   void _onAddMattressTypePressed() {
     if (_formKey.currentState!.validate()) {
-      // Save logic or API call here
-      Navigator.pop(context);
+      MattressTypeEntity entity = MattressTypeEntity(
+        name: _typeNameController.text.trim(),
+        width: double.tryParse(_widthController.text.trim()),
+        length: double.tryParse(_lengthController.text.trim()),
+        height: double.tryParse(_heightController.text.trim()),
+        composition: _materialCompositionController.text.trim(),
+        rotationInterval: double.tryParse(_rotationTimerController.text.trim()),
+        recyclingDetails: _recycleInfoController.text.trim(),
+        expectedLifespan: _lifeSpanValue != null
+            ? double.tryParse(_lifeSpanValue!.split(' ').first)
+            : null,
+        warrantyPeriod: _washableValue == "Yes" ? 1.0 : 0.0, // Example
+      );
+
     }
+
   }
 
   @override
@@ -110,6 +126,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                           flex: 1,
                           child: TextFormField(
                             controller: _widthController,
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
                             decoration: InputDecoration(
                               labelText: "Width",
                               labelStyle: labelStyle,
@@ -133,6 +151,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                           flex: 1,
                           child: TextFormField(
                             controller: _lengthController,
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
                             decoration: InputDecoration(
                               labelText: "Length",
                               labelStyle: labelStyle,
@@ -156,6 +176,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                           flex: 1,
                           child: TextFormField(
                             controller: _heightController,
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
                             decoration: InputDecoration(
                               labelText: "Height",
                               labelStyle: labelStyle,
@@ -176,7 +198,12 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         // Info icon
                         GestureDetector(
                           onTap: () {
-                            
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const MattressDimensionsPage()),
+                            );
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -335,6 +362,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                           flex: 3,
                           child: TextFormField(
                             controller: _rotationTimerController,
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: false),
                             decoration: InputDecoration(
                               labelText: "Rotation Timer",
                               labelStyle: labelStyle,

@@ -14,7 +14,7 @@ class _AuthApiService implements AuthApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://matcron.duckdns.org/api/auth';
+    baseUrl ??= 'https://matcron.online/api/auth';
   }
 
   final Dio _dio;

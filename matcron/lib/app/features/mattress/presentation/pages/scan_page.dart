@@ -44,7 +44,7 @@ class ScanImportPageState extends State<ScanImportPage> {
           children: [
             Header(title: "Import"),
             const SizedBox(height: 20.0),
-            ProgressBar(currentStep: 2, labels: progressBarLabels),
+            ProgressBar(currentStep: 1, labels: progressBarLabels),
 
             // Center the image in the middle of the page
             Expanded(

@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
+import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
 import 'package:matcron/app/main.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/components/header/header.dart';
-import 'package:matcron/core/constants/constants.dart';
+import 'package:matcron/core/resources/data_state.dart';
+import 'package:matcron/core/resources/nfc_decoder.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
-class AssignPage extends StatefulWidget {
-  final String? uid;
+class RfidScanner extends StatefulWidget {
+  final Function(MattressEntity) searchMattress;
 
-  const AssignPage(this.uid, {super.key});
+  const RfidScanner({super.key, required this.searchMattress});
 
   @override
-  AssignPageState createState() => AssignPageState();
+  RfidScannerState createState() => RfidScannerState();
 }
 
-class AssignPageState extends State<AssignPage> {
+class RfidScannerState extends State<RfidScanner> {
   bool isScanning = true; // NFC scanning status
-  bool isWriting = false; // NFC writing status
   bool isFinished = false; // Finished writing status
+  String readUid = "";
+
+  late MattressEntity mattress;
+  late MattressRepository _mattressRepository;
 
   @override
   void initState() {
     super.initState();
+    _mattressRepository = GetIt.instance<MattressRepository>();
     // Get NfcService instance
     // Start NFC session
     _startNfcSession();
@@ -31,66 +39,38 @@ class AssignPageState extends State<AssignPage> {
   Future<void> _startNfcSession() async {
     setState(() {
       isScanning = true;
-      isWriting = false;
       isFinished = false;
     });
 
     // Start scanning NFC tags
     NfcManager.instance.startSession(onDiscovered: (NfcTag badge) async {
-      var ndef = Ndef.from(badge);
+      try {
+        var ndef = Ndef.from(badge);
+        if (ndef != null && ndef.cachedMessage != null) {
+          var uid = decodeNfcPayload(ndef.cachedMessage!.records[0].payload);
 
-      if (ndef != null && ndef.isWritable) {
-        // Change state for writing
-        setState(() {
-          isScanning = false;
-          isWriting = true;
-        });
+          var state = await _mattressRepository.getMattressById(uid);
+          if (state is DataSuccess) {
+            mattress = state.data!;
+          }
 
-        // Simulate writing process
-        await Future.delayed(const Duration(seconds: 2));
-
-        NdefRecord ndefRecord = NdefRecord.createText(widget.uid!);
-        NdefMessage message = NdefMessage([ndefRecord]);
-
-        try {
-          // Write the message to the tag
-          await ndef.write(message);
-          // Successfully written to the tag
+          NfcManager.instance.stopSession();
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MyHomePage(searchedEntity: mattress)
+              ));
+        } else {
           setState(() {
-            isFinished = true;
-            isWriting = false;
+            isScanning = false;
           });
-
-          // Redirect after writing is finished and ensure no back navigation
-          Future.delayed(const Duration(seconds: 2), () {
-  // Check if the widget is still mounted before attempting to navigate
-  if (mounted) {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => MyHomePage(startPageIndex: 1,),
-      ),
-      (Route<dynamic> route) => false, // Remove all previous routes
-    );
-  }
-});
-
-        } catch (e) {
-          // Error during writing
-          setState(() {
-            isWriting = false;
-          });
-          NfcManager.instance
-              .stopSession(errorMessage: "Error while writing to badge");
+          NfcManager.instance.stopSession(errorMessage: "Failed to read tag.");
         }
-      } else {
-        // Tag is not writable
+      } catch (e) {
         setState(() {
           isScanning = false;
-          isWriting = false;
-          isFinished = false;
         });
-        NfcManager.instance.stopSession(errorMessage: "Tag is not writable");
+        NfcManager.instance.stopSession(errorMessage: "Error reading tag.");
       }
     });
   }
@@ -110,7 +90,7 @@ class AssignPageState extends State<AssignPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Header(title: 'Mattress'),
+              Header(title: 'Search Mattress'),
               const SizedBox(height: 20.0),
 
               // Block with rounded edges and picture
@@ -151,24 +131,6 @@ class AssignPageState extends State<AssignPage> {
                 ),
                 const SizedBox(height: 10),
                 Text("Tap On Mattress RFID..."),
-              ] else if (isWriting) ...[
-                // Writing state UI
-                Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Text("Processing..."),
-              ] else if (isFinished) ...[
-                // Finished writing state UI
-                Icon(
-                  Icons.check_circle,
-                  color: Colors.green,
-                  size: 50,
-                ),
-                const SizedBox(height: 10),
-                Text("Finished writing to NFC tag!"),
               ] else ...[
                 // Error or no tag detected
                 Center(

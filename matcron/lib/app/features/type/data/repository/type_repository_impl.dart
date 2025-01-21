@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:matcron/app/features/type/data/data_sources/remote/type_api_service.dart';
+import 'package:matcron/app/features/type/data/models/type_model.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/domain/repositories/type_repository.dart';
 import 'package:matcron/core/resources/authorization.dart';
@@ -41,6 +42,30 @@ class TypeRepositoryImpl implements TypeRepository {
 
     try {
       final httpResponse = await _typeApiService.getType(token: token, id: id);
+
+      if (httpResponse.response.statusCode == HttpStatus.ok) {
+        return DataSuccess(httpResponse.data);
+      } else {
+        return DataFailed(
+          DioException(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: httpResponse.response.requestOptions,
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+  
+  @override
+  Future<DataState<void>> addType(MattressTypeEntity type) async {
+    final String token = 'Bearer ${await AuthorizationService().getToken()}';
+
+    try {
+      final httpResponse = await _typeApiService.addType(token: token, model: TypeModel.fromEntity(type));
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         return DataSuccess(httpResponse.data);

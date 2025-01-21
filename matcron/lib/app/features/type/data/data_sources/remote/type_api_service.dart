@@ -15,4 +15,7 @@ abstract class TypeApiService {
   @GET('/{id}')
   Future<HttpResponse<TypeModel>> getType(
       {@Header('Authorization') required String token, @Path('id') required String id});
+
+  @POST('/')
+  Future<HttpResponse<void>> addType({@Body() required TypeModel model, @Header('Authorization') required String token});
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_state.dart';
 import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dart';
 import 'package:matcron/config/theme/app_theme.dart';
@@ -51,6 +52,8 @@ class MattressTypePageState extends State<MattressTypePage> {
     );
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,6 +93,8 @@ class MattressTypePageState extends State<MattressTypePage> {
             // Search bar
             custom.SearchBar(
               placeholder: "Search Mattress Type",
+              searchMattress: (m) => {},
+              canRefreshList: false,
               onSearchChanged: (query) {
                 setState(() {
                   filteredTypes = mattressTypes
@@ -111,7 +116,7 @@ class MattressTypePageState extends State<MattressTypePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AddMattressTypePage()
+                        builder: (context) => AddMattressTypePage()
                     ),
                   );
                 },

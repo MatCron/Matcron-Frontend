@@ -6,6 +6,7 @@ import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_state.dart';
 import 'package:matcron/app/features/mattress/presentation/pages/add_mattress_page.dart';
 import 'package:matcron/app/features/mattress/presentation/pages/import_page.dart';
+import 'package:matcron/app/features/mattress/presentation/pages/scan_page.dart';
 import 'package:matcron/app/features/mattress/presentation/widgets/bottom_drawer.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/injection_container.dart';
@@ -15,7 +16,8 @@ import  'package:matcron/core/components/search_bar/search_bar.dart' as custom;
 import 'package:intl/intl.dart';
 
 class MattressPage extends StatefulWidget {
-  const MattressPage({super.key});
+  final MattressEntity? searchedEntity;
+  const MattressPage(MattressEntity? initialSearchedEntity, {super.key, this.searchedEntity});
 
   @override
   MattressPageState createState() => MattressPageState();
@@ -27,16 +29,27 @@ class MattressPageState extends State<MattressPage> {
   List<MattressEntity> selectedMattresses = [];
   int selectedMattressIndex = -1;
   List<MattressTypeEntity> types = [];
+  bool canRefreshList = false;
 
   @override
   void initState() {
     super.initState();
     filteredMattresses = mattresses;
+
+    if (widget.searchedEntity != null) {
+      filteredMattresses.clear();
+      filteredMattresses.add(widget.searchedEntity!);
+    }
   }
 
   void _updateMattress(MattressEntity m) {
     filteredMattresses.clear();
     context.read<RemoteMattressBloc>().add(UpdateMattress(m));
+  }
+
+  void _searchMattress(MattressEntity m) {
+    filteredMattresses.clear();
+    filteredMattresses.add(m);
   }
 
   @override
@@ -75,6 +88,8 @@ class MattressPageState extends State<MattressPage> {
           // Search bar
           custom.SearchBar(
             placeholder: "Search Mattress",
+            canRefreshList: canRefreshList,
+            searchMattress: _searchMattress,
             onSearchChanged: (query) {
               setState(() {
                 filteredMattresses = mattresses
@@ -150,7 +165,7 @@ class MattressPageState extends State<MattressPage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const ImportMattressPage(),
+                        builder: (context) => const ScanImportPage(""),
                       ));
                 },
                 style: ElevatedButton.styleFrom(
