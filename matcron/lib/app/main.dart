@@ -4,6 +4,7 @@ import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/re
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
+import 'package:matcron/app/features/group/presentation/pages/group_page.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_event.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
 
       home: const SplashScreenWrapper(),
+   
     );
   }
 }
@@ -164,9 +166,8 @@ class _MyHomePageState extends State<MyHomePage> {
         child: MattressTypePage(),
       ),
       BlocProvider(
-        create: (context) =>
-            sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
-        child: OrganizationPage(),
+        create: (context) => sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
+        child: GroupPage(),
       ),
     ];
 
@@ -175,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
       "Dashboard",
       "Mattress",
       "Types",
-      "Organization",
+      "Group",
     ];
 
     return MaterialApp(
@@ -206,13 +207,13 @@ class _MyHomePageState extends State<MyHomePage> {
         bottomNavigationBar: bottomBarPages.length <= maxCount
             ? AnimatedNotchBottomBar(
                 notchBottomBarController: _controller,
-                color: matcronPrimaryColor,
+                   color: Color.fromRGBO(255, 255, 255, 1),
                 showLabel: true,
                 textOverflow: TextOverflow.visible,
                 maxLine: 1,
                 shadowElevation: 5,
                 kBottomRadius: 28.0,
-                notchColor: const Color.fromARGB(228, 197, 197, 197),
+                notchColor: const Color.fromARGB(227, 255, 255, 255),
                 removeMargins: false,
                 bottomBarWidth: 500,
                 showShadow: false,
@@ -222,30 +223,30 @@ class _MyHomePageState extends State<MyHomePage> {
                 bottomBarItems: const [
                   BottomBarItem(
                     inActiveItem: Icon(Icons.home_filled,
-                        color: Color.fromARGB(255, 248, 250, 248)),
+                        color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.home_filled,
-                        color: Color.fromRGBO(30, 167, 169, 1)),
+                          color: Color.fromRGBO(30, 167, 169, 1)),
                     itemLabel: 'Dashboard',
                   ),
                   BottomBarItem(
                     inActiveItem: Icon(Icons.star,
-                        color: Color.fromARGB(255, 248, 250, 248)),
+                        color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.star,
                         color: Color.fromRGBO(30, 167, 169, 1)),
                     itemLabel: 'Mattress',
                   ),
                   BottomBarItem(
                     inActiveItem: Icon(Icons.settings,
-                        color: Color.fromARGB(255, 248, 250, 248)),
+                        color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.settings,
-                        color: Color.fromRGBO(30, 167, 169, 1)),
+                          color: Color.fromRGBO(30, 167, 169, 1)),
                     itemLabel: 'Type',
                   ),
                   BottomBarItem(
                     inActiveItem: Icon(Icons.person,
-                        color: Color.fromARGB(255, 248, 250, 248)),
+                        color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.person,
-                        color: Color.fromRGBO(30, 167, 169, 1)),
+                         color: Color.fromRGBO(30, 167, 169, 1)),
                     itemLabel: 'Firm',
                   ),
                 ],
