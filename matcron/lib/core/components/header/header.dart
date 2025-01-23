@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:matcron/app/features/profile_settings/presentation/pages/notification.dart';
 import 'package:matcron/app/main.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/core/resources/authorization.dart';
@@ -79,19 +80,27 @@ class HeaderState extends State<Header> {
               const SizedBox(width: 10),
 
               // Notification Icon
-              Container(
-                width: 38.0,
-                height: 38.0,
-                decoration: BoxDecoration(
-                  color: matcronPrimaryColor,
-                  shape: BoxShape.circle,
+              GestureDetector(
+                onTap: () {
+                  // Navigate to NotificationPage when icon is tapped
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => NotificationsPage(), 
+                  ));
+                },
+                child: Container(
+                  width: 38.0,
+                  height: 38.0,
+                  decoration: BoxDecoration(
+                    color: matcronPrimaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.notifications,
+                    color: Colors.white,
+                    size: 20.0,
+                  ),
                 ),
-                child: const Icon(
-                  Icons.notifications,
-                  color: Colors.white,
-                  size: 20.0,
-                ),
-              ),
+              )
             ],
           ),
         ],

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:matcron/config/theme/app_theme.dart';
+import 'package:matcron/core/components/transfer_out/transfer_confirm.dart';
 
 class TransferOutMattressPage extends StatelessWidget {
   const TransferOutMattressPage({super.key});
@@ -6,7 +8,7 @@ class TransferOutMattressPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: HexColor("#E5E5E5"),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -46,18 +48,18 @@ class TransferOutMattressPage extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               decoration: BoxDecoration(
-                color: Colors.lightBlueAccent.shade100.withOpacity(0.5),
+                color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
               child: DropdownButtonFormField<String>(
                 decoration: const InputDecoration(
                   border: InputBorder.none,
                 ),
-                hint: const Text("Select Purpose"),
+                hint: const Text("Select Group"),
                 items: <String>[
-                  'Washing',
-                  'Recycling',
-                  'Delivery',
+                  'Group A',
+                  'Group B',
+                  'Group C',
                 ].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
@@ -110,7 +112,9 @@ class TransferOutMattressPage extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    // Handle save action
+                    Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => TransferDonePage(), 
+                  ));
                   },
                   child: const Text(
                     "Save",

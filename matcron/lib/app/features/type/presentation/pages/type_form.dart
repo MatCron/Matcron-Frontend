@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:matcron/app/features/LBH_info/presentation/bloc/pages/lbh_info.dart';
+import 'package:matcron/app/features/recycling_info/presentation/recycling_info.dart';
 import 'package:matcron/core/components/header/header.dart'; // Adjust import as needed
 
 class AddMattressTypePage extends StatefulWidget {
-  const AddMattressTypePage({super.key});
+  const AddMattressTypePage({
+    super.key,
+  });
 
   @override
   AddMattressTypePageState createState() => AddMattressTypePageState();
@@ -48,9 +52,22 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
 
   void _onAddMattressTypePressed() {
     if (_formKey.currentState!.validate()) {
-      // Save logic or API call here
-      Navigator.pop(context);
+      // MattressTypeEntity entity = MattressTypeEntity(
+      //   name: _typeNameController.text.trim(),
+      //   width: double.tryParse(_widthController.text.trim()),
+      //   length: double.tryParse(_lengthController.text.trim()),
+      //   height: double.tryParse(_heightController.text.trim()),
+      //   composition: _materialCompositionController.text.trim(),
+      //   rotationInterval: double.tryParse(_rotationTimerController.text.trim()),
+      //   recyclingDetails: _recycleInfoController.text.trim(),
+      //   expectedLifespan: _lifeSpanValue != null
+      //       ? double.tryParse(_lifeSpanValue!.split(' ').first)
+      //       : null,
+      //   warrantyPeriod: _washableValue == "Yes" ? 1.0 : 0.0, // Example
+      // );
+
     }
+
   }
 
   @override
@@ -110,6 +127,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                           child: TextFormField(
                             key: const ValueKey("width"),
                             controller: _widthController,
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
                             decoration: InputDecoration(
                               labelText: "Width",
                               labelStyle: labelStyle,
@@ -134,6 +153,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                           child: TextFormField(
                             key: const ValueKey("length"),
                             controller: _lengthController,
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
                             decoration: InputDecoration(
                               labelText: "Length",
                               labelStyle: labelStyle,
@@ -158,6 +179,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                           child: TextFormField(
                             key: const ValueKey("height"),
                             controller: _heightController,
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: true),
                             decoration: InputDecoration(
                               labelText: "Height",
                               labelStyle: labelStyle,
@@ -176,15 +199,24 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         ),
                         const SizedBox(width: 8),
                         // Info icon
-                        Container(
-                          decoration: BoxDecoration(
-                            color: fieldColor,
-                            shape: BoxShape.circle,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const MattressDimensionsPage()),
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: fieldColor,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(4.0),
+                            child: const Icon(Icons.info_outline,
+                                size: 20, color: Colors.black54),
                           ),
-                          padding: const EdgeInsets.all(4.0),
-                          child: const Icon(Icons.info_outline,
-                              size: 20, color: Colors.black54),
-                        ),
                       ],
                     ),
                     const SizedBox(height: 12),
@@ -221,28 +253,6 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                       },
                     ),
                     const SizedBox(height: 12),
-
-                    // Allergen Information
-                    TextFormField(
-                      key: const ValueKey("allergen_info"),
-                      controller: _allergenInfoController,
-                      decoration: InputDecoration(
-                        labelText: "Allergen Information",
-                        labelStyle: labelStyle,
-                        filled: true,
-                        fillColor: fieldColor,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
-                          borderSide: BorderSide.none,
-                        ),
-                        hintText: "Enter allergen information",
-                        hintStyle: hintTextStyle,
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 20, vertical: 14),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-
                     // Manufacturer and Life Span (dropdown)
                     Row(
                       children: [
@@ -323,15 +333,25 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         ),
                         const SizedBox(width: 8),
                         // Info icon for recycle info
-                        Container(
-                          decoration: BoxDecoration(
-                            color: fieldColor,
-                            shape: BoxShape.circle,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const MattressRecyclingInfoPage()),
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: fieldColor,
+                              shape: BoxShape.circle,
+                            ),
+                            padding: const EdgeInsets.all(4.0),
+                            margin: const EdgeInsets.only(top: 8),
+                            child: const Icon(Icons.info_outline,
+                                size: 20, color: Colors.black54),
                           ),
-                          padding: const EdgeInsets.all(4.0),
-                          margin: const EdgeInsets.only(top: 8),
-                          child: const Icon(Icons.info_outline,
-                              size: 20, color: Colors.black54),
                         ),
                       ],
                     ),
@@ -346,6 +366,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                           child: TextFormField(
                             key: const ValueKey("rotation_timer"),
                             controller: _rotationTimerController,
+                            keyboardType:
+                                TextInputType.numberWithOptions(decimal: false),
                             decoration: InputDecoration(
                               labelText: "Rotation Timer",
                               labelStyle: labelStyle,
@@ -422,7 +444,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                           ),
                         ),
                         child: const Text(
-                          "+Add Mattress Type",
+                          "+ Add Mattress Type",
                           style: TextStyle(color: Colors.white),
                         ),
                       ),

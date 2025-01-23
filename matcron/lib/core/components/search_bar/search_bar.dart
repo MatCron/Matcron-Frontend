@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:matcron/app/features/mattress/presentation/pages/scan_page.dart';
+import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
+import 'package:matcron/core/components/rid_scanner/rfid_scanner.dart';
 
 class SearchBar extends StatelessWidget {
   final Function(String)? onSearchChanged; // Callback for text changes
   final String placeholder;
+  final bool canRefreshList;
+  final Function(MattressEntity) searchMattress;
+
   const SearchBar({
     super.key,
     this.onSearchChanged, required this.placeholder,
+    required this.canRefreshList, required this.searchMattress,
   });
 
   @override
@@ -55,11 +60,10 @@ class SearchBar extends StatelessWidget {
               // },
             ),
             onPressed: () {
-              // Navigate to ScanImportPage with a "typeOfImport" parameter
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const ScanImportPage("RFID"),
+                  builder: (context) => RfidScanner(searchMattress: searchMattress),
                 ),
               );
             },
