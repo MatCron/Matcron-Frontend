@@ -65,9 +65,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
       //       : null,
       //   warrantyPeriod: _washableValue == "Yes" ? 1.0 : 0.0, // Example
       // );
-
     }
-
   }
 
   @override
@@ -217,6 +215,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                             child: const Icon(Icons.info_outline,
                                 size: 20, color: Colors.black54),
                           ),
+                        )
                       ],
                     ),
                     const SizedBox(height: 12),
