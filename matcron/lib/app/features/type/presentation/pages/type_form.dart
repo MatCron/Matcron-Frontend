@@ -93,6 +93,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                   children: [
                     // Type Name
                     TextFormField(
+                      key: const ValueKey("type_name"),
                       controller: _typeNameController,
                       decoration: InputDecoration(
                         labelText: "Type Name",
@@ -124,6 +125,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         Expanded(
                           flex: 1,
                           child: TextFormField(
+                            key: const ValueKey("width"),
                             controller: _widthController,
                             keyboardType:
                                 TextInputType.numberWithOptions(decimal: true),
@@ -149,6 +151,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         Expanded(
                           flex: 1,
                           child: TextFormField(
+                            key: const ValueKey("length"),
                             controller: _lengthController,
                             keyboardType:
                                 TextInputType.numberWithOptions(decimal: true),
@@ -174,6 +177,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         Expanded(
                           flex: 1,
                           child: TextFormField(
+                            key: const ValueKey("height"),
                             controller: _heightController,
                             keyboardType:
                                 TextInputType.numberWithOptions(decimal: true),
@@ -213,13 +217,13 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                             child: const Icon(Icons.info_outline,
                                 size: 20, color: Colors.black54),
                           ),
-                        )
                       ],
                     ),
                     const SizedBox(height: 12),
 
                     // Material Composition (max 100 words)
                     TextFormField(
+                      key: const ValueKey("material_composition"),
                       controller: _materialCompositionController,
                       maxLines: 3,
                       decoration: InputDecoration(
@@ -249,7 +253,6 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                       },
                     ),
                     const SizedBox(height: 12),
-
                     // Manufacturer and Life Span (dropdown)
                     Row(
                       children: [
@@ -299,6 +302,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         Expanded(
                           flex: 3,
                           child: TextFormField(
+                            key: const ValueKey("recycle_info"),
                             controller: _recycleInfoController,
                             maxLines: 3,
                             decoration: InputDecoration(
@@ -360,6 +364,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         Expanded(
                           flex: 3,
                           child: TextFormField(
+                            key: const ValueKey("rotation_timer"),
                             controller: _rotationTimerController,
                             keyboardType:
                                 TextInputType.numberWithOptions(decimal: false),

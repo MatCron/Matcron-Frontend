@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' ;
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
@@ -13,7 +13,7 @@ import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/components/transfer_out/transfer_reason.dart';
 import 'package:matcron/core/constants/constants.dart';
-import  'package:matcron/core/components/search_bar/search_bar.dart' as custom;
+import 'package:matcron/core/components/search_bar/search_bar.dart' as custom;
 import 'package:intl/intl.dart';
 
 class MattressPage extends StatefulWidget {
@@ -123,7 +123,7 @@ class MattressPageState extends State<MattressPage> {
               });
             },
           ),
-          
+
           const SizedBox(height: 10.0),
           // Buttons
           Row(
@@ -159,6 +159,7 @@ class MattressPageState extends State<MattressPage> {
                 ),
               const SizedBox(width: 10.0),
               ElevatedButton(
+                key: const Key('add_mattress_button'),
                 onPressed: () {
                   Navigator.push(
                       context,
@@ -404,8 +405,10 @@ class MattressPageState extends State<MattressPage> {
                                                               FontWeight.bold),
                                                     ),
                                                     TextSpan(
-                                                      text:
-                                                          DateFormat('dd-MM-yyyy').format(mattress.lifeCyclesEnd!),
+                                                      text: DateFormat(
+                                                              'dd-MM-yyyy')
+                                                          .format(mattress
+                                                              .lifeCyclesEnd!),
                                                     ),
                                                   ],
                                                 ),
@@ -439,10 +442,10 @@ class MattressPageState extends State<MattressPage> {
                                                     builder:
                                                         (BuildContext context) {
                                                       return MattressBottomDrawer(
-                                                          mattressTypes: types,
-                                                          mattress: mattress,
-                                                          onSave: _updateMattress,
-                                                          );
+                                                        mattressTypes: types,
+                                                        mattress: mattress,
+                                                        onSave: _updateMattress,
+                                                      );
                                                     },
                                                   );
                                                 },
