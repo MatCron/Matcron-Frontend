@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:matcron/app/main.dart';
@@ -9,11 +10,11 @@ void main() async {
 
   // Initialize dependencies
   try {
-    print('Initializing dependencies...');
+    debugPrint('Initializing dependencies...');
     await initializeDependencies();
-    print('Dependencies initialized successfully.');
+    debugPrint('Dependencies initialized successfully.');
   } catch (e) {
-    print('Error during dependency initialization: $e');
+    debugPrint('Error during dependency initialization: $e');
     return;
   }
   // group('MattressTypePage Tests', () {

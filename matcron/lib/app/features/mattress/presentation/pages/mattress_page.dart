@@ -137,9 +137,11 @@ class MattressPageState extends State<MattressPage> {
             // Update filteredMattresses using _searchMattress
             _searchMattress(state.data!);
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Mattress not found for UID: $uid")),
-            );
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Mattress not found for UID: $uid")),
+              );
+            }
           }
 
           NfcManager.instance.stopSession();
@@ -194,10 +196,11 @@ class MattressPageState extends State<MattressPage> {
             mattresses.clear();
             mattresses.addAll(state.mattresses!);
             types.addAll(state.types!);
-            
+
             if (currentSearchedEntity != null) {
               canRefreshList = true;
-              currentSearchedEntity = mattresses.singleWhere((element) => element.uid == currentSearchedEntity!.uid);
+              currentSearchedEntity = mattresses.singleWhere(
+                  (element) => element.uid == currentSearchedEntity!.uid);
               filteredMattresses = [currentSearchedEntity!];
             }
 
