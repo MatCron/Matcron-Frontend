@@ -1,9 +1,9 @@
+// ignore_for_file: file_names
+
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:get_it/get_it.dart';
 import 'package:matcron/app/main.dart';
-import '../tests/robots/login_robot.dart';
 import 'package:matcron/app/injection_container.dart'; // Import your dependency initializer
 import '../tests/Robots/main_navigation_robot.dart';
 import '../tests/Robots/organization_form_robot.dart';
@@ -12,11 +12,11 @@ import '../tests/Robots/organization_robot.dart';
 void main() async {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   try {
-    print('Initializing dependencies...');
+    debugPrint('Initializing dependencies...');
     await initializeDependencies();
-    print('Dependencies initialized successfully.');
+    debugPrint('Dependencies initialized successfully.');
   } catch (e) {
-    print('Error during dependency initialization: $e');
+    debugPrint('Error during dependency initialization: $e');
     return;
   }
 

@@ -58,7 +58,7 @@ class AssignPageState extends State<AssignPage> {
         try {
           // Write the message to the tag
           await ndef.write(message);
-          print("sucess");
+          //print("sucess");
             // Vibrate on success
           if (await Vibration.hasVibrator() ?? false) {
             Vibration.vibrate(duration: 500);

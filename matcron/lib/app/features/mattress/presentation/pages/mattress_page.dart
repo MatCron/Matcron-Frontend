@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
+import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_event.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_state.dart';
@@ -15,10 +17,14 @@ import 'package:matcron/core/components/transfer_out/transfer_reason.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/core/components/search_bar/search_bar.dart' as custom;
 import 'package:intl/intl.dart';
+import 'package:matcron/core/resources/data_state.dart';
+import 'package:matcron/core/resources/nfc_decoder.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
 class MattressPage extends StatefulWidget {
   final MattressEntity? searchedEntity;
-  const MattressPage(MattressEntity? initialSearchedEntity, {super.key, this.searchedEntity});
+  const MattressPage(MattressEntity? initialSearchedEntity,
+      {super.key, this.searchedEntity});
 
   @override
   MattressPageState createState() => MattressPageState();
@@ -31,26 +37,40 @@ class MattressPageState extends State<MattressPage> {
   int selectedMattressIndex = -1;
   List<MattressTypeEntity> types = [];
   bool canRefreshList = false;
+  final MattressRepository _mattressRepository =
+      GetIt.instance<MattressRepository>();
+
+  bool isScanning = true; // NFC scanning status
+  bool isFinished = false; // Finished writing status
+
+  MattressEntity? currentSearchedEntity;
 
   @override
   void initState() {
     super.initState();
     filteredMattresses = mattresses;
-
-    if (widget.searchedEntity != null) {
-      filteredMattresses.clear();
-      filteredMattresses.add(widget.searchedEntity!);
-    }
+    canRefreshList = false;
   }
 
   void _updateMattress(MattressEntity m) {
-    filteredMattresses.clear();
+    //filteredMattresses.clear();
     context.read<RemoteMattressBloc>().add(UpdateMattress(m));
   }
 
   void _searchMattress(MattressEntity m) {
-    filteredMattresses.clear();
-    filteredMattresses.add(m);
+    setState(() {
+      filteredMattresses = [m]; // Update with the single mattress
+      currentSearchedEntity = m;
+    });
+    debugPrint("Filtered Mattresses Updated: $filteredMattresses");
+  }
+
+  void _refreshList() {
+    setState(() {
+      filteredMattresses = mattresses; // Update with the single mattress
+      currentSearchedEntity = null;
+      canRefreshList = false;
+    });
   }
 
   void _openDPPBottomDrawer(BuildContext context,
@@ -71,6 +91,94 @@ class MattressPageState extends State<MattressPage> {
     );
   }
 
+  void _openRfidModal(BuildContext context) {
+    Future.delayed(Duration(milliseconds: 100), _startNfcSession);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Image.asset(
+                  'assets/images/scan_icon.png', // Adjust your image path as needed
+                  width: 275,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text("Tap On RFID..."),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _startNfcSession() async {
+    if (!mounted) return; // Ensure the widget is still in the tree
+
+    setState(() {
+      isScanning = true;
+      isFinished = false;
+    });
+
+    NfcManager.instance.startSession(onDiscovered: (NfcTag badge) async {
+      try {
+        var ndef = Ndef.from(badge);
+        if (ndef != null && ndef.cachedMessage != null) {
+          var uid = decodeNfcPayload(ndef.cachedMessage!.records[0].payload);
+          var state = await _mattressRepository.getMattressById(uid);
+          state.data!.uid = uid;
+
+          if (state is DataSuccess && state.data != null) {
+            // Update filteredMattresses using _searchMattress
+            _searchMattress(state.data!);
+          } else {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Mattress not found for UID: $uid")),
+              );
+            }
+          }
+
+          NfcManager.instance.stopSession();
+
+          // Close the dialog safely
+          if (mounted) {
+            Navigator.of(context, rootNavigator: true)
+                .pop(); // Ensure only the dialog is closed
+          }
+        } else {
+          _handleNfcError("Failed to read NFC tag.");
+        }
+      } catch (e) {
+        _handleNfcError("Error reading NFC tag: $e");
+      }
+    });
+  }
+
+  void _handleNfcError(String errorMessage) {
+    if (!mounted) return;
+
+    setState(() {
+      isScanning = false;
+    });
+
+    NfcManager.instance.stopSession(errorMessage: errorMessage);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(errorMessage)),
+    );
+
+    // Close the dialog if still visible
+    if (Navigator.canPop(context)) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,6 +196,14 @@ class MattressPageState extends State<MattressPage> {
             mattresses.clear();
             mattresses.addAll(state.mattresses!);
             types.addAll(state.types!);
+
+            if (currentSearchedEntity != null) {
+              canRefreshList = true;
+              currentSearchedEntity = mattresses.singleWhere(
+                  (element) => element.uid == currentSearchedEntity!.uid);
+              filteredMattresses = [currentSearchedEntity!];
+            }
+
             return _buildDoneState(context);
           }
 
@@ -108,7 +224,8 @@ class MattressPageState extends State<MattressPage> {
           custom.SearchBar(
             placeholder: "Search Mattress",
             canRefreshList: canRefreshList,
-            searchMattress: _searchMattress,
+            searchMattress: () => _openRfidModal(context),
+            refreshList: () => _refreshList(),
             onSearchChanged: (query) {
               setState(() {
                 filteredMattresses = mattresses
@@ -133,13 +250,14 @@ class MattressPageState extends State<MattressPage> {
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BlocProvider<RemoteMattressBloc>(
-                          create: (context) => sl<RemoteMattressBloc>(),
-                          child: TransferOutMattressPage(),
-                        ),
-                      ));
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BlocProvider<RemoteMattressBloc>(
+                            create: (context) => sl<RemoteMattressBloc>(),
+                            child: TransferOutMattressPage(),
+                          ),
+                        ));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: matcronPrimaryColor,
@@ -469,7 +587,10 @@ class MattressPageState extends State<MattressPage> {
                                               const SizedBox(width: 5.0),
                                               ElevatedButton(
                                                 onPressed: () {
-                                                  _openDPPBottomDrawer(context, type: mattress.mattressType!, isEditable: false);
+                                                  _openDPPBottomDrawer(context,
+                                                      type: mattress
+                                                          .mattressType!,
+                                                      isEditable: false);
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor:

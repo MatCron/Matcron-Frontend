@@ -1,25 +1,22 @@
+// ignore_for_file: file_names
+
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:integration_test/integration_test.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:get_it/get_it.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:matcron/app/main.dart';
-import '../tests/robots/login_robot.dart';
-import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/injection_container.dart'; // Import your dependency initializer
-import 'Robots/type_robot.dart';
-import '../tests/Robots/main_navigation_robot.dart';
+//import '../tests/Robots/main_navigation_robot.dart';
 
 void main() async {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   // Initialize dependencies
   try {
-    print('Initializing dependencies...');
+    debugPrint('Initializing dependencies...');
     await initializeDependencies();
-    print('Dependencies initialized successfully.');
+    debugPrint('Dependencies initialized successfully.');
   } catch (e) {
-    print('Error during dependency initialization: $e');
+    debugPrint('Error during dependency initialization: $e');
     return;
   }
   // group('MattressTypePage Tests', () {
@@ -54,7 +51,7 @@ void main() async {
 
     // Initialize the robot
     //final robot = MattressTypeRobot(tester);
-    final mainNavigationRobot = MainNavigationRobot(tester);
+    //final mainNavigationRobot = MainNavigationRobot(tester);
 
     // await mainNavigationRobot.tapTypesItem();
 

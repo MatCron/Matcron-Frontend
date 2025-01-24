@@ -196,7 +196,7 @@ class GroupDetailsPage extends StatefulWidget {
   final List<Map<String, String>> mattresses;
 
   const GroupDetailsPage({
-    Key? key,
+    super.key,
     required this.groupName,
     required this.date,
     required this.fromOrganization,
@@ -204,7 +204,7 @@ class GroupDetailsPage extends StatefulWidget {
     required this.fromDate,
     required this.toDate,
     required this.mattresses,
-  }) : super(key: key);
+  });
 
   @override
   GroupDetailsPageState createState() => GroupDetailsPageState();

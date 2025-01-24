@@ -352,17 +352,9 @@
 import 'package:flutter/material.dart';
 import '../widgets/add_group_drawer.dart';
 import '../widgets/group_card_widget.dart';
-import 'package:flutter/material.dart';
 import 'package:matcron/core/constants/constants.dart';
-import '../widgets/add_group_drawer.dart';
-import '../widgets/group_card_widget.dart';
 import '../widgets/group_details_page.dart';
-import 'package:flutter/material.dart';// Make sure this import points to your new GroupDetailsPage file
-import 'package:flutter/material.dart';
-import '../widgets/add_group_drawer.dart';
-import '../widgets/group_card_widget.dart';
 
-import 'package:matcron/core/constants/constants.dart';
 
 class GroupPage extends StatefulWidget {
   const GroupPage({super.key});
