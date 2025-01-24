@@ -64,6 +64,8 @@ class AddMattressPageState extends State<AddMattressPage> {
   }
 
   Widget _buildPage(BuildContext context) {
+    final uniqueMattressTypes = widget.mattressTypes.toSet().toList();
+
     return Scaffold(
       body: Container(
         color: HexColor("#E5E5E5"),
@@ -145,7 +147,7 @@ class AddMattressPageState extends State<AddMattressPage> {
                       }
                     },
                     items: [
-                      ...widget.mattressTypes.map(
+                      ...uniqueMattressTypes.map(
                         (type) => DropdownMenuItem<String>(
                           value: type.id,
                           child: RichText(

@@ -7,7 +7,7 @@ import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dar
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/app/features/type/presentation/pages/type_form.dart';
-import  'package:matcron/core/components/search_bar/search_bar.dart' as custom;
+import 'package:matcron/core/components/search_bar/search_bar.dart' as custom;
 
 class MattressTypePage extends StatefulWidget {
   const MattressTypePage({super.key});
@@ -51,8 +51,6 @@ class MattressTypePageState extends State<MattressTypePage> {
     );
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,21 +88,20 @@ class MattressTypePageState extends State<MattressTypePage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Search bar
-            custom.SearchBar(
-              placeholder: "Search Mattress Type",
-              searchMattress: (m) => {},
-              canRefreshList: false,
-              onSearchChanged: (query) {
-                setState(() {
-                  filteredTypes = mattressTypes
-                      .where((type) => type.name!
-                          .toLowerCase()
-                          .contains(query.toLowerCase()))
-                      .toList();
-                });
-              },
-         
-            ),
+            // custom.SearchBar(
+            //   placeholder: "Search Mattress Type",
+            //   canRefreshList: false,
+            //   onSearchChanged: (query) {
+            //     setState(() {
+            //       filteredTypes = mattressTypes
+            //           .where((type) => type.name!
+            //               .toLowerCase()
+            //               .contains(query.toLowerCase()))
+            //           .toList();
+            //     });
+            //   },
+
+            // ),
             const SizedBox(height: 10.0),
 
             // Add mattress type button
@@ -115,8 +112,7 @@ class MattressTypePageState extends State<MattressTypePage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => AddMattressTypePage()
-                    ),
+                        builder: (context) => AddMattressTypePage()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
