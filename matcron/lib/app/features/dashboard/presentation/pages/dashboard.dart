@@ -9,6 +9,7 @@ import 'package:matcron/core/components/bottom_bar/controllers/notch_bottom_bar_
 class DashboardPage extends StatelessWidget {
   final NotchBottomBarController? controller;
 
+  // Use super constructor parameter for 'key'
   const DashboardPage({super.key, this.controller});
 
   @override
@@ -21,6 +22,7 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
+
   Widget _buildBody(BuildContext context) {
     return BlocBuilder<RemoteDashboardBloc, RemoteDashboardState>(
       builder: (_, state) {
@@ -31,26 +33,13 @@ class DashboardPage extends StatelessWidget {
               child: Column(
                 children: <Widget>[
                   ...buildStatCards(),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Text("Mattress Lifecycle", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-                  Container(
-                    width: MediaQuery.of(context).size.width - 40,
-                    height: 200,
-                    child: Stack(
-                      children: [
-                        _createLifecycleChart(),
-                        _createTrendLineChart(),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 20),
+                  _chartStack(context),
+                  const SizedBox(height: 20),
                   Text("Mattress Maintenance", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-                  Container(
-                    width: MediaQuery.of(context).size.width - 40,
-                    height: 200,
-                    child: _createMaintenancePieChart(),
-                  ),
-                  SizedBox(height: 20),
+                  _maintenanceChart(context),
+                  const SizedBox(height: 20),
                   Text("Request Wash", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
                   ListTile(
                     title: Text("Louth Hospital has requested wash for 27 Mattress"),
@@ -63,6 +52,27 @@ class DashboardPage extends StatelessWidget {
         }
         return const SizedBox();
       },
+    );
+  }
+
+  Widget _chartStack(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width - 40,
+      height: 200,
+      child: Stack(
+        children: [
+          _createLifecycleChart(),
+          _createTrendLineChart(),
+        ],
+      ),
+    );
+  }
+
+  Widget _maintenanceChart(BuildContext context) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width - 40,
+      height: 200,
+      child: _createMaintenancePieChart(),
     );
   }
 
@@ -86,132 +96,111 @@ class DashboardPage extends StatelessWidget {
       imagePath: "assets/images/assign_page.png",
     ),
     StatCard(
-      title: "Review Requirred",
+      title: "Review Required",
       count: "112",
       icon: Icons.reviews,
       imagePath: "assets/images/bed-1.jpg",
     ),
   ];
 
-Widget _createLifecycleChart() {
-  return BarChart(
-    BarChartData(
-      alignment: BarChartAlignment.spaceAround,
-      maxY: 300,
-      backgroundColor: Colors.white, // Set the background color to white
-      barTouchData: BarTouchData(
-        enabled: true,
-        touchTooltipData: BarTouchTooltipData(
-          tooltipBgColor: Colors.grey[800],
-          tooltipPadding: const EdgeInsets.all(8),
-          tooltipMargin: 8,
-          getTooltipItem: (group, groupIndex, rod, rodIndex) {
-            String weekDay = _getWeekDay(group.x.toDouble());
-            return BarTooltipItem(
-              '$weekDay: ${rod.y.toInt()} mattresses\n(Tap for details)',
-              TextStyle(color: Colors.yellow, fontWeight: FontWeight.bold),
-              children: <TextSpan>[
-                TextSpan(
-                  text: '\nClick to view details',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-              ],
-            );
-          },
+  Widget _createLifecycleChart() {
+    return BarChart(
+      BarChartData(
+        alignment: BarChartAlignment.spaceAround,
+        maxY: 300,
+        backgroundColor: Colors.white, // Set the background color to white
+        barTouchData: BarTouchData(
+          enabled: true,
+          touchTooltipData: BarTouchTooltipData(
+            tooltipBgColor: Colors.grey[800],
+            tooltipPadding: const EdgeInsets.all(8),
+            tooltipMargin: 8,
+            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+              String weekDay = _getWeekDay(group.x.toDouble());
+              return BarTooltipItem(
+                '$weekDay: ${rod.y.toInt()} mattresses',
+                TextStyle(color: Colors.yellow, fontWeight: FontWeight.bold),
+              );
+            },
+          ),
         ),
-        touchCallback: (barTouchResponse) {
-          // You can add more interactive actions here if necessary
-        },
+        titlesData: _buildTitlesData(),
+        borderData: FlBorderData(
+          show: true,
+          border: Border.all(color: Colors.grey[300]!, width: 2),
+        ),
+        barGroups: _buildBarGroups(),
       ),
-      titlesData: _buildTitlesData(),
-      borderData: FlBorderData(
-        show: true,
-        border: Border.all(color: Colors.grey[300]!, width: 2),
+    );
+  }
+
+  Widget _createTrendLineChart() {
+    return Positioned.fill(
+      child: LineChart(
+        LineChartData(
+          gridData: FlGridData(show: false),
+          titlesData: FlTitlesData(show: false),
+          borderData: FlBorderData(show: false),
+          lineBarsData: [
+            LineChartBarData(
+              spots: [
+                FlSpot(0, 300),
+                FlSpot(1, 225),
+                FlSpot(2, 190),
+                FlSpot(3, 150),
+              ],
+              isCurved: true,
+              colors: [Colors.black],
+              barWidth: 2,
+              isStrokeCapRound: true,
+              dotData: FlDotData(show: false),
+              belowBarData: BarAreaData(show: false),
+            )
+          ],
+        ),
       ),
-      barGroups: _buildBarGroups(),
-    ),
-  );
-}
+    );
+  }
 
-
-Widget _createTrendLineChart() {
-  return Positioned.fill(
-    child: LineChart(
-      LineChartData(
-        gridData: FlGridData(show: false),
-        titlesData: FlTitlesData(show: false),
-        borderData: FlBorderData(show: false),
-        lineBarsData: [
-          LineChartBarData(
-            spots: [
-              // Align these spots with the top values of your bars
-              FlSpot(0, 300),
-              FlSpot(1, 225),
-              FlSpot(2, 190),
-              FlSpot(3, 150),
-            ],
-            isCurved: true,
-            colors: [Colors.black],
-            barWidth: 2,
-            isStrokeCapRound: true,
-            dotData: FlDotData(show: false),
-            belowBarData: BarAreaData(show: false),
-          )
+  Widget _createMaintenancePieChart() {
+    return PieChart(
+      PieChartData(
+        pieTouchData: PieTouchData(
+          touchCallback: (pieTouchResponse) {},
+          enabled: true,
+        ),
+        centerSpaceRadius: 40,
+        sectionsSpace: 0,
+        startDegreeOffset: -90,
+        sections: [
+          PieChartSectionData(
+            color: Colors.blue[100]!,
+            value: 30,
+            title: 'Flip (30)',
+            radius: 60,
+            titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          PieChartSectionData(
+            color: Colors.blue[300]!,
+            value: 40,
+            title: 'Rotate (40)',
+            radius: 60,
+            titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
+          PieChartSectionData(
+            color: Colors.blue[600]!,
+            value: 30,
+            title: 'Wash (30)',
+            radius: 60,
+            titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+          ),
         ],
       ),
-    ),
-  );
-}
-
-
-Widget _createMaintenancePieChart() {
-  return PieChart(
-    PieChartData(
-      pieTouchData: PieTouchData(
-        touchCallback: (pieTouchResponse) {
-          // You can customize behavior on touch here
-        },
-        enabled: true, // Enable touch interactions
-      ),
-      centerSpaceRadius: 40,
-      sectionsSpace: 0,
-      startDegreeOffset: -90, // Optional, changes the starting position of the pie chart
-      sections: [
-        PieChartSectionData(
-          color: Colors.blue[100]!,
-          value: 30,
-          title: 'Flip (30)', // Display the value inside the section
-          radius: 60,
-          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        PieChartSectionData(
-          color: Colors.blue[300]!,
-          value: 40,
-          title: 'Rotate (40)', // Display the value inside the section
-          radius: 60,
-          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-        PieChartSectionData(
-          color: Colors.blue[600]!,
-          value: 30,
-          title: 'Wash (30)', // Display the value inside the section
-          radius: 60,
-          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-        ),
-      ],
-      // animationDuration: Duration(milliseconds: 800), // Set the animation duration
-    ),
-  );
-}
-
+    );
+  }
 
   String _getWeekDay(double value) {
-    int index = value.toInt();
-    switch (index) {
+    switch (value.toInt()) {
       case 0: return 'Active';
       case 1: return 'Transferred';
       case 2: return 'End Life';
@@ -245,7 +234,7 @@ class StatCard extends StatelessWidget {
   final IconData icon;
   final String imagePath;
 
-  const StatCard({Key? key, required this.title, required this.count, required this.icon, required this.imagePath}) : super(key: key);
+  const StatCard({super.key, required this.title, required this.count, required this.icon, required this.imagePath});
 
   @override
   Widget build(BuildContext context) {
