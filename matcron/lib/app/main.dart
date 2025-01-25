@@ -3,17 +3,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
+import 'package:matcron/app/features/group/presentation/pages/group_page.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_event.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
-import 'package:matcron/app/features/organization/presentation/pages/organizations.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/pages/type.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/components/splash_screen.dart';
-import 'package:matcron/core/constants/constants.dart';
 import 'dart:developer';
 import 'dart:async';
 import 'package:matcron/core/resources/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
@@ -21,7 +21,6 @@ import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'features/mattress/presentation/pages/mattress_page.dart';
-
 
 Future<void> main() async {
   await initializeDependencies(); // Initialize all dependencies
@@ -41,10 +40,8 @@ class MyApp extends StatelessWidget {
       ),
       //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
 
-      //home: const MattressRecyclingInfoPage(),
-       home: const SplashScreenWrapper(),
-     // home: const ProfileSettings(),
-      
+      home: const SplashScreenWrapper(),
+   
     );
   }
 }
@@ -116,14 +113,17 @@ class InitialScreens extends StatelessWidget {
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  final MattressEntity? searchedEntity;
+  final int startPageIndex; // Added parameter for the start page index
+
+  const MyHomePage({super.key, this.searchedEntity, this.startPageIndex = 0});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _pageController = PageController(initialPage: 0);
+  final _pageController = PageController(); // No initial page here
   final NotchBottomBarController _controller =
       NotchBottomBarController(index: 0);
 
@@ -131,6 +131,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   /// To track the selected page index
   int _selectedPageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPageIndex = widget
+        .startPageIndex; // Set initial page index from the widget parameter// Jump to the selected page index
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _pageController
+          .jumpToPage(_selectedPageIndex); // Jump to the desired page
+    });
+  }
 
   @override
   void dispose() {
@@ -145,7 +156,7 @@ class _MyHomePageState extends State<MyHomePage> {
       DashboardPage(controller: _controller),
       BlocProvider(
         create: (context) => sl<RemoteMattressBloc>()..add(GetAllMattresses()),
-        child: MattressPage(),
+        child: MattressPage(widget.searchedEntity),
       ),
       BlocProvider(
         create: (context) => sl<RemoteTypeBloc>()..add(GetTypesTiles()),
@@ -153,7 +164,7 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       BlocProvider(
         create: (context) => sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
-        child: OrganizationPage(),
+        child: GroupPage(),
       ),
     ];
 
@@ -162,21 +173,18 @@ class _MyHomePageState extends State<MyHomePage> {
       "Dashboard",
       "Mattress",
       "Types",
-      "Organization",
+      "Group",
     ];
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        scaffoldBackgroundColor:
-            HexColor("#E5E5E5"), // Set background color for the whole app
+        scaffoldBackgroundColor: HexColor("#E5E5E5"),
       ),
       home: Scaffold(
         body: Column(
           children: [
-            Header(
-              title: pageTitles[_selectedPageIndex]
-            ), // Pass the dynamic title
+            Header(title: pageTitles[_selectedPageIndex]),
             Expanded(
               child: PageView(
                 controller: _pageController,
@@ -196,13 +204,13 @@ class _MyHomePageState extends State<MyHomePage> {
         bottomNavigationBar: bottomBarPages.length <= maxCount
             ? AnimatedNotchBottomBar(
                 notchBottomBarController: _controller,
-                color: matcronPrimaryColor,
+                   color: Color.fromRGBO(255, 255, 255, 1),
                 showLabel: true,
                 textOverflow: TextOverflow.visible,
                 maxLine: 1,
                 shadowElevation: 5,
                 kBottomRadius: 28.0,
-                notchColor: const Color.fromARGB(228, 197, 197, 197),
+                notchColor: const Color.fromARGB(227, 255, 255, 255),
                 removeMargins: false,
                 bottomBarWidth: 500,
                 showShadow: false,
@@ -212,30 +220,30 @@ class _MyHomePageState extends State<MyHomePage> {
                 bottomBarItems: const [
                   BottomBarItem(
                     inActiveItem: Icon(Icons.home_filled,
-                        color: Color.fromARGB(255, 248, 250, 248)),
+                        color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.home_filled,
-                        color: Color.fromRGBO(30, 167, 169, 1)),
+                          color: Color.fromRGBO(30, 167, 169, 1)),
                     itemLabel: 'Dashboard',
                   ),
                   BottomBarItem(
                     inActiveItem: Icon(Icons.star,
-                        color: Color.fromARGB(255, 248, 250, 248)),
+                        color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.star,
                         color: Color.fromRGBO(30, 167, 169, 1)),
                     itemLabel: 'Mattress',
                   ),
                   BottomBarItem(
                     inActiveItem: Icon(Icons.settings,
-                        color: Color.fromARGB(255, 248, 250, 248)),
+                        color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.settings,
-                        color: Color.fromRGBO(30, 167, 169, 1)),
+                          color: Color.fromRGBO(30, 167, 169, 1)),
                     itemLabel: 'Type',
                   ),
                   BottomBarItem(
                     inActiveItem: Icon(Icons.person,
-                        color: Color.fromARGB(255, 248, 250, 248)),
+                        color: Color.fromARGB(255, 0, 0, 0)),
                     activeItem: Icon(Icons.person,
-                        color: Color.fromRGBO(30, 167, 169, 1)),
+                         color: Color.fromRGBO(30, 167, 169, 1)),
                     itemLabel: 'Firm',
                   ),
                 ],

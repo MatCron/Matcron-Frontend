@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:matcron/app/features/mattress/presentation/pages/scan_page.dart';
 
 class SearchBar extends StatelessWidget {
   final Function(String)? onSearchChanged; // Callback for text changes
   final String placeholder;
+  final bool canRefreshList;
+  final Function() searchMattress;
+  final Function() refreshList;
+
   const SearchBar({
     super.key,
-    this.onSearchChanged, required this.placeholder,
+    this.onSearchChanged,
+    required this.placeholder,
+    required this.canRefreshList,
+    required this.searchMattress, 
+    required this.refreshList,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-       width: 400,
+      width: 400,
       margin: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 10.0),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -41,27 +48,24 @@ class SearchBar extends StatelessWidget {
 
           // Scan Icon
           IconButton(
-            icon: Image.asset(
-              'assets/images/scan_icon.png', // Path to your scan icon asset 
-              height: 36,
-              width:50,
-              // errorBuilder: (context, error, stackTrace) {
-              //   // Fallback if the asset is not found
-              //   return const Icon(
-              //     Icons.qr_code_scanner,
-              //     size: 24,
-              //     color: Colors.grey,
-              //   );
-              // },
-            ),
+            icon: canRefreshList
+                ? const Icon(
+                    Icons.close,
+                    size: 24,
+                    color: Colors.red,
+                  )
+                : Image.asset(
+                    'assets/images/scan_icon.png', // Path to your scan icon asset
+                    height: 36,
+                    width: 50,
+                  ),
             onPressed: () {
-              // Navigate to ScanImportPage with a "typeOfImport" parameter
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const ScanImportPage("RFID"),
-                ),
-              );
+              if (canRefreshList) {
+                // Clear the search bar or reset the list
+                refreshList();
+              } else {
+                searchMattress();
+              }
             },
           ),
         ],

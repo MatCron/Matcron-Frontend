@@ -58,17 +58,20 @@ class AssignPageState extends State<AssignPage> {
         try {
           // Write the message to the tag
           await ndef.write(message);
+          //print("sucess");
             // Vibrate on success
           if (await Vibration.hasVibrator() ?? false) {
             Vibration.vibrate(duration: 500);
           }
             // Play success sound
-          await _audioPlayer.play(AssetSource('assets/sounds/sucess2.wav'));
+          await _audioPlayer.play(AssetSource('sounds/sucess2.wav'));
           // Successfully written to the tag
           setState(() {
             isFinished = true;
             isWriting = false;
           });
+
+           NfcManager.instance.stopSession();
 
           // Redirect after writing is finished and ensure no back navigation
           Future.delayed(const Duration(seconds: 2), () {
@@ -77,7 +80,7 @@ class AssignPageState extends State<AssignPage> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(
-        builder: (context) => MyHomePage(),
+        builder: (context) => MyHomePage(startPageIndex: 1,),
       ),
       (Route<dynamic> route) => false, // Remove all previous routes
     );
@@ -91,6 +94,7 @@ class AssignPageState extends State<AssignPage> {
           });
                   // Vibrate and play error sound
         _handleError("Error while writing to badge");
+        NfcManager.instance.stopSession();
       }
     } else {
       // Tag is not writable
@@ -102,6 +106,7 @@ class AssignPageState extends State<AssignPage> {
 
       // Vibrate and play error sound
       _handleError("Tag is not writable");
+      NfcManager.instance.stopSession();
     }
   });
 }
@@ -115,7 +120,7 @@ void _handleError(String errorMessage) async {
 
   // Play error sound
   try {
-    await _audioPlayer.play(AssetSource('assets/sounds/error.wav'));
+    await _audioPlayer.play(AssetSource('sounds/error.wav'));
   } catch (e) {
     debugPrint("Error playing sound: $e");
   }

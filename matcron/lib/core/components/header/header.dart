@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:matcron/app/features/profile_settings/presentation/pages/notification.dart';
 import 'package:matcron/app/main.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/app/features/profile_settings/presentation/pages/profile_settings.dart';
-import 'package:matcron/app/features/profile_settings/presentation/pages/notification.dart';
+
 
 class Header extends StatefulWidget {
   final String title;
@@ -79,6 +80,7 @@ class HeaderState extends State<Header> {
               
               const SizedBox(width: 10),
 
+              // Notification Icon
               GestureDetector(
                 onTap: () {
                   // Navigate to NotificationPage when icon is tapped
@@ -99,7 +101,7 @@ class HeaderState extends State<Header> {
                     size: 20.0,
                   ),
                 ),
-              ),
+              )
             ],
           ),
         ],
