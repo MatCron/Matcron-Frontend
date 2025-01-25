@@ -93,41 +93,57 @@ class DashboardPage extends StatelessWidget {
     ),
   ];
 
-  Widget _createLifecycleChart() {
-    return BarChart(
-      BarChartData(
-        alignment: BarChartAlignment.spaceAround,
-        maxY: 300,
-        backgroundColor: Colors.white, // Set the background color to white
-        barTouchData: BarTouchData(
-          enabled: true,
-          touchTooltipData: BarTouchTooltipData(
-            tooltipBgColor: Colors.grey[800],
-            getTooltipItem: (group, groupIndex, rod, rodIndex) {
-              String weekDay = _getWeekDay(group.x.toDouble());
-              return BarTooltipItem(
-                '$weekDay\n${rod.y - 1}',
-                TextStyle(color: Colors.yellow),
-              );
-            },
-          ),
+Widget _createLifecycleChart() {
+  return BarChart(
+    BarChartData(
+      alignment: BarChartAlignment.spaceAround,
+      maxY: 300,
+      backgroundColor: Colors.white, // Set the background color to white
+      barTouchData: BarTouchData(
+        enabled: true,
+        touchTooltipData: BarTouchTooltipData(
+          tooltipBgColor: Colors.grey[800],
+          tooltipPadding: const EdgeInsets.all(8),
+          tooltipMargin: 8,
+          getTooltipItem: (group, groupIndex, rod, rodIndex) {
+            String weekDay = _getWeekDay(group.x.toDouble());
+            return BarTooltipItem(
+              '$weekDay: ${rod.y.toInt()} mattresses\n(Tap for details)',
+              TextStyle(color: Colors.yellow, fontWeight: FontWeight.bold),
+              children: <TextSpan>[
+                TextSpan(
+                  text: '\nClick to view details',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 12,
+                    fontStyle: FontStyle.italic,
+                  ),
+                ),
+              ],
+            );
+          },
         ),
-        titlesData: _buildTitlesData(),
-        borderData: FlBorderData(
-          show: true,
-          border: Border.all(color: Colors.grey[300]!, width: 2),
-        ),
-        barGroups: _buildBarGroups(),
+        touchCallback: (barTouchResponse) {
+          // You can add more interactive actions here if necessary
+        },
       ),
-    );
-  }
+      titlesData: _buildTitlesData(),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: Colors.grey[300]!, width: 2),
+      ),
+      barGroups: _buildBarGroups(),
+    ),
+  );
+}
+
 
 Widget _createTrendLineChart() {
   return Positioned.fill(
     child: LineChart(
       LineChartData(
         gridData: FlGridData(show: false),
-        titlesData: FlTitlesData(show: true),
+        titlesData: FlTitlesData(show: false),
         borderData: FlBorderData(show: false),
         lineBarsData: [
           LineChartBarData(
@@ -219,7 +235,7 @@ Widget _createMaintenancePieChart() {
     BarChartGroupData(x: 0, barRods: [BarChartRodData(y: 300, width: 18, colors: [Colors.green])]),
     BarChartGroupData(x: 1, barRods: [BarChartRodData(y: 150, width: 18, colors: [Colors.blue])]),
     BarChartGroupData(x: 2, barRods: [BarChartRodData(y: 80, width: 18, colors: [Colors.red])]),
-    BarChartGroupData(x: 3, barRods: [BarChartRodData(y: 40, width: 18, colors: [Colors.yellow])]),
+    BarChartGroupData(x: 3, barRods: [BarChartRodData(y: 100, width: 18, colors: [Colors.yellow])]),
   ];
 }
 
