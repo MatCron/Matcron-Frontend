@@ -152,37 +152,46 @@ Widget _createTrendLineChart() {
 }
 
 
-  Widget _createMaintenancePieChart() {
-    return PieChart(
-      PieChartData(
-        centerSpaceRadius: 40,
-        sectionsSpace: 0,
-        sections: [
-          PieChartSectionData(
-            color: Colors.blue[100]!,
-            value: 30,
-            title: 'Flip',
-            radius: 60,
-            titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          PieChartSectionData(
-            color: Colors.blue[300]!,
-            value: 40,
-            title: 'Rotate',
-            radius: 60,
-            titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          PieChartSectionData(
-            color: Colors.blue[600]!,
-            value: 30,
-            title: 'Wash',
-            radius: 60,
-            titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-        ],
+Widget _createMaintenancePieChart() {
+  return PieChart(
+    PieChartData(
+      pieTouchData: PieTouchData(
+        touchCallback: (pieTouchResponse) {
+          // You can customize behavior on touch here
+        },
+        enabled: true, // Enable touch interactions
       ),
-    );
-  }
+      centerSpaceRadius: 40,
+      sectionsSpace: 0,
+      startDegreeOffset: -90, // Optional, changes the starting position of the pie chart
+      sections: [
+        PieChartSectionData(
+          color: Colors.blue[100]!,
+          value: 30,
+          title: 'Flip (30)', // Display the value inside the section
+          radius: 60,
+          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        PieChartSectionData(
+          color: Colors.blue[300]!,
+          value: 40,
+          title: 'Rotate (40)', // Display the value inside the section
+          radius: 60,
+          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        PieChartSectionData(
+          color: Colors.blue[600]!,
+          value: 30,
+          title: 'Wash (30)', // Display the value inside the section
+          radius: 60,
+          titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+      ],
+      // animationDuration: Duration(milliseconds: 800), // Set the animation duration
+    ),
+  );
+}
+
 
   String _getWeekDay(double value) {
     int index = value.toInt();
