@@ -40,8 +40,10 @@ dependencies:
   encrypt: ^5.0.3
   flutter_secure_storage: ^8.1.0
   nfc_manager: ^3.5.0
-  intl: ^0.20.1
+  intl: ^0.17.0
   dartz: ^0.10.1
+  fl_chart: ^0.35.0
+
 
 dev_dependencies:
   integration_test:
@@ -69,6 +71,8 @@ flutter:
     - assets/images/MATCRON_Logo.png
     - assets/images/profile_image.png
     - assets/images/bed.jpg
+    - assets/images/bed-1.jpg
+    - assets/images/bed3.jpg
     - assets/images/login_pic.png
     - assets/images/globe.png
     - assets/images/handshake.jpg
