@@ -9,7 +9,6 @@ import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_event.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_state.dart';
 import 'package:matcron/app/features/mattress/presentation/pages/add_mattress_page.dart';
-import 'package:matcron/app/features/mattress/presentation/pages/scan_page.dart';
 import 'package:matcron/app/features/mattress/presentation/widgets/bottom_drawer.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dart';
@@ -199,7 +198,7 @@ class MattressPageState extends State<MattressPage> {
   }
 
   void _openDPPBottomDrawer(BuildContext context,
-      {required MattressTypeEntity type, required bool isEditable}) {
+      {required MattressTypeEntity type, required String failSafe, required bool isEditable}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // Allows the drawer to take up full height
@@ -208,6 +207,7 @@ class MattressPageState extends State<MattressPage> {
         return MattressTypeBottomDrawer(
           mattress: type,
           isEditable: false,
+          failSafe: failSafe,
           onSave: (mattress) {
             // Save functionality placeholder
           },
@@ -763,6 +763,7 @@ class MattressPageState extends State<MattressPage> {
                                                   _openDPPBottomDrawer(context,
                                                       type: mattress
                                                           .mattressType!,
+                                                          failSafe: mattress.uid!,
                                                       isEditable: false);
                                                 },
                                                 style: ElevatedButton.styleFrom(
