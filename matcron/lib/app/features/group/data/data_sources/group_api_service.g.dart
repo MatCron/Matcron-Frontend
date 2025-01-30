@@ -109,7 +109,7 @@ class _GroupApiService implements GroupApiService {
     )
         .compose(
           _dio.options,
-          '/import-mattress/${id}',
+          '/import-mattresses/${id}',
           queryParameters: queryParameters,
           data: _data,
         )

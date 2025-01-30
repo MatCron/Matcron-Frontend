@@ -27,10 +27,7 @@ const mattressStatus = [
   {"Text": "Decommissioned", "Color": Colors.red},
 ];
 
-const groupStatus = [
-  "Active",
-  "Archived"
-];
+const groupStatus = [ "Active", "Archived"];
 
 const transferOutPurposes = [
   "Maintainence",

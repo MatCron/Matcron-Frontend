@@ -12,7 +12,7 @@ abstract class GroupApiService {
   @GET('/import-preview/{id}')
   Future<HttpResponse<GroupModel>> getImportPreviewFromMattressId({@Path('id') required String id, @Header('Authorization') required String token});
 
-  @POST('import-mattress/{id}')
+  @POST('import-mattresses/{id}')
   Future <HttpResponse<void>> importMattressFromGroup({@Path('id') required String id, @Header('Authorization') required String token});
 
 

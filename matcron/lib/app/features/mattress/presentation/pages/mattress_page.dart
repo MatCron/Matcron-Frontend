@@ -102,7 +102,7 @@ class MattressPageState extends State<MattressPage> {
                 _infoRow("Description", entity.description ?? "N/A"),
                 _infoRow("Mattress Count", entity.mattressCount.toString()),
                 _infoRow("Sender Org", entity.senderOrganisationName ?? "N/A"),
-                _infoRow("Status", groupStatus[entity.status!]),
+                _infoRow("Status", groupStatus[entity.status! - 1]),
                 _infoRow("Transfer Purpose",
                     transferOutPurposes[entity.transferOutPurpose!]),
               ],
@@ -121,8 +121,17 @@ class MattressPageState extends State<MattressPage> {
                   ),
                 ),
                 onPressed: () async {
-                  Navigator.pop(context);
-                  _importGroup(context, entity.uid!);
+                  BuildContext parentContext =
+                      context; // Store the valid context before popping
+
+                  Navigator.pop(context); // Close the dialog
+
+                  Future.microtask(() {
+                    if (parentContext.mounted) {
+                      _importGroup(
+                          parentContext, entity.uid!); // Use the stored context
+                    }
+                  });
                 },
                 child: Text("Import", style: TextStyle(color: Colors.white)),
               ),
@@ -135,26 +144,31 @@ class MattressPageState extends State<MattressPage> {
 
   void _importGroup(BuildContext context, String id) async {
     var state = await _groupRepository.importMattressFromGroup(id);
-  
+
+    debugPrint("Import state: $state"); // Debugging
+
     if (state is DataSuccess) {
       if (mounted) {
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text("Success"),
-              content: Text("Mattresses imported successfully, and group status updated to Archived."),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Close the dialog
-                  },
-                  child: Text("OK"),
-                ),
-              ],
-            );
-          },
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Success"),
+                content: Text(
+                    "Mattresses imported successfully, and group status updated to Archived."),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                    child: Text("OK"),
+                  ),
+                ],
+              );
+            },
+          );
+        });
       }
     } else {
       if (mounted) {

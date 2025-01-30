@@ -38,14 +38,14 @@ class GroupRepositoryImpl implements GroupRepository {
   }
 
   @override
-  Future<DataState<GroupEntity>> importMattressFromGroup(String id) async {
+  Future<DataState<void>> importMattressFromGroup(String id) async {
     final String token = 'Bearer ${await AuthorizationService().getToken()}';
     
     try {
-      final httpResponse = await _groupApiService.getImportPreviewFromMattressId(id: id, token: token);
+      final httpResponse = await _groupApiService.importMattressFromGroup(id: id, token: token);
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
-        return DataSuccess(httpResponse.data);
+        return DataSuccess(null);
       } else {
         return DataFailed(
           DioException(
