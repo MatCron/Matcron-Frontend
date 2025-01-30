@@ -14,7 +14,7 @@ class _TypeApiService implements TypeApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://matcron.online/api/mattresstype';
+    baseUrl ??= 'https://www.matcron.online/api/mattresstype';
   }
 
   final Dio _dio;
