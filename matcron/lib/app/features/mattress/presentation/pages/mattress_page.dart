@@ -48,6 +48,11 @@ class MattressPageState extends State<MattressPage> {
   @override
   void initState() {
     super.initState();
+    NfcManager.instance.startSession(
+      onDiscovered: (NfcTag badge) async {
+        // Even if you're not doing anything here, it will still prevent the Android NFC handler from triggering.
+      },
+    );
     filteredMattresses = mattresses;
     canRefreshList = false;
   }
@@ -211,6 +216,12 @@ class MattressPageState extends State<MattressPage> {
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    NfcManager.instance.stopSession();
+    super.dispose();
   }
 
   Widget _buildDoneState(BuildContext context) {
