@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
+
   @override
   AccountPageState createState() => AccountPageState();
 }
@@ -14,16 +15,27 @@ class AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text(
+
+        leading: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: const Center(
+            child: Text(
+              "<",
+              style: TextStyle(
+                fontSize: 30,
+                color: Colors.white,  
+                         ),
+            ),
+          ),
+        ),
+        title: const Text(
           'Account Information',
-          style: TextStyle(color: Colors.white), 
+          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color.fromARGB(255, 80, 194, 201),
-        iconTheme: IconThemeData(
-          color: Colors.white 
-        ),
+        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
