@@ -13,17 +13,17 @@ class MattressDimensionsPage extends StatelessWidget {
 
     // Dynamic styles
     final titleStyle = TextStyle(
-      fontSize: screenWidth * 0.05, // Dynamically size the font
+      fontSize: screenWidth * 0.06, 
       fontWeight: FontWeight.bold,
       color: primaryColor,
     );
     final labelStyle = TextStyle(
-      fontSize: screenWidth * 0.035, // Smaller font for labels
+      fontSize: screenWidth * 0.035, 
       color: Colors.black54,
       fontStyle: FontStyle.italic,
     );
     final valueStyle = TextStyle(
-      fontSize: screenWidth * 0.04, // Slightly larger font for values
+      fontSize: screenWidth * 0.04, 
       color: Colors.black87,
       fontWeight: FontWeight.w600,
     );
@@ -33,19 +33,27 @@ class MattressDimensionsPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: backgroundColor,
         elevation: 0,
-        automaticallyImplyLeading: false,
-        title: Text("Mattress Dimensions", style: titleStyle),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.close, color: Colors.red),
-            onPressed: () => Navigator.pop(context),
+           automaticallyImplyLeading: false,
+        leading: IconButton(
+          
+          icon: Text(
+            "<",
+            style: TextStyle(
+              fontSize: screenWidth * 0.08,
+              color: Color.fromARGB(255, 80, 194, 201), 
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ],
-        iconTheme: IconThemeData(color: Colors.black54),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text("Mattress Dimensions", style: titleStyle),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04, vertical: screenHeight * 0.02),
+          padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.04,
+            vertical: screenHeight * 0.02,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -116,12 +124,18 @@ class MattressDimensionsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDimensionColumn(String label, String value, TextStyle labelStyle, TextStyle valueStyle, Color primaryColor) {
+  Widget _buildDimensionColumn(
+    String label,
+    String value,
+    TextStyle labelStyle,
+    TextStyle valueStyle,
+    Color primaryColor,
+  ) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(label, style: labelStyle),
-        SizedBox(height: 6),
+        const SizedBox(height: 6),
         Container(
           decoration: BoxDecoration(
             color: primaryColor.withOpacity(0.2),
