@@ -12,6 +12,9 @@ import 'package:matcron/app/features/dashboard/data/repository/dashboard_reposit
 import 'package:matcron/app/features/dashboard/domain/repository/dashboard_repository.dart';
 import 'package:matcron/app/features/dashboard/domain/usecases/dashboard.dart';
 import 'package:matcron/app/features/dashboard/presentation/bloc/remote_dashboard_bloc.dart';
+import 'package:matcron/app/features/group/data/data_sources/group_api_service.dart';
+import 'package:matcron/app/features/group/data/repositories/group_repository_impl.dart';
+import 'package:matcron/app/features/group/domain/repositories/group_repository.dart';
 import 'package:matcron/app/features/mattress/data/data_sources/remote/mattress_api_service.dart';
 import 'package:matcron/app/features/mattress/data/repository/mattress_repository_impl.dart';
 import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
@@ -73,6 +76,10 @@ Future<void> initializeDependencies() async {
     MattressApiService(sl())
   );  
 
+  sl.registerSingleton<GroupApiService>(
+    GroupApiService(sl())
+  );
+
   // Repositories
 
   sl.registerSingleton<AuthRepository>(
@@ -89,6 +96,10 @@ Future<void> initializeDependencies() async {
 
    sl.registerSingleton<TypeRepository>(
     TypeRepositoryImpl(sl())
+  );
+
+   sl.registerSingleton<GroupRepository>(
+    GroupRepositoryImpl(sl())
   );
 
   sl.registerSingleton<MattressRepository>(
