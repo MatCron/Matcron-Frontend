@@ -218,35 +218,27 @@ class _MyHomePageState extends State<MyHomePage> {
                 itemLabelStyle: const TextStyle(fontSize: 10),
                 elevation: 1,
                 bottomBarItems: const [
-                  BottomBarItem(
-                    inActiveItem: Icon(Icons.home_filled,
-                        color: Color.fromARGB(255, 0, 0, 0)),
-                    activeItem: Icon(Icons.home_filled,
-                          color: Color.fromRGBO(30, 167, 169, 1)),
-                    itemLabel: 'Dashboard',
-                  ),
-                  BottomBarItem(
-                    inActiveItem: Icon(Icons.star,
-                        color: Color.fromARGB(255, 0, 0, 0)),
-                    activeItem: Icon(Icons.star,
-                        color: Color.fromRGBO(30, 167, 169, 1)),
-                    itemLabel: 'Mattress',
-                  ),
-                  BottomBarItem(
-                    inActiveItem: Icon(Icons.settings,
-                        color: Color.fromARGB(255, 0, 0, 0)),
-                    activeItem: Icon(Icons.settings,
-                          color: Color.fromRGBO(30, 167, 169, 1)),
-                    itemLabel: 'Type',
-                  ),
-                  BottomBarItem(
-                    inActiveItem: Icon(Icons.person,
-                        color: Color.fromARGB(255, 0, 0, 0)),
-                    activeItem: Icon(Icons.person,
-                         color: Color.fromRGBO(30, 167, 169, 1)),
-                    itemLabel: 'Firm',
-                  ),
-                ],
+  BottomBarItem(
+    inActiveItem: Icon(Icons.dashboard, color: Color.fromARGB(255, 0, 0, 0)),
+    activeItem: Icon(Icons.dashboard, color: Color.fromRGBO(30, 167, 169, 1)),
+    itemLabel: 'Dashboard',
+  ),
+  BottomBarItem(
+    inActiveItem: Icon(Icons.bed, color: Color.fromARGB(255, 0, 0, 0)),
+    activeItem: Icon(Icons.bed, color: Color.fromRGBO(30, 167, 169, 1)),
+    itemLabel: 'Mattress',
+  ),
+  BottomBarItem(
+    inActiveItem: Icon(Icons.category, color: Color.fromARGB(255, 0, 0, 0)),
+    activeItem: Icon(Icons.category, color: Color.fromRGBO(30, 167, 169, 1)),
+    itemLabel: 'Type',
+  ),
+  BottomBarItem(
+    inActiveItem: Icon(Icons.groups, color: Color.fromARGB(255, 0, 0, 0)),
+    activeItem: Icon(Icons.groups, color: Color.fromRGBO(30, 167, 169, 1)),
+    itemLabel: 'Group',
+  ),
+],
                 onTap: (index) {
                   log('current selected index $index');
                   _pageController.jumpToPage(index);
