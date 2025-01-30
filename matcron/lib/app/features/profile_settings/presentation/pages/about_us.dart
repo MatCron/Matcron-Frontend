@@ -27,8 +27,8 @@ class AboutUsPage extends StatelessWidget {
               "<",
               style: TextStyle(
                 fontSize: 26,
-                color: Colors.white,  // Adjust if needed
-                fontWeight: FontWeight.bold,
+                color: Colors.white,  
+           
               ),
             ),
           ),

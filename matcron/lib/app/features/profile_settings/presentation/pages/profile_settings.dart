@@ -31,9 +31,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
               "<",
               style: TextStyle(
                 fontSize: 35,
-                color: Colors.white, // Adjust color if desired
-                fontWeight: FontWeight.bold,
-              ),
+                color: Colors.white, 
+                       ),
             ),
           ),
         ),

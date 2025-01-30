@@ -8,13 +8,27 @@ class HelpPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Help',
-        style: TextStyle(color: Colors.white),
+        leading: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: const Center(
+            child: Text(
+              "<",
+              style: TextStyle(
+                fontSize: 26,
+                color: Colors.white, 
+           
+              ),
+            ),
+          ),
         ),
-        iconTheme: IconThemeData(
-          color: Colors.white 
+        title: const Text(
+          'Help',
+          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor:  Color.fromARGB(255, 80, 194, 201),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
       ),
       body: Center(
         child: Column(
