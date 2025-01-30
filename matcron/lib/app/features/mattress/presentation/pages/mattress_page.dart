@@ -143,7 +143,7 @@ class MattressPageState extends State<MattressPage> {
           builder: (BuildContext context) {
             return AlertDialog(
               title: Text("Success"),
-              content: Text("Mattresses imported successfully."),
+              content: Text("Mattresses imported successfully, and group status updated to Archived."),
               actions: [
                 TextButton(
                   onPressed: () {
