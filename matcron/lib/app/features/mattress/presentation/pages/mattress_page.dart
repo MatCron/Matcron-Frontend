@@ -103,8 +103,8 @@ class MattressPageState extends State<MattressPage> {
                 _infoRow("Mattress Count", entity.mattressCount.toString()),
                 _infoRow("Sender Org", entity.senderOrganisationName ?? "N/A"),
                 _infoRow("Status", groupStatus[entity.status!]),
-                _infoRow(
-                    "Transfer Purpose", transferOutPurposes[entity.transferOutPurpose!]),
+                _infoRow("Transfer Purpose",
+                    transferOutPurposes[entity.transferOutPurpose!]),
               ],
             ),
             actions: [
@@ -122,7 +122,7 @@ class MattressPageState extends State<MattressPage> {
                 ),
                 onPressed: () async {
                   Navigator.pop(context);
-                  //await _importGroup(context, entity.id);
+                  _importGroup(context, entity.uid!);
                 },
                 child: Text("Import", style: TextStyle(color: Colors.white)),
               ),
@@ -131,6 +131,38 @@ class MattressPageState extends State<MattressPage> {
         },
       );
     });
+  }
+
+  void _importGroup(BuildContext context, String id) async {
+    var state = await _groupRepository.importMattressFromGroup(id);
+  
+    if (state is DataSuccess) {
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Success"),
+              content: Text("Mattresses imported successfully."),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(); // Close the dialog
+                  },
+                  child: Text("OK"),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error importing mattresses.")),
+        );
+      }
+    }
   }
 
   Widget _infoRow(String label, String value) {
@@ -221,7 +253,9 @@ class MattressPageState extends State<MattressPage> {
           } else {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Mattress not found for UID: $uid")),
+                SnackBar(
+                    content: Text(
+                        "No group found associated with Mattress UID: $uid")),
               );
             }
           }

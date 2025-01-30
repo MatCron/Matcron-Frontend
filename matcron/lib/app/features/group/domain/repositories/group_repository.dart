@@ -3,4 +3,5 @@ import 'package:matcron/core/resources/data_state.dart';
 
 abstract class GroupRepository {
   Future<DataState<GroupEntity>> getImportPreviewFromMattressId(String uid);
+  Future<DataState<void>> importMattressFromGroup(String uid);
 }
