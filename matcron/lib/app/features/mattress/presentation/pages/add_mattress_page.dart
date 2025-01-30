@@ -308,12 +308,18 @@ class AddMattressPageState extends State<AddMattressPage> {
   }
 
   void _generateRfid() {
+    if (selectedMattressType == null) {
+      _showError("Please select a mattress type.");
+      return;
+    }
+
     var m = MattressEntity(
-        orgId: '3e176182-beca-11ef-a25f-0242ac180002',
-        mattressTypeId: '458b7349-1af2-4833-b23f-011372c3b6b3',
-        lifeCyclesEnd: DateTime.now(),
-        batchNo: '',
-        location: locationController.text);
+      orgId: '3e176182-beca-11ef-a25f-0242ac180002', // Keep your orgId as it is
+      mattressTypeId: selectedMattressType!, // Get the ID from the dropdown
+      lifeCyclesEnd: DateTime.now(),
+      batchNo: '',
+      location: locationController.text,
+    );
 
     context.read<RemoteMattressBloc>().add(GenerateRfid(m));
   }

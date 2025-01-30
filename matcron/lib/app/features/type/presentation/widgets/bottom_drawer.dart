@@ -7,6 +7,7 @@ import 'package:matcron/core/resources/data_state.dart';
 
 class MattressTypeBottomDrawer extends StatefulWidget {
   final MattressTypeEntity mattress;
+  final String? failSafe;
   final bool isEditable;
   final void Function(MattressTypeEntity mattress) onSave;
 
@@ -14,7 +15,7 @@ class MattressTypeBottomDrawer extends StatefulWidget {
     super.key,
     required this.mattress,
     this.isEditable = false,
-    required this.onSave,
+    required this.onSave, this.failSafe,
   });
 
   @override
@@ -25,12 +26,15 @@ class MattressTypeBottomDrawer extends StatefulWidget {
 class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
   late MattressTypeEntity mattress;
   late TypeRepository _typeRepository;
+  //late MattressRepository _mattressRepository;
+
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     mattress = widget.mattress;
+
     _typeRepository = GetIt.instance<TypeRepository>();
     _initializeMattress();
   }
@@ -39,6 +43,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
     String id = mattress.id!;
 
     var state = await _typeRepository.getType(id);
+
     setState(() {
       if (state is DataSuccess) {
         mattress = state.data!;

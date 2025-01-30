@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
+import 'package:matcron/app/features/group/domain/repositories/group_repository.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
 import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_event.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_state.dart';
 import 'package:matcron/app/features/mattress/presentation/pages/add_mattress_page.dart';
-import 'package:matcron/app/features/mattress/presentation/pages/scan_page.dart';
 import 'package:matcron/app/features/mattress/presentation/widgets/bottom_drawer.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dart';
@@ -37,8 +38,10 @@ class MattressPageState extends State<MattressPage> {
   int selectedMattressIndex = -1;
   List<MattressTypeEntity> types = [];
   bool canRefreshList = false;
+
   final MattressRepository _mattressRepository =
       GetIt.instance<MattressRepository>();
+  final GroupRepository _groupRepository = GetIt.instance<GroupRepository>();
 
   bool isScanning = true; // NFC scanning status
   bool isFinished = false; // Finished writing status
@@ -73,8 +76,129 @@ class MattressPageState extends State<MattressPage> {
     });
   }
 
+  void _showImportPreview(BuildContext context, GroupEntity entity) {
+    Future.delayed(Duration.zero, () {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            title: Text(
+              "Import Group",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: matcronPrimaryColor),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _infoRow("Name", entity.name ?? "N/A"),
+                _infoRow("Description", entity.description ?? "N/A"),
+                _infoRow("Mattress Count", entity.mattressCount.toString()),
+                _infoRow("Sender Org", entity.senderOrganisationName ?? "N/A"),
+                _infoRow("Status", groupStatus[entity.status! - 1]),
+                _infoRow("Transfer Purpose",
+                    transferOutPurposes[entity.transferOutPurpose!]),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child:
+                    Text("Cancel", style: TextStyle(color: Colors.redAccent)),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: matcronPrimaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                ),
+                onPressed: () async {
+                  BuildContext parentContext =
+                      context; // Store the valid context before popping
+
+                  Navigator.pop(context); // Close the dialog
+
+                  Future.microtask(() {
+                    if (parentContext.mounted) {
+                      _importGroup(
+                          parentContext, entity.uid!); // Use the stored context
+                    }
+                  });
+                },
+                child: Text("Import", style: TextStyle(color: Colors.white)),
+              ),
+            ],
+          );
+        },
+      );
+    });
+  }
+
+  void _importGroup(BuildContext context, String id) async {
+    var state = await _groupRepository.importMattressFromGroup(id);
+
+    debugPrint("Import state: $state"); // Debugging
+
+    if (state is DataSuccess) {
+      if (mounted) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text("Success"),
+                content: Text(
+                    "Mattresses imported successfully, and group status updated to Archived."),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                    child: Text("OK"),
+                  ),
+                ],
+              );
+            },
+          );
+        });
+      }
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error importing mattresses.")),
+        );
+      }
+    }
+  }
+
+  Widget _infoRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, color: Colors.black87)),
+          Flexible(
+            child: Text(value,
+                style: TextStyle(color: Colors.black54),
+                overflow: TextOverflow.ellipsis),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _openDPPBottomDrawer(BuildContext context,
-      {required MattressTypeEntity type, required bool isEditable}) {
+      {required MattressTypeEntity type, required String failSafe, required bool isEditable}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // Allows the drawer to take up full height
@@ -83,6 +207,7 @@ class MattressPageState extends State<MattressPage> {
         return MattressTypeBottomDrawer(
           mattress: type,
           isEditable: false,
+          failSafe: failSafe,
           onSave: (mattress) {
             // Save functionality placeholder
           },
@@ -91,8 +216,12 @@ class MattressPageState extends State<MattressPage> {
     );
   }
 
-  void _openRfidModal(BuildContext context) {
-    Future.delayed(Duration(milliseconds: 100), _startNfcSession);
+  void _openRfidModal(BuildContext context, String session) {
+    if (session == 'SEARCH') {
+      Future.delayed(Duration(milliseconds: 100), _startNfcSession);
+    } else if (session == 'IMPORT') {
+      Future.delayed(Duration(milliseconds: 100), _startImportNfcSession);
+    }
 
     showDialog(
       context: context,
@@ -115,6 +244,54 @@ class MattressPageState extends State<MattressPage> {
         );
       },
     );
+  }
+
+  Future<void> _startImportNfcSession() async {
+    if (!mounted) return;
+
+    setState(() {
+      isScanning = true;
+      isFinished = false;
+    });
+
+    NfcManager.instance.startSession(onDiscovered: (NfcTag badge) async {
+      try {
+        var ndef = Ndef.from(badge);
+        if (ndef != null && ndef.cachedMessage != null) {
+          var uid = decodeNfcPayload(ndef.cachedMessage!.records[0].payload);
+
+          var state =
+              await _groupRepository.getImportPreviewFromMattressId(uid);
+
+          if (state is DataSuccess && state.data != null) {
+          } else {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                    content: Text(
+                        "No group found associated with Mattress UID: $uid")),
+              );
+            }
+          }
+
+          NfcManager.instance.stopSession();
+
+          if (mounted) {
+            Navigator.of(context, rootNavigator: true)
+                .pop(); // Ensure only the dialog is closed
+          }
+
+          if (mounted) {
+            _showImportPreview(context, state.data!);
+          }
+          // Close the dialog safely
+        } else {
+          _handleNfcError("Failed to read NFC tag.");
+        }
+      } catch (e) {
+        _handleNfcError("Error reading NFC tag: $e");
+      }
+    });
   }
 
   Future<void> _startNfcSession() async {
@@ -224,7 +401,7 @@ class MattressPageState extends State<MattressPage> {
           custom.SearchBar(
             placeholder: "Search Mattress",
             canRefreshList: canRefreshList,
-            searchMattress: () => _openRfidModal(context),
+            searchMattress: () => _openRfidModal(context, 'SEARCH'),
             refreshList: () => _refreshList(),
             onSearchChanged: (query) {
               setState(() {
@@ -307,11 +484,7 @@ class MattressPageState extends State<MattressPage> {
               const SizedBox(width: 10.0),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ScanImportPage(""),
-                      ));
+                  _openRfidModal(context, 'IMPORT');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: matcronPrimaryColor,
@@ -590,6 +763,7 @@ class MattressPageState extends State<MattressPage> {
                                                   _openDPPBottomDrawer(context,
                                                       type: mattress
                                                           .mattressType!,
+                                                          failSafe: mattress.uid!,
                                                       isEditable: false);
                                                 },
                                                 style: ElevatedButton.styleFrom(

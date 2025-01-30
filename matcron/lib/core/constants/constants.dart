@@ -10,6 +10,7 @@ const String dashboardAPIBaseUrl = '${Config.prodBaseUrl}/dashboard';
 const String organizationBaseUrl = '${Config.prodBaseUrl}/Organisation';
 const String typeBaseUrl = '${Config.prodBaseUrl}/mattresstype';
 const String mattressBaseUrl = '${Config.prodBaseUrl}/mattress';
+const String groupBaseUrl = '${Config.prodBaseUrl}/groups';
 
 // UI
 const double matcronTextFieldBorderRadius = 50;
@@ -24,6 +25,15 @@ const mattressStatus = [
   {"Text": "In Use", "Color": Colors.green},
   {"Text": "Cleaning Required", "Color": Colors.red},
   {"Text": "Decommissioned", "Color": Colors.red},
+];
+
+const groupStatus = [ "Active", "Archived"];
+
+const transferOutPurposes = [
+  "Maintainence",
+  "Delivery",
+  "Emergency",
+  "End of Life Cycle"
 ];
 
 
