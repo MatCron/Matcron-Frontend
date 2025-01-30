@@ -358,9 +358,10 @@ class MattressPageState extends State<MattressPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    double screenWidth = MediaQuery.of(context).size.width;
+      return Scaffold(
       body: BlocBuilder<RemoteMattressBloc, RemoteMattressState>(
-        builder: (_, state) {
+        builder: (context, state) {
           if (state is RemoteMattressesLoading) {
             return Center(
               child: CircularProgressIndicator(
@@ -381,7 +382,7 @@ class MattressPageState extends State<MattressPage> {
               filteredMattresses = [currentSearchedEntity!];
             }
 
-            return _buildDoneState(context);
+            return _buildDoneState(context,screenWidth);
           }
 
           return const SizedBox();
@@ -390,10 +391,22 @@ class MattressPageState extends State<MattressPage> {
     );
   }
 
-  Widget _buildDoneState(BuildContext context) {
+  Widget _buildDoneState(BuildContext context ,double screenWidth) {
+    double padding = screenWidth * 0.04;
+    TextStyle headerStyle = TextStyle(
+    fontSize: screenWidth * 0.04,
+    fontStyle: FontStyle.italic,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
+  );
+
+   TextStyle itemTextStyle = TextStyle(
+    fontSize: screenWidth *0.035,
+    fontWeight: FontWeight.bold,
+  );
     return Container(
       color: HexColor("#E5E5E5"),
-      padding: const EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(padding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -510,14 +523,14 @@ class MattressPageState extends State<MattressPage> {
             children: [
               const SizedBox(width: 50.0),
               Expanded(
-                child: Text("Type", style: _headerStyle),
+                child: Text("Type", style: headerStyle),
               ),
               Expanded(
-                child: Text("Location", style: _headerStyle),
+                child: Text("Location", style: headerStyle),
               ),
               const SizedBox(width: 30.0),
               Expanded(
-                child: Text("Status", style: _headerStyle),
+                child: Text("Status", style: headerStyle),
               ),
             ],
           ),
@@ -607,7 +620,7 @@ class MattressPageState extends State<MattressPage> {
                                         flex: 2,
                                         child: Text(
                                           mattress.type!,
-                                          style: _itemTextStyle,
+                                          style: headerStyle,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -615,7 +628,7 @@ class MattressPageState extends State<MattressPage> {
                                         flex: 3,
                                         child: Text(
                                           mattress.location!,
-                                          style: _itemTextStyle,
+                                          style: itemTextStyle,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -798,15 +811,5 @@ class MattressPageState extends State<MattressPage> {
     );
   }
 
-  static const TextStyle _headerStyle = TextStyle(
-    fontSize: 16.0,
-    fontStyle: FontStyle.italic,
-    fontWeight: FontWeight.bold,
-    color: Colors.black,
-  );
 
-  static const TextStyle _itemTextStyle = TextStyle(
-    fontSize: 14.0,
-    fontWeight: FontWeight.bold,
-  );
 }

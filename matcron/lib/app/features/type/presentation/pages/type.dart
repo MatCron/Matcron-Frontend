@@ -174,9 +174,21 @@ class MattressTypePageState extends State<MattressTypePage> {
 
   @override
   Widget build(BuildContext context) {
+     double screenWidth = MediaQuery.of(context).size.width;
+    TextStyle headerStyle = TextStyle(
+      fontSize: screenWidth * 0.04,
+      fontWeight: FontWeight.bold,
+      color: Colors.black,
+      overflow: TextOverflow.ellipsis,
+    );
+    TextStyle dataStyle = TextStyle(
+      fontSize: screenWidth * 0.035,
+      fontStyle: FontStyle.italic,
+      color: Colors.grey,
+    );
     return Scaffold(
       body: BlocBuilder<RemoteTypeBloc, RemoteTypeState>(
-        builder: (_, state) {
+        builder: (context, state) {
           if (state is RemoteTypesLoading) {
             return Scaffold(
               backgroundColor: HexColor("#E5E5E5"),
@@ -201,7 +213,7 @@ class MattressTypePageState extends State<MattressTypePage> {
               filteredTypes = [currentSearchedEntity!];
             }
 
-            return _buildDoneState(context);
+            return _buildDoneState(context,headerStyle,dataStyle);
           }
 
           return const SizedBox();
@@ -210,11 +222,12 @@ class MattressTypePageState extends State<MattressTypePage> {
     );
   }
 
-  Widget _buildDoneState(BuildContext context) {
+  Widget _buildDoneState(BuildContext context,TextStyle headerStyle, TextStyle dataStyle) {
+   
     return Scaffold(
       body: Container(
+        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
         color: HexColor("#E5E5E5"),
-        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -349,11 +362,7 @@ class MattressTypePageState extends State<MattressTypePage> {
                             flex: 1,
                             child: Text(
                               type.name!,
-                              style: const TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.bold,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              style: headerStyle,
                             ),
                           ),
                           Expanded(
@@ -362,11 +371,7 @@ class MattressTypePageState extends State<MattressTypePage> {
                               //make it fit in one line without squishing
                               child: Text(
                                 "(${type.width?.toInt()} x ${type.length?.toInt()} x ${type.height?.toInt()})",
-                                style: const TextStyle(
-                                  fontSize: 14.0,
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.grey,
-                                ),
+                                style:dataStyle,
                                 maxLines: 1, // Prevent wrapping in data
                               ),
                             ),
