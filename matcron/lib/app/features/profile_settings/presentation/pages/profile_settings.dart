@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:matcron/app/features/profile_settings/presentation/pages/account.dart';
 import 'package:matcron/app/features/profile_settings/presentation/pages/help.dart';
-import 'package:matcron/app/features/profile_settings/presentation/pages/history.dart';
+import 'package:matcron/app/features/organization/presentation/pages/organizations.dart';
 import 'package:matcron/app/features/profile_settings/presentation/pages/notification.dart';
 import 'package:matcron/app/features/profile_settings/presentation/pages/reports.dart';
 import 'package:matcron/app/features/profile_settings/presentation/pages/security.dart';
@@ -23,22 +23,35 @@ class ProfileSettingsState extends State<ProfileSettings> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 80, 194, 201),
+        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
+        leading: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: const Center(
+            child: Text(
+              "<",
+              style: TextStyle(
+                fontSize: 35,
+                color: Colors.white, // Adjust color if desired
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
       ),
       body: ListView(
         children: <Widget>[
           Container(
-            color: Color.fromARGB(255, 80, 194, 201), // Same background color
-            padding: EdgeInsets.symmetric(vertical: 24), // Adjust padding as needed
+            color: const Color.fromARGB(255, 80, 194, 201),
+            padding: const EdgeInsets.symmetric(vertical: 24),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+              children: const [
                 CircleAvatar(
                   backgroundColor: Colors.white,
-                  radius: 50, // Adjust the size as needed
+                  radius: 50,
                   child: Icon(Icons.person, size: 50.0, color: Colors.grey),
                 ),
-                SizedBox(height: 16), // Spacing between avatar and text
+                SizedBox(height: 16),
                 Text(
                   'Jane Doe',
                   style: TextStyle(
@@ -61,7 +74,11 @@ class ProfileSettingsState extends State<ProfileSettings> {
           _buildGroupedContainer1(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: _createNavigationItem(icon: Icons.info_outline, text: 'About Us', destination: AboutUsPage()),
+            child: _createNavigationItem(
+              icon: Icons.info_outline,
+              text: 'About Us',
+              destination: AboutUsPage(),
+            ),
           ),
         ],
       ),
@@ -86,9 +103,9 @@ class ProfileSettingsState extends State<ProfileSettings> {
         ),
       ),
     );
-    }
+  }
 
-     Widget _buildGroupedContainer1() {
+  Widget _buildGroupedContainer1() {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
@@ -98,7 +115,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
         ),
         child: Column(
           children: [
-            _createNavigationItem(icon: Icons.history, text: 'History', destination: HistoryPage()),
+            _createNavigationItem(icon: Icons.history, text: 'Organization', destination: OrganizationPage()),
             _createNavigationItem(icon: Icons.report, text: 'Reports', destination: ReportsPage()),
             _createNavigationItem(icon: Icons.security, text: 'Security', destination: SecurityPage()),
             _createNavigationItem(icon: Icons.settings, text: 'Settings', destination: SettingsPage()),
@@ -106,9 +123,13 @@ class ProfileSettingsState extends State<ProfileSettings> {
         ),
       ),
     );
-    }
+  }
 
-  Widget _createNavigationItem({required IconData icon, required String text, required Widget destination}) {
+  Widget _createNavigationItem({
+    required IconData icon,
+    required String text,
+    required Widget destination,
+  }) {
     return ListTile(
       leading: Icon(icon),
       title: Text(text),

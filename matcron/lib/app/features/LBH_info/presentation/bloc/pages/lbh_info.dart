@@ -79,7 +79,7 @@ class MattressDimensionsPage extends StatelessWidget {
                   padding: EdgeInsets.all(screenWidth * 0.04),
                   child: Image.asset(
                     'assets/images/bedmeasuring.png',
-                    width: screenWidth * 0.8, // Making the image responsive
+                    width: screenWidth * 0.8, 
                     height: screenHeight * 0.2,
                     fit: BoxFit.contain,
                   ),
