@@ -6,20 +6,26 @@ class TermsAndConditionsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+               leading: InkWell(
+          onTap: () => Navigator.of(context).pop(),
+          child: const Center(
+            child: Text(
+              "<",
+              style: TextStyle(
+                fontSize: 30,
+                color: Colors.white, 
+                         ),
+            ),
+          ),
         ),
-        title: const Text("Terms and Condition",
-        style: TextStyle(color: Colors.white),
+        title: const Text(
+          "Terms and Condition",
+          style: TextStyle(color: Colors.white),
         ),
-        iconTheme: IconThemeData(
-          color: Colors.white 
-        ),
-
-        backgroundColor: Color.fromARGB(255, 80, 194, 201),
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -54,7 +60,7 @@ class TermsAndConditionsPage extends StatelessWidget {
               textAlign: TextAlign.justify,
               style: TextStyle(
                 fontSize: 16,
-                height: 1.5, // Line height
+                height: 1.5,
               ),
             ),
           ],
