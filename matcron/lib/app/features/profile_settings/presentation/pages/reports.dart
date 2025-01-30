@@ -6,18 +6,29 @@ class ReportsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Reports',
-        style: TextStyle(color: Colors.white),
+            leading: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: const Center(
+            child: Text(
+              "<",
+              style: TextStyle(
+                fontSize: 30,
+                color: Colors.white,                 fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ),
-        iconTheme: IconThemeData(
-          color: Colors.white 
+        title: const Text(
+          'Reports',
+          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Color.fromARGB(255, 80, 194, 201),  // Customize color as needed
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
       ),
-      body: Center(
-        child: Text('No reports available.'),  // Placeholder text
+      body: const Center(
+        child: Text('No reports available.'), // Placeholder text
       ),
     );
   }
