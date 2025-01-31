@@ -38,8 +38,7 @@ class _OutlinedTextFieldState extends State<OutlinedTextField> {
   @override
   void initState() {
     super.initState();
-    // Hide text if it's a password field
-    _obscureText = widget.isPassword;
+       _obscureText = widget.isPassword;
   }
 
   void _toggleObscureText() {
