@@ -7,6 +7,7 @@ import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
 import 'package:matcron/app/features/group/domain/repositories/group_repository.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/data_state.dart';
+import 'package:matcron/app/features/group/data/models/GroupWithMattressesDto.dart';
 
 class GroupRepositoryImpl implements GroupRepository {
   final GroupApiService _groupApiService;
@@ -87,6 +88,30 @@ class GroupRepositoryImpl implements GroupRepository {
       return DataFailed(e);
     }
   }
+  @override
+Future<DataState<GroupWithMattressesDto>> getGroupById(String id) async {
+  final String token = 'Bearer ${await AuthorizationService().getToken()}';
+  
+  try {
+    final httpResponse = await _groupApiService.getGroupById(id: id, token: token);
+
+    if (httpResponse.response.statusCode == HttpStatus.ok) {
+      return DataSuccess(httpResponse.data);
+    } else {
+      return DataFailed(
+        DioException(
+          error: httpResponse.response.statusMessage,
+          response: httpResponse.response,
+          type: DioExceptionType.badResponse,
+          requestOptions: httpResponse.response.requestOptions, 
+        )
+      );
+    }
+    
+  } on DioException catch(e) {
+    return DataFailed(e);
+  }
+}
 
   @override
   Future<DataState<GroupEntity>> createGroup(CreateGroupModel model) async {
