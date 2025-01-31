@@ -1,15 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+// Import your real references as needed:
 import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_event.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_auth_state.dart';
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
-import 'package:matcron/app/features/auth/presentation/widgets/rounded_text_field.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/core/constants/constants.dart';
+
+/// A custom text field with a uniform, rounded border.
+class RoundedTextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String placeholder;
+  final TextInputType inputType;
+  final String? autofillHint;
+
+  const RoundedTextField({
+    Key? key,
+    required this.controller,
+    required this.placeholder,
+    required this.inputType,
+    this.autofillHint,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      keyboardType: inputType,
+      autofillHints: autofillHint != null ? [autofillHint!] : null,
+      style: const TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        hintText: placeholder,
+        hintStyle: TextStyle(color: Colors.grey[600]),
+        fillColor: Colors.white,
+        filled: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30), // Rounded corners
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: const BorderSide(color: Colors.transparent),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(30),
+          borderSide: const BorderSide(color: Colors.transparent),
+        ),
+      ),
+    );
+  }
+}
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -19,30 +65,29 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  // Controllers for each field
   final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController orgCodeController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController lastNameController  = TextEditingController();
+  final TextEditingController emailController     = TextEditingController();
+  final TextEditingController orgCodeController   = TextEditingController();
+  final TextEditingController passwordController  = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
-  bool agreeToTerms = false;
-
+  bool agreeToTerms    = false;
   String selectedLanguage = 'English'; // Default language
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true, // Allow body to extend behind the app bar
+      extendBodyBehindAppBar: true, // Let the body extend behind the app bar
       appBar: AppBar(
-        toolbarHeight: 40, // Minimal height
-        backgroundColor: Colors.transparent, // Transparent background
+        toolbarHeight: 40,
+        backgroundColor: Colors.transparent,
         elevation: 0, // No shadow
-        automaticallyImplyLeading: false, // No back button
+        automaticallyImplyLeading: false,
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(Icons.language), // Language icon
+            icon: const Icon(Icons.language),
             onSelected: (value) {
               setState(() {
                 selectedLanguage = value;
@@ -59,92 +104,85 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ],
       ),
-      body: _buildBody(context),
-    );
-  }
-
-  Widget _buildBody(BuildContext context) {
-    return BlocBuilder<RemoteRegistrationBloc, RemoteAuthState>(
-      builder: (_, state) {
-        if (state is RemoteAuthLoading) {
-          return Scaffold(
-            backgroundColor: Colors.white,
-            body: Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+      body: BlocBuilder<RemoteRegistrationBloc, RemoteAuthState>(
+        builder: (context, state) {
+          if (state is RemoteAuthLoading) {
+            return Scaffold(
+              backgroundColor: Colors.white,
+              body: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+                ),
               ),
-            ),
-          );
-        }
+            );
+          }
 
-        if (state is RemoteAuthInitial) {
-          return Stack(
-            children: [
-              // Background Image
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                        'assets/images/bed.jpg'), // Path to your image
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.35), // Reduce opacity
-                      BlendMode.darken,
+          if (state is RemoteAuthInitial) {
+            return Stack(
+              children: [
+                // Background image with overlay
+                Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: const AssetImage('assets/images/bed.jpg'),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.35),
+                        BlendMode.darken,
+                      ),
                     ),
                   ),
                 ),
-              ),
-
-              Center(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: _buildRegistrationForm(state),
+                Center(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: _buildRegistrationForm(state),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          );
-        }
-
-        if (state is RemoteRegistrationDone) {
-          // Show a Snackbar after the build phase completes
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Registration successful!"),
-                duration: const Duration(seconds: 2),
-              ),
+              ],
             );
+          }
 
-            // Immediately navigate to the login screen
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BlocProvider<RemoteLoginBloc>(
-                  create: (context) => sl<RemoteLoginBloc>(),
-                  child: const LoginPage(),
+          if (state is RemoteRegistrationDone) {
+            // If registration is successful, show a snackbar and navigate
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Registration successful!"),
+                  duration: Duration(seconds: 2),
                 ),
+              );
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BlocProvider<RemoteLoginBloc>(
+                    create: (context) => sl<RemoteLoginBloc>(),
+                    child: const LoginPage(),
+                  ),
+                ),
+              );
+            });
+          }
+
+          if (state is RemoteAuthException) {
+            return Center(
+              child: Text(
+                "Error: ${state.exception}",
+                style: const TextStyle(color: Colors.red),
               ),
             );
-          });
-        }
+          }
 
-        if (state is RemoteAuthException) {
-          return Center(
-            child: Text(
-              "Error: ${state.exception}",
-              style: const TextStyle(color: Colors.red),
-            ),
-          );
-        }
-
-        return const SizedBox();
-      },
+          return const SizedBox();
+        },
+      ),
     );
   }
 
   Widget _buildRegistrationForm(RemoteAuthInitial state) {
+    // Potential error messages from validation
     String? firstNameError;
     String? lastNameError;
     String? emailError;
@@ -174,7 +212,7 @@ class _RegisterPageState extends State<RegisterPage> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        // Logo
+  
         Container(
           height: 75,
           alignment: Alignment.center,
@@ -186,69 +224,64 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 10),
 
-        // Welcome Text
         const Text(
           "Welcome to Matcron!",
           style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+            fontSize: 20, 
+            fontWeight: FontWeight.bold, 
+            color: Colors.white,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
         Text(
           "Let's create an account",
           style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: matcronPrimaryColor,
-            ),
+            fontSize: 28,
+            fontWeight: FontWeight.bold,
+            color: matcronPrimaryColor, 
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 20),
 
-        // First and Last Name Fields with Errors
-        Row(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Column(
-                children: [
-                  RoundedTextField(
-                    controller: firstNameController,
-                    placeholder: "First Name",
-                    inputType: TextInputType.name,
-                    autofillHint: AutofillHints.givenName,
-                  ),
-                  if (firstNameError != null)
-                    Text(
-                      firstNameError,
-                      style: const TextStyle(color: Colors.red, fontSize: 12),
-                    ),
-                ],
-              ),
+            RoundedTextField(
+              controller: firstNameController,
+              placeholder: "First Name",
+              inputType: TextInputType.name,
+              autofillHint: AutofillHints.givenName,
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                children: [
-                  RoundedTextField(
-                    controller: lastNameController,
-                    placeholder: "Last Name",
-                    inputType: TextInputType.name,
-                    autofillHint: AutofillHints.familyName,
-                  ),
-                  if (lastNameError != null)
-                    Text(
-                      lastNameError,
-                      style: const TextStyle(color: Colors.red, fontSize: 12),
-                    ),
-                ],
+            if (firstNameError != null)
+              Text(
+                firstNameError,
+                style: const TextStyle(color: Colors.red, fontSize: 12),
               ),
-            ),
           ],
         ),
         const SizedBox(height: 20),
 
-        // Email Field with Error
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RoundedTextField(
+              controller: lastNameController,
+              placeholder: "Last Name",
+              inputType: TextInputType.name,
+              autofillHint: AutofillHints.familyName,
+            ),
+            if (lastNameError != null)
+              Text(
+                lastNameError,
+                style: const TextStyle(color: Colors.red, fontSize: 12),
+              ),
+          ],
+        ),
+        const SizedBox(height: 20),
+
+              Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             RoundedTextField(
@@ -266,7 +299,6 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 20),
 
-        // Organization Code Field with Error
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -284,7 +316,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 20),
 
-        // Password Field with Error
+
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -303,7 +335,6 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 20),
 
-        // Confirm Password Field with Error
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -322,8 +353,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 10),
 
-        // Terms and Conditions Checkbox
-        Row(
+          Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Checkbox(
@@ -336,7 +366,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             GestureDetector(
               onTap: () {
-                // Navigate to Terms and Conditions
+           
               },
               child: const Text(
                 "Agree to Terms and Conditions",
@@ -352,14 +382,9 @@ class _RegisterPageState extends State<RegisterPage> {
 
         // Sign Up Button
         ElevatedButton(
-          onPressed: agreeToTerms
-              ? () {
-                  register(context);
-                }
-              : null,
+          onPressed: agreeToTerms ? () => _register(context) : null,
           style: ElevatedButton.styleFrom(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
             padding: const EdgeInsets.symmetric(vertical: 16),
             minimumSize: const Size(double.infinity, 50),
             backgroundColor: matcronPrimaryColor,
@@ -405,18 +430,20 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void register(BuildContext context) {
+
+  void _register(BuildContext context) {
     context.read<RemoteRegistrationBloc>().add(
-          RegisterUser(
-              UserRegistrationEntity(
-                firstName: firstNameController.text,
-                lastName: lastNameController.text,
-                email: emailController.text,
-                password: passwordController.text,
-                organisationCode: orgCodeController.text,
-              ),
-              confirmPasswordController.text),
-        );
+      RegisterUser(
+        UserRegistrationEntity(
+          firstName: firstNameController.text,
+          lastName: lastNameController.text,
+          email: emailController.text,
+          password: passwordController.text,
+          organisationCode: orgCodeController.text,
+        ),
+        confirmPasswordController.text,
+      ),
+    );
   }
 
   @override
