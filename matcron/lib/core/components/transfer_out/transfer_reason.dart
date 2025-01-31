@@ -1,9 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/components/transfer_out/transfer_confirm.dart';
+import 'package:matcron/core/constants/constants.dart';
 
-class TransferOutMattressPage extends StatelessWidget {
-  const TransferOutMattressPage({super.key});
+class TransferOutMattressPage extends StatefulWidget {
+  final List<GroupEntity> groups;
+
+  TransferOutMattressPage({super.key, required List<GroupEntity> groups})
+      : groups = _removeDuplicates(groups); // Filter duplicates before passing to state
+
+  @override
+  _TransferOutMattressPageState createState() => _TransferOutMattressPageState();
+
+  // Function to remove duplicates based on UID
+  static List<GroupEntity> _removeDuplicates(List<GroupEntity> groups) {
+    final seen = <String>{};
+    return groups.where((group) {
+      if (group.uid == null || seen.contains(group.uid)) {
+        return false; // Skip duplicate
+      }
+      seen.add(group.uid!);
+      return true;
+    }).toList();
+  }
+}
+
+class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
+  String? selectedGroupId;
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +54,9 @@ class TransferOutMattressPage extends StatelessWidget {
               ),
             ),
 
-            // Title
             const SizedBox(height: 40), // Adjust spacing
+
+            // Title
             const Text(
               "Transfer Out Mattress",
               style: TextStyle(
@@ -44,7 +69,7 @@ class TransferOutMattressPage extends StatelessWidget {
 
             const SizedBox(height: 30),
 
-            // Dropdown for selecting purpose
+            // Dropdown for selecting group
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               decoration: BoxDecoration(
@@ -56,18 +81,17 @@ class TransferOutMattressPage extends StatelessWidget {
                   border: InputBorder.none,
                 ),
                 hint: const Text("Select Group"),
-                items: <String>[
-                  'Group A',
-                  'Group B',
-                  'Group C',
-                ].map((String value) {
+                value: selectedGroupId,
+                items: widget.groups.map((GroupEntity group) {
                   return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
+                    value: group.uid,
+                    child: Text(group.name ?? "Unnamed Group"),
                   );
                 }).toList(),
                 onChanged: (String? value) {
-                  // Handle the value change
+                  setState(() {
+                    selectedGroupId = value;
+                  });
                 },
               ),
             ),
@@ -104,23 +128,28 @@ class TransferOutMattressPage extends StatelessWidget {
                 // Save Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
+                    backgroundColor: matcronPrimaryColor,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40.0, vertical: 12.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => TransferDonePage(), 
-                  ));
-                  },
+                  onPressed: selectedGroupId == null
+                      ? null
+                      : () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TransferDonePage(),
+                            ),
+                          );
+                        },
                   child: const Text(
                     "Save",
                     style: TextStyle(
                       fontSize: 18,
-                       color: Colors.white,
+                      color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

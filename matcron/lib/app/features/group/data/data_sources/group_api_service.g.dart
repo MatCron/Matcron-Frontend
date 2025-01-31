@@ -166,4 +166,36 @@ class _GroupApiService implements GroupApiService {
     final _value = GroupModel.fromJson(_result.data!['group']);
     return HttpResponse(_value, _result);
   }
+
+  @override
+  Future<HttpResponse<void>> transferOut({
+    required String id,
+    required String token,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+
+    final _options = _setStreamType<HttpResponse<void>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/transfer-out/${id}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+
+    final _result = await _dio.fetch<void>(_options);
+    return HttpResponse(null, _result);
+  }
 }

@@ -9,4 +9,6 @@ abstract class GroupRepository {
   //Bloc Methods
   Future<DataState<List<GroupEntity>>> getGroups(int status);
   Future<DataState<GroupEntity>> createGroup(CreateGroupModel model);
+
+  Future<DataState<void>> transferOut(String uid);
 }

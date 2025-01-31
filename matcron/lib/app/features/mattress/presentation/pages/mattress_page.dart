@@ -434,7 +434,7 @@ class MattressPageState extends State<MattressPage> {
                           builder: (context) =>
                               BlocProvider<RemoteMattressBloc>(
                             create: (context) => sl<RemoteMattressBloc>(),
-                            child: TransferOutMattressPage(),
+                            child: TransferOutMattressPage(groups: groups),
                           ),
                         ));
                   },
