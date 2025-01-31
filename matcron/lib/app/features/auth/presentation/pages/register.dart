@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-// Import your real references as needed:
+import 'package:matcron/app/features/profile_settings/presentation/pages/terms_condition.dart';
 import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
@@ -12,8 +11,7 @@ import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/core/constants/constants.dart';
 
-/// A custom text field with a rectangular outline border (radius ~ 8),
-/// matching your reference screenshot more closely.
+
 class OutlinedTextField extends StatefulWidget {
   final TextEditingController controller;
   final String placeholder;
@@ -393,7 +391,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
         // Terms & Conditions
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Checkbox(
               value: agreeToTerms,
@@ -405,12 +403,19 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             GestureDetector(
               onTap: () {
-                // Terms & conditions page?
+                Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const TermsAndConditionsPage(),
+      ),
+    );
               },
               child: const Text(
                 "Agree to Terms and Conditions",
                 style: TextStyle(
-                  color: Colors.blue,
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontStyle: FontStyle.normal,
                   decoration: TextDecoration.underline,
                 ),
               ),

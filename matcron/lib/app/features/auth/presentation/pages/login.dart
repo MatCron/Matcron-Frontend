@@ -18,6 +18,7 @@ class LoginPage extends StatefulWidget {
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
+
 class RoundedTextField extends StatelessWidget {
   final TextEditingController controller;
   final String placeholder;
@@ -44,14 +45,10 @@ class RoundedTextField extends StatelessWidget {
         filled: true,
         hintText: placeholder,
         hintStyle: TextStyle(color: Colors.grey[600]),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: 20, 
-          vertical: 16,
-        ),
-        // Consistent, rounded corners for the border:
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8), 
-          borderSide: BorderSide.none, 
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -67,7 +64,7 @@ class RoundedTextField extends StatelessWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController = TextEditingController();
+  final TextEditingController emailController    = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
   String selectedLanguage = 'English'; 
@@ -77,19 +74,18 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       extendBodyBehindAppBar: true, 
       appBar: AppBar(
-        toolbarHeight: 40, 
-        backgroundColor: Colors.transparent, 
-        elevation: 0, // No shadow
-        automaticallyImplyLeading: false, 
+        toolbarHeight: 40,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(Icons.language), 
+            icon: const Icon(Icons.language),
             onSelected: (value) {
               setState(() {
                 selectedLanguage = value;
               });
             },
-           
             itemBuilder: (BuildContext context) {
               return ['English', 'German', 'Spanish'].map((String choice) {
                 return PopupMenuItem<String>(
@@ -108,6 +104,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _buildBody(BuildContext context) {
     return BlocBuilder<RemoteLoginBloc, RemoteAuthState>(
       builder: (_, state) {
+        // Loading spinner
         if (state is RemoteAuthLoading) {
           return Scaffold(
             backgroundColor: Colors.white,
@@ -119,6 +116,7 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
 
+        // Initial or no error state
         if (state is RemoteAuthInitial) {
           String? emailError;
           String? passwordError;
@@ -138,7 +136,7 @@ class _LoginPageState extends State<LoginPage> {
                 image: const AssetImage('assets/images/bed.jpg'),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.35), 
+                  Colors.black.withOpacity(0.35),
                   BlendMode.darken,
                 ),
               ),
@@ -172,7 +170,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                       const SizedBox(height: 30),
 
-                    
+                      // Email Field
                       RoundedTextField(
                         controller: emailController,
                         placeholder: "Enter email",
@@ -186,7 +184,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       const SizedBox(height: 30),
 
-                
+                      // Password Field
                       RoundedTextField(
                         controller: passwordController,
                         placeholder: "Enter password",
@@ -200,26 +198,28 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       const SizedBox(height: 15),
 
-                   
-                      GestureDetector(
-                        onTap: () {
-                                           },
-                        child: const Text(
-                          "Forgot Password?",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 15,
+             
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: GestureDetector(
+                          onTap: () {
+                          
+                          },
+                          child: const Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
                           ),
                         ),
                       ),
                       const SizedBox(height: 15),
 
-                      // Login Button
+                      // Log In Button
                       ElevatedButton(
-                        onPressed: () {
-                          login(context);
-                        },
+                        onPressed: () => login(context),
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -233,7 +233,8 @@ class _LoginPageState extends State<LoginPage> {
                           style: TextStyle(color: Colors.white, fontSize: 25),
                         ),
                       ),
-                      const SizedBox(height: 25),
+                      const SizedBox(height: 18),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -261,7 +262,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 25),
+                      const SizedBox(height: 20),
 
                       // Sign Up (Outlined) Button
                       OutlinedButton(
@@ -296,6 +297,7 @@ class _LoginPageState extends State<LoginPage> {
           );
         }
 
+        // On login success
         if (state is RemoteAuthDone) {
           SchedulerBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -304,7 +306,6 @@ class _LoginPageState extends State<LoginPage> {
                 duration: const Duration(seconds: 2),
               ),
             );
-
             Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -315,6 +316,7 @@ class _LoginPageState extends State<LoginPage> {
           });
         }
 
+        // If there's an exception
         if (state is RemoteAuthException) {
           return Center(
             child: Text(
@@ -342,7 +344,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    // Dispose controllers when the widget is removed
     emailController.dispose();
     passwordController.dispose();
     super.dispose();
