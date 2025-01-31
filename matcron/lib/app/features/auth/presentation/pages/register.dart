@@ -12,46 +12,80 @@ import 'package:matcron/app/features/auth/presentation/pages/login.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/core/constants/constants.dart';
 
-/// A custom text field with a uniform, rounded border.
-class RoundedTextField extends StatelessWidget {
+/// A custom text field with a rectangular outline border (radius ~ 8),
+/// matching your reference screenshot more closely.
+class OutlinedTextField extends StatefulWidget {
   final TextEditingController controller;
   final String placeholder;
   final TextInputType inputType;
   final String? autofillHint;
+  final bool isPassword;
 
-  const RoundedTextField({
+  const OutlinedTextField({
     Key? key,
     required this.controller,
     required this.placeholder,
     required this.inputType,
     this.autofillHint,
+    this.isPassword = false,
   }) : super(key: key);
+
+  @override
+  State<OutlinedTextField> createState() => _OutlinedTextFieldState();
+}
+
+class _OutlinedTextFieldState extends State<OutlinedTextField> {
+  bool _obscureText = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Hide text if it's a password field
+    _obscureText = widget.isPassword;
+  }
+
+  void _toggleObscureText() {
+    setState(() => _obscureText = !_obscureText);
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
-      keyboardType: inputType,
-      autofillHints: autofillHint != null ? [autofillHint!] : null,
+      controller: widget.controller,
+      keyboardType: widget.inputType,
+      autofillHints:
+          widget.autofillHint != null ? [widget.autofillHint!] : null,
+      obscureText: _obscureText,
       style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
-        hintText: placeholder,
+        hintText: widget.placeholder,
         hintStyle: TextStyle(color: Colors.grey[600]),
         fillColor: Colors.white,
         filled: true,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        // Less-rounded corners (~8 px) for a rectangular outline
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30), // Rounded corners
-          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.transparent, width: 0),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.transparent, width: 0),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(30),
-          borderSide: const BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.transparent, width: 0),
         ),
+        // Show a suffix icon to toggle password if isPassword == true
+        suffixIcon: widget.isPassword
+            ? IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.grey[600],
+                ),
+                onPressed: _toggleObscureText,
+              )
+            : null,
       ),
     );
   }
@@ -66,11 +100,11 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   // Controllers for each field
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController  = TextEditingController();
-  final TextEditingController emailController     = TextEditingController();
-  final TextEditingController orgCodeController   = TextEditingController();
-  final TextEditingController passwordController  = TextEditingController();
+  final TextEditingController firstNameController       = TextEditingController();
+  final TextEditingController lastNameController        = TextEditingController();
+  final TextEditingController emailController           = TextEditingController();
+  final TextEditingController orgCodeController         = TextEditingController();
+  final TextEditingController passwordController        = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
 
   bool agreeToTerms    = false;
@@ -79,20 +113,16 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true, // Let the body extend behind the app bar
+      extendBodyBehindAppBar: true, // Let body extend behind the app bar
       appBar: AppBar(
-        toolbarHeight: 40,
-        backgroundColor: Colors.transparent,
-        elevation: 0, // No shadow
-        automaticallyImplyLeading: false,
+        toolbarHeight: 40, 
+        backgroundColor: Colors.transparent, 
+        elevation: 0, 
+        automaticallyImplyLeading: false, 
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.language),
-            onSelected: (value) {
-              setState(() {
-                selectedLanguage = value;
-              });
-            },
+            onSelected: (value) => setState(() => selectedLanguage = value),
             itemBuilder: (BuildContext context) {
               return ['English', 'German', 'Spanish'].map((String choice) {
                 return PopupMenuItem<String>(
@@ -127,7 +157,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       image: const AssetImage('assets/images/bed.jpg'),
                       fit: BoxFit.cover,
                       colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.35),
+                        Colors.black.withOpacity(0.35), 
                         BlendMode.darken,
                       ),
                     ),
@@ -146,7 +176,7 @@ class _RegisterPageState extends State<RegisterPage> {
           }
 
           if (state is RemoteRegistrationDone) {
-            // If registration is successful, show a snackbar and navigate
+            // Show a Snackbar after building completes
             SchedulerBinding.instance.addPostFrameCallback((_) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
@@ -154,6 +184,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   duration: Duration(seconds: 2),
                 ),
               );
+              // Navigate to login
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -212,7 +243,7 @@ class _RegisterPageState extends State<RegisterPage> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-  
+        // Logo
         Container(
           height: 75,
           alignment: Alignment.center,
@@ -224,10 +255,11 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 10),
 
+        // Title
         const Text(
           "Welcome to Matcron!",
           style: TextStyle(
-            fontSize: 20, 
+            fontSize: 30, 
             fontWeight: FontWeight.bold, 
             color: Colors.white,
           ),
@@ -237,58 +269,62 @@ class _RegisterPageState extends State<RegisterPage> {
         Text(
           "Let's create an account",
           style: TextStyle(
-            fontSize: 28,
+            fontSize: 25,
             fontWeight: FontWeight.bold,
-            color: matcronPrimaryColor, 
+            color: matcronPrimaryColor,
           ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 20),
 
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        // First Name & Last Name in a row
+        Row(
           children: [
-            RoundedTextField(
-              controller: firstNameController,
-              placeholder: "First Name",
-              inputType: TextInputType.name,
-              autofillHint: AutofillHints.givenName,
-            ),
-            if (firstNameError != null)
-              Text(
-                firstNameError,
-                style: const TextStyle(color: Colors.red, fontSize: 12),
+            Expanded(
+              child: Column(
+                children: [
+                  OutlinedTextField(
+                    controller: firstNameController,
+                    placeholder: "First Name",
+                    inputType: TextInputType.name,
+                  ),
+                  if (firstNameError != null)
+                    Text(
+                      firstNameError,
+                      style: const TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                ],
               ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                children: [
+                  OutlinedTextField(
+                    controller: lastNameController,
+                    placeholder: "Last Name",
+                    inputType: TextInputType.name,
+                  ),
+                  if (lastNameError != null)
+                    Text(
+                      lastNameError,
+                      style: const TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                ],
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 20),
 
+        // Email
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RoundedTextField(
-              controller: lastNameController,
-              placeholder: "Last Name",
-              inputType: TextInputType.name,
-              autofillHint: AutofillHints.familyName,
-            ),
-            if (lastNameError != null)
-              Text(
-                lastNameError,
-                style: const TextStyle(color: Colors.red, fontSize: 12),
-              ),
-          ],
-        ),
-        const SizedBox(height: 20),
-
-              Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            RoundedTextField(
+            OutlinedTextField(
               controller: emailController,
               placeholder: "Enter email",
               inputType: TextInputType.emailAddress,
-              autofillHint: AutofillHints.email,
             ),
             if (emailError != null)
               Text(
@@ -299,10 +335,11 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 20),
 
+        // Organization Code
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RoundedTextField(
+            OutlinedTextField(
               controller: orgCodeController,
               placeholder: "Enter organization code",
               inputType: TextInputType.text,
@@ -316,15 +353,15 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 20),
 
-
+        // Password field with eye icon
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RoundedTextField(
+            OutlinedTextField(
               controller: passwordController,
               placeholder: "Enter a strong password",
               inputType: TextInputType.visiblePassword,
-              autofillHint: AutofillHints.newPassword,
+              isPassword: true,
             ),
             if (passwordError != null)
               Text(
@@ -335,14 +372,15 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 20),
 
+        // Confirm Password field with eye icon
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RoundedTextField(
+            OutlinedTextField(
               controller: confirmPasswordController,
               placeholder: "Confirm password",
               inputType: TextInputType.visiblePassword,
-              autofillHint: AutofillHints.newPassword,
+              isPassword: true,
             ),
             if (confirmPasswordError != null)
               Text(
@@ -353,7 +391,8 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 10),
 
-          Row(
+        // Terms & Conditions
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Checkbox(
@@ -366,7 +405,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             GestureDetector(
               onTap: () {
-           
+                // Terms & conditions page?
               },
               child: const Text(
                 "Agree to Terms and Conditions",
@@ -380,11 +419,13 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 20),
 
-        // Sign Up Button
+        // Sign Up button (Rectangular with minimal radius to match fields)
         ElevatedButton(
           onPressed: agreeToTerms ? () => _register(context) : null,
           style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8), // same ~8 as fields
+            ),
             padding: const EdgeInsets.symmetric(vertical: 16),
             minimumSize: const Size(double.infinity, 50),
             backgroundColor: matcronPrimaryColor,
@@ -396,7 +437,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 10),
 
-        // Sign In Link
+        // Already have an account? Log In
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -409,8 +450,8 @@ class _RegisterPageState extends State<RegisterPage> {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BlocProvider<RemoteLoginBloc>(
-                    create: (context) => sl<RemoteLoginBloc>(),
+                  builder: (_) => BlocProvider<RemoteLoginBloc>(
+                    create: (_) => sl<RemoteLoginBloc>(),
                     child: const LoginPage(),
                   ),
                 ),
@@ -429,7 +470,6 @@ class _RegisterPageState extends State<RegisterPage> {
       ],
     );
   }
-
 
   void _register(BuildContext context) {
     context.read<RemoteRegistrationBloc>().add(
