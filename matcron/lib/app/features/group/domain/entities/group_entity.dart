@@ -8,6 +8,7 @@ class GroupEntity {
   String? receiverOrganisationName;
   String? senderOrganisationName;
   int? transferOutPurpose;
+  bool? isImported;
 
   GroupEntity({
     this.uid,
@@ -17,6 +18,7 @@ class GroupEntity {
     this.receiverOrganisationName,
     this.senderOrganisationName,
     this.status,
-    this.transferOutPurpose
+    this.transferOutPurpose,
+    this.isImported
   });
 }

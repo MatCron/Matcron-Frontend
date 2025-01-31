@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:matcron/app/features/group/data/models/group.dart';
 import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
 import 'package:matcron/app/features/group/domain/repositories/group_repository.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
@@ -37,6 +38,7 @@ class MattressPageState extends State<MattressPage> {
   List<MattressEntity> selectedMattresses = [];
   int selectedMattressIndex = -1;
   List<MattressTypeEntity> types = [];
+  List<GroupEntity> groups = [];
   bool canRefreshList = false;
 
   final MattressRepository _mattressRepository =
@@ -103,7 +105,7 @@ class MattressPageState extends State<MattressPage> {
                 _infoRow("Sender Org", entity.senderOrganisationName ?? "N/A"),
                 _infoRow("Status", groupStatus[entity.status! - 1]),
                 _infoRow("Transfer Purpose",
-                    transferOutPurposes[entity.transferOutPurpose!]),
+                    transferOutPurposes[entity.transferOutPurpose! - 1]),
               ],
             ),
             actions: [
@@ -142,41 +144,26 @@ class MattressPageState extends State<MattressPage> {
   }
 
   void _importGroup(BuildContext context, String id) async {
-    var state = await _groupRepository.importMattressFromGroup(id);
+  var state = await _groupRepository.importMattressFromGroup(id);
 
-    debugPrint("Import state: $state"); // Debugging
+  if (state is DataSuccess) {
+    if (!mounted) return; // ✅ Ensure widget is still active
 
-    if (state is DataSuccess) {
-      if (mounted) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text("Success"),
-                content: Text(
-                    "Mattresses imported successfully, and group status updated to Archived."),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Close the dialog
-                    },
-                    child: Text("OK"),
-                  ),
-                ],
-              );
-            },
-          );
-        });
-      }
-    } else {
+    Navigator.pop(context); // ✅ Safe pop
+
+    Future.delayed(Duration.zero, () {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error importing mattresses.")),
+          const SnackBar(
+            content: Text("Mattresses imported successfully!"),
+            backgroundColor: Colors.green,
+          ),
         );
       }
-    }
+    });
   }
+}
+
 
   Widget _infoRow(String label, String value) {
     return Padding(
@@ -198,7 +185,9 @@ class MattressPageState extends State<MattressPage> {
   }
 
   void _openDPPBottomDrawer(BuildContext context,
-      {required MattressTypeEntity type, required String failSafe, required bool isEditable}) {
+      {required MattressTypeEntity type,
+      required String failSafe,
+      required bool isEditable}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // Allows the drawer to take up full height
@@ -356,6 +345,37 @@ class MattressPageState extends State<MattressPage> {
     }
   }
 
+  void _addMattressToGroup(List<String> mattresses, String groupId) async {
+    var mattressesToAdd =
+        EditMattressesToGroupModel(groupId: groupId, mattressIds: mattresses);
+
+    var addState = await _groupRepository
+        .addMattressToGroup(mattressesToAdd); // Await the async call
+
+    if (addState is DataSuccess) {
+      // Close the current screen and go back
+      Navigator.pop(context);
+
+      // Show success notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Mattresses added to group successfully!"),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    } else {
+      // Show error notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Failed to add mattresses"),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -373,6 +393,7 @@ class MattressPageState extends State<MattressPage> {
             mattresses.clear();
             mattresses.addAll(state.mattresses!);
             types.addAll(state.types!);
+            groups.addAll(state.groups!);
 
             if (currentSearchedEntity != null) {
               canRefreshList = true;
@@ -432,7 +453,11 @@ class MattressPageState extends State<MattressPage> {
                           builder: (context) =>
                               BlocProvider<RemoteMattressBloc>(
                             create: (context) => sl<RemoteMattressBloc>(),
-                            child: TransferOutMattressPage(),
+                            child: TransferOutMattressPage(
+                              groups: groups,
+                              mattresses: selectedMattresses,
+                              addMattresses: _addMattressToGroup,
+                            ),
                           ),
                         ));
                   },
@@ -763,7 +788,7 @@ class MattressPageState extends State<MattressPage> {
                                                   _openDPPBottomDrawer(context,
                                                       type: mattress
                                                           .mattressType!,
-                                                          failSafe: mattress.uid!,
+                                                      failSafe: mattress.uid!,
                                                       isEditable: false);
                                                 },
                                                 style: ElevatedButton.styleFrom(
