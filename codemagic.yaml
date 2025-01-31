@@ -4,3 +4,6 @@ workflows:
       android:
         flutter:
           target: lib/app/main.dart  # This specifies the entry point of your Flutter app
+    environment:
+      groups:
+        - discord_credentials
