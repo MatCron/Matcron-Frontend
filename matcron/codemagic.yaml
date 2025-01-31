@@ -1,0 +1,6 @@
+workflows:
+  my-workflow:
+    build:
+      android:
+        flutter:
+          target: lib/main.dart  # This specifies the entry point of your Flutter app
