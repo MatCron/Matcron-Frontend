@@ -60,7 +60,9 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
   @override
   void initState() {
     super.initState();
-    _checkAuthToken(); // Check the token when the widget initializes
+      Future.delayed(const Duration(seconds: 5), () {
+    _checkAuthToken();
+  }); // Check the token when the widget initializes
   }
 
   Future<void> _checkAuthToken() async {
