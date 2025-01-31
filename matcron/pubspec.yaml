@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.17.0
   dartz: ^0.10.1
   fl_chart: ^0.35.0
+  jwt_decoder: ^2.0.1
 
 
 dev_dependencies:

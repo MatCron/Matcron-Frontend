@@ -10,6 +10,7 @@ class GroupModel extends GroupEntity {
     super.senderOrganisationName,
     super.status,
     super.transferOutPurpose,
+    super.isImported
   });
 
   factory GroupModel.fromJson(Map<String, dynamic> map) {
@@ -21,7 +22,8 @@ class GroupModel extends GroupEntity {
       receiverOrganisationName: map['receiverOrganisationName'] ?? "",
       senderOrganisationName: map['senderOrganisationName'] ?? "",
       status: map['status'] ?? 0, // Assuming status is an integer, change if necessary
-      transferOutPurpose: map['transferOutPurpose'] ?? "",
+      transferOutPurpose: map['transferOutPurpose'] ?? 0,
+      isImported: map['isImported'] ?? false
     );
   }
 
@@ -49,5 +51,45 @@ class GroupModel extends GroupEntity {
       status: entity.status,
       transferOutPurpose: entity.transferOutPurpose,
     );
+  }
+}
+
+
+
+
+
+class CreateGroupModel {
+  final String name;
+  final String description;
+  final String receiverOrgId;
+  final String senderOrgId;
+  final int transferOutPurpose;
+
+  CreateGroupModel({
+    required this.name,
+    required this.description,
+    required this.receiverOrgId,
+    required this.senderOrgId,
+    required this.transferOutPurpose,
+  });
+
+  factory CreateGroupModel.fromJson(Map<String, dynamic> map) {
+    return CreateGroupModel(
+      name: map['name'] ?? "",
+      description: map['description'] ?? "",
+      receiverOrgId: map['receiverOrgId'] ?? "",
+      senderOrgId: map['senderOrgId'] ?? "",
+      transferOutPurpose: map['transferOutPurpose'] ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'receiverOrgId': receiverOrgId,
+      'senderOrgId': senderOrgId,
+      'transferOutPurpose': transferOutPurpose,
+    };
   }
 }

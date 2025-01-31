@@ -15,5 +15,9 @@ abstract class GroupApiService {
   @POST('import-mattresses/{id}')
   Future <HttpResponse<void>> importMattressFromGroup({@Path('id') required String id, @Header('Authorization') required String token});
 
+  @POST('/group-by-status')
+  Future<HttpResponse<List<GroupModel>>> getGroups({@Body() required int groupStatus, @Header('Authorization') required String token});
 
+  @POST('/add')
+  Future<HttpResponse<GroupModel>> createGroup({@Body() required CreateGroupModel model, @Header('Authorization') required String token});
 }
