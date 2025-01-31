@@ -11,4 +11,5 @@ abstract class GroupRepository {
   Future<DataState<List<GroupEntity>>> getGroups(int status);
   Future<DataState<GroupEntity>> createGroup(CreateGroupModel model);
   Future<DataState<GroupWithMattressesDto>> getGroupById(String id);
+  Future<DataState<void>> transferOut(String uid);
 }

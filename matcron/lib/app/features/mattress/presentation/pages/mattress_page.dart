@@ -37,6 +37,7 @@ class MattressPageState extends State<MattressPage> {
   List<MattressEntity> selectedMattresses = [];
   int selectedMattressIndex = -1;
   List<MattressTypeEntity> types = [];
+  List<GroupEntity> groups = [];
   bool canRefreshList = false;
 
   final MattressRepository _mattressRepository =
@@ -373,6 +374,7 @@ class MattressPageState extends State<MattressPage> {
             mattresses.clear();
             mattresses.addAll(state.mattresses!);
             types.addAll(state.types!);
+            groups.addAll(state.groups!);
 
             if (currentSearchedEntity != null) {
               canRefreshList = true;
@@ -432,7 +434,7 @@ class MattressPageState extends State<MattressPage> {
                           builder: (context) =>
                               BlocProvider<RemoteMattressBloc>(
                             create: (context) => sl<RemoteMattressBloc>(),
-                            child: TransferOutMattressPage(),
+                            child: TransferOutMattressPage(groups: groups),
                           ),
                         ));
                   },

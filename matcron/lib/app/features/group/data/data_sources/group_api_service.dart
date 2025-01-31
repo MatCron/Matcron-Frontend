@@ -12,7 +12,7 @@ abstract class GroupApiService {
   @GET('/import-preview/{id}')
   Future<HttpResponse<GroupModel>> getImportPreviewFromMattressId({@Path('id') required String id, @Header('Authorization') required String token});
 
-  @POST('import-mattresses/{id}')
+  @POST('/import-mattresses/{id}')
   Future <HttpResponse<void>> importMattressFromGroup({@Path('id') required String id, @Header('Authorization') required String token});
 
   @POST('/group-by-status')
@@ -22,8 +22,8 @@ abstract class GroupApiService {
   Future<HttpResponse<GroupModel>> createGroup({@Body() required CreateGroupModel model, @Header('Authorization') required String token});
 
   @GET('/{id}')
-Future<HttpResponse<GroupWithMattressesDto>> getGroupById({
-  @Path('id') required String id,
-  @Header('Authorization') required String token,
-});
+  Future<HttpResponse<GroupWithMattressesDto>> getGroupById({@Path('id') required String id, @Header('Authorization') required String token});
+
+  @POST('/transfer-out/{id}')
+  Future <HttpResponse<void>> transferOut({@Path('id') required String id, @Header('Authorization') required String token});
 }

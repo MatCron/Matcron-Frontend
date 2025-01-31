@@ -137,4 +137,29 @@ Future<DataState<GroupWithMattressesDto>> getGroupById(String id) async {
       return DataFailed(e);
     }
   }
+
+  @override
+  Future<DataState<void>> transferOut(String uid) async {
+    final String token = 'Bearer ${await AuthorizationService().getToken()}';
+    
+    try {
+      final httpResponse = await _groupApiService.transferOut(id: uid, token: token);
+
+      if (httpResponse.response.statusCode == HttpStatus.ok) {
+        return DataSuccess(httpResponse.data);
+      } else {
+        return DataFailed(
+          DioException(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: httpResponse.response.requestOptions, 
+          )
+        );
+      }
+      
+    } on DioException catch(e) {
+      return DataFailed(e);
+    }
+  }
 }
