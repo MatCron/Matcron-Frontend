@@ -19,14 +19,15 @@ class OutlinedTextField extends StatefulWidget {
   final String? autofillHint;
   final bool isPassword;
 
-  const OutlinedTextField({
-    Key? key,
+const OutlinedTextField({
+    super.key, 
     required this.controller,
     required this.placeholder,
     required this.inputType,
     this.autofillHint,
     this.isPassword = false,
-  }) : super(key: key);
+});
+
 
   @override
   State<OutlinedTextField> createState() => _OutlinedTextFieldState();
@@ -73,8 +74,7 @@ class _OutlinedTextFieldState extends State<OutlinedTextField> {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: Colors.transparent, width: 0),
         ),
-        // Show a suffix icon to toggle password if isPassword == true
-        suffixIcon: widget.isPassword
+            suffixIcon: widget.isPassword
             ? IconButton(
                 icon: Icon(
                   _obscureText ? Icons.visibility_off : Icons.visibility,
@@ -89,15 +89,14 @@ class _OutlinedTextFieldState extends State<OutlinedTextField> {
 }
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  // Controllers for each field
-  final TextEditingController firstNameController       = TextEditingController();
+    final TextEditingController firstNameController       = TextEditingController();
   final TextEditingController lastNameController        = TextEditingController();
   final TextEditingController emailController           = TextEditingController();
   final TextEditingController orgCodeController         = TextEditingController();
@@ -210,8 +209,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   Widget _buildRegistrationForm(RemoteAuthInitial state) {
-    // Potential error messages from validation
-    String? firstNameError;
+     String? firstNameError;
     String? lastNameError;
     String? emailError;
     String? orgCodeError;

@@ -13,36 +13,50 @@ import 'package:matcron/core/constants/constants.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-
+   
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class RoundedTextField extends StatelessWidget {
+class RoundedTextField extends StatefulWidget {
   final TextEditingController controller;
   final String placeholder;
   final TextInputType inputType;
   final String? autofillHint;
+  final bool isPassword;
 
   const RoundedTextField({
-    Key? key,
+    super.key,
     required this.controller,
     required this.placeholder,
     required this.inputType,
     this.autofillHint,
-  }) : super(key: key);
+    this.isPassword = false,
+  });
+
+  @override
+  State<RoundedTextField> createState() => _RoundedTextFieldState();
+}
+
+class _RoundedTextFieldState extends State<RoundedTextField> {
+  bool _obscureText = true;
+
+  void _toggleObscureText() {
+    setState(() => _obscureText = !_obscureText);
+  }
 
   @override
   Widget build(BuildContext context) {
     return TextField(
-      controller: controller,
-      keyboardType: inputType,
-      autofillHints: autofillHint != null ? [autofillHint!] : null,
+      controller: widget.controller,
+      keyboardType: widget.inputType,
+      autofillHints: widget.autofillHint != null ? [widget.autofillHint!] : null,
+      obscureText: widget.isPassword ? _obscureText : false,
       style: const TextStyle(color: Colors.black),
       decoration: InputDecoration(
         fillColor: Colors.white,
         filled: true,
-        hintText: placeholder,
+        hintText: widget.placeholder,
         hintStyle: TextStyle(color: Colors.grey[600]),
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         border: OutlineInputBorder(
@@ -57,11 +71,19 @@ class RoundedTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: Colors.transparent),
         ),
+               suffixIcon: widget.isPassword
+            ? IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.grey[600],
+                ),
+                onPressed: _toggleObscureText,
+              )
+            : null,
       ),
     );
   }
 }
-
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController    = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -187,8 +209,8 @@ class _LoginPageState extends State<LoginPage> {
                       RoundedTextField(
                         controller: passwordController,
                         placeholder: "Enter password",
-                        inputType: TextInputType.visiblePassword,
-                        autofillHint: AutofillHints.password,
+                       inputType: TextInputType.visiblePassword,
+                     isPassword: true,
                       ),
                       if (passwordError != null)
                         Text(
