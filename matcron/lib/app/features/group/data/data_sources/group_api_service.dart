@@ -26,4 +26,7 @@ abstract class GroupApiService {
 
   @POST('/transfer-out/{id}')
   Future <HttpResponse<void>> transferOut({@Path('id') required String id, @Header('Authorization') required String token});
+  
+  @POST('/mattresses/multiple')
+  Future <HttpResponse<void>> addMattressToGroup({@Body() required EditMattressesToGroupModel model, @Header('Authorization') required String token});
 }

@@ -195,6 +195,27 @@ Future<HttpResponse<GroupWithMattressesDto>> getGroupById({
   }
 
   @override
+  Future<HttpResponse<GroupModel>> addMattressToGroup({
+    required EditMattressesToGroupModel model,
+    required String token,
+  }) async {
+    final _headers = {'Authorization': token};
+    final _data = model.toJson();
+    final _options = Options(
+      method: 'POST',
+      headers: _headers,
+    ).compose(
+      _dio.options,
+      '/mattresses/multiple',
+      data: _data,
+    ).copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl);
+
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    final _value = GroupModel.fromJson(_result.data!);
+    return HttpResponse(_value, _result);
+  }
+
+  @override
   Future<HttpResponse<void>> transferOut({
     required String id,
     required String token,

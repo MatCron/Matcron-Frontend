@@ -30,12 +30,12 @@ class RemoteMattressBloc
     final typesDataState = await _typeRepository.getTypes();
     final groupDataState = await _groupRepository.getGroups(1);
 
+
     if (
       dataState is DataSuccess && dataState.data != null && 
-      typesDataState is DataSuccess && typesDataState.data != null &&
-      groupDataState is DataSuccess && groupDataState.data != null
+      typesDataState is DataSuccess && typesDataState.data != null
       ) {
-      emit(RemoteMattressesDone(dataState.data!, typesDataState.data!, "", groupDataState.data!));
+      emit(RemoteMattressesDone(dataState.data!, typesDataState.data!, "", groupDataState is DataSuccess ? groupDataState.data! : []));
     }
 
     if (dataState is DataFailed) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:matcron/app/features/group/data/models/group.dart';
 import 'package:matcron/app/features/organization/domain/entities/organization.dart';
 import 'package:matcron/core/constants/constants.dart';
+import 'package:matcron/core/resources/authorization.dart';
 
 class AddGroupDrawer extends StatefulWidget {
   final TextEditingController nameController;
@@ -24,6 +25,7 @@ class AddGroupDrawer extends StatefulWidget {
   });
 
   @override
+  // ignore: library_private_types_in_public_api
   _AddGroupDrawerState createState() => _AddGroupDrawerState();
 }
 
@@ -32,6 +34,9 @@ class _AddGroupDrawerState extends State<AddGroupDrawer> {
   late TextEditingController _descriptionController;
   late String _selectedOrganization;
   late String _selectedPurpose;
+  final AuthorizationService _authService = AuthorizationService();
+  String? _senderOrgId;
+  bool _loading = true; // Tracks if senderOrgId is still loading
 
   @override
   void initState() {
@@ -40,6 +45,43 @@ class _AddGroupDrawerState extends State<AddGroupDrawer> {
     _descriptionController = widget.descriptionController;
     _selectedOrganization = widget.selectedOrganization;
     _selectedPurpose = widget.purposeController.text.isEmpty ? "Maintenance" : widget.purposeController.text;
+
+    _fetchSenderOrgId(); // Fetch sender org ID from token
+  }
+
+  /// Fetch sender organization ID from token
+  Future<void> _fetchSenderOrgId() async {
+    var tokenDetails = await _authService.getTokenDetails();
+    if (tokenDetails != null && tokenDetails.containsKey("OrgId")) {
+      setState(() {
+        _senderOrgId = tokenDetails["OrgId"];
+        _loading = false; // Stop loading once ID is fetched
+      });
+    } else {
+      setState(() {
+        _loading = false; // Stop loading even if ID is not found
+      });
+    }
+  }
+
+  void _saveGroup() {
+    if (_senderOrgId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Sender Organization ID not found!")),
+      );
+      return;
+    }
+
+    final group = CreateGroupModel(
+      name: _nameController.text,
+      description: _descriptionController.text,
+      receiverOrgId: _selectedOrganization,
+      senderOrgId: _senderOrgId!, // Use dynamic senderOrgId from token
+      transferOutPurpose: _getPurposeId(_selectedPurpose),
+    );
+
+    widget.onSave(group);
+    Navigator.of(context).pop();
   }
 
   @override
@@ -55,111 +97,102 @@ class _AddGroupDrawerState extends State<AddGroupDrawer> {
         color: Colors.white,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
       ),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Add New Group",
-                  style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close, color: Colors.grey),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 10.0),
-            _buildTextField(
-              controller: _nameController,
-              labelText: "Group Name",
-            ),
-            const SizedBox(height: 16.0),
-            DropdownButtonFormField<String>(
-              value: _selectedOrganization.isEmpty ? null : _selectedOrganization,
-              decoration: _buildInputDecoration("Select Organization"),
-              items: widget.organizations.map((org) {
-                return DropdownMenuItem<String>(
-                  value: org.id,
-                  child: Text(org.name ?? "Unknown"),
-                );
-              }).toList(),
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _selectedOrganization = value;
-                  });
-                  widget.onOrganizationChanged(value);
-                }
-              },
-            ),
-            const SizedBox(height: 16.0),
-            DropdownButtonFormField<String>(
-              value: _selectedPurpose,
-              decoration: _buildInputDecoration("Select Purpose"),
-              items: const [
-                DropdownMenuItem(value: "Maintenance", child: Text("Maintenance")),
-                DropdownMenuItem(value: "Emergency", child: Text("Emergency")),
-                DropdownMenuItem(value: "End of Life Cycle", child: Text("End of Life Cycle")),
-                DropdownMenuItem(value: "Shipping", child: Text("Shipping")),
-              ],
-              onChanged: (value) {
-                if (value != null) {
-                  setState(() {
-                    _selectedPurpose = value;
-                  });
-                  widget.purposeController.text = value;
-                }
-              },
-            ),
-            const SizedBox(height: 16.0),
-            _buildTextField(
-              controller: _descriptionController,
-              labelText: "Description",
-              maxLines: 5,
-            ),
-            const SizedBox(height: 16.0),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  final group = CreateGroupModel(
-                    name: _nameController.text,
-                    description: _descriptionController.text,
-                    receiverOrgId: _selectedOrganization,
-                    senderOrgId: "3e176182-beca-11ef-a25f-0242ac180002", // Replace with actual sender ID logic
-                    transferOutPurpose: _getPurposeId(_selectedPurpose),
-                  );
-
-                  widget.onSave(group);
-                  Navigator.of(context).pop();
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: matcronPrimaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 14.0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+      child: _loading
+          ? const Center(child: CircularProgressIndicator()) // Show loader while fetching ID
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Add New Group",
+                        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, color: Colors.grey),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
                   ),
-                ),
-                child: const Text(
-                  "Save",
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                  const SizedBox(height: 10.0),
+                  _buildTextField(
+                    controller: _nameController,
+                    labelText: "Group Name",
                   ),
-                ),
+                  const SizedBox(height: 16.0),
+                  DropdownButtonFormField<String>(
+                    value: _selectedOrganization.isEmpty ? null : _selectedOrganization,
+                    decoration: _buildInputDecoration("Select Organization"),
+                    items: widget.organizations.map((org) {
+                      return DropdownMenuItem<String>(
+                        value: org.id,
+                        child: Text(org.name ?? "Unknown"),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedOrganization = value;
+                        });
+                        widget.onOrganizationChanged(value);
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16.0),
+                  DropdownButtonFormField<String>(
+                    value: _selectedPurpose,
+                    decoration: _buildInputDecoration("Select Purpose"),
+                    items: const [
+                      DropdownMenuItem(value: "Maintenance", child: Text("Maintenance")),
+                      DropdownMenuItem(value: "Emergency", child: Text("Emergency")),
+                      DropdownMenuItem(value: "End of Life Cycle", child: Text("End of Life Cycle")),
+                      DropdownMenuItem(value: "Shipping", child: Text("Shipping")),
+                    ],
+                    onChanged: (value) {
+                      if (value != null) {
+                        setState(() {
+                          _selectedPurpose = value;
+                        });
+                        widget.purposeController.text = value;
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 16.0),
+                  _buildTextField(
+                    controller: _descriptionController,
+                    labelText: "Description",
+                    maxLines: 5,
+                  ),
+                  const SizedBox(height: 16.0),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _senderOrgId == null ? null : _saveGroup, // Disable if ID is not loaded
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: matcronPrimaryColor,
+                        padding: const EdgeInsets.symmetric(vertical: 14.0),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                      ),
+                      child: const Text(
+                        "Save",
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 

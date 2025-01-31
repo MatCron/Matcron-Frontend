@@ -1,4 +1,5 @@
 import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
+import 'dart:convert';
 
 class GroupModel extends GroupEntity {
   GroupModel({
@@ -91,5 +92,37 @@ class CreateGroupModel {
       'senderOrgId': senderOrgId,
       'transferOutPurpose': transferOutPurpose,
     };
+  }
+}
+
+
+class EditMattressesToGroupModel {
+  final String groupId;
+  final List<String> mattressIds;
+
+  EditMattressesToGroupModel({
+    required this.groupId,
+    required this.mattressIds,
+  });
+
+  /// Factory constructor to create an instance from JSON
+  factory EditMattressesToGroupModel.fromJson(Map<String, dynamic> json) {
+    return EditMattressesToGroupModel(
+      groupId: json['groupId'] ?? "",
+      mattressIds: (json['mattressIds'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
+    );
+  }
+
+  /// Converts the model to JSON format
+  Map<String, dynamic> toJson() {
+    return {
+      'groupId': groupId,
+      'mattressIds': mattressIds,
+    };
+  }
+
+  /// Converts the model to a JSON string
+  String toJsonString() {
+    return jsonEncode(toJson());
   }
 }

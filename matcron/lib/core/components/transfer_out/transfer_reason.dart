@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
+import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
 import 'package:matcron/config/theme/app_theme.dart';
-import 'package:matcron/core/components/transfer_out/transfer_confirm.dart';
 import 'package:matcron/core/constants/constants.dart';
 
 class TransferOutMattressPage extends StatefulWidget {
   final List<GroupEntity> groups;
+  final List<MattressEntity> mattresses;
+  final Function(List<String>, String) addMattresses;
 
-  TransferOutMattressPage({super.key, required List<GroupEntity> groups})
-      : groups = _removeDuplicates(groups); // Filter duplicates before passing to state
+  TransferOutMattressPage(
+      {super.key,
+      required List<GroupEntity> groups,
+      required this.mattresses,
+      required this.addMattresses})
+      : groups = _removeDuplicates(
+            groups); // Filter duplicates before passing to state
 
   @override
-  _TransferOutMattressPageState createState() => _TransferOutMattressPageState();
+  _TransferOutMattressPageState createState() =>
+      _TransferOutMattressPageState();
 
   // Function to remove duplicates based on UID
   static List<GroupEntity> _removeDuplicates(List<GroupEntity> groups) {
@@ -58,7 +66,7 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
 
             // Title
             const Text(
-              "Transfer Out Mattress",
+              "Add Mattresses To Group",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -73,7 +81,8 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 255, 255, 255).withOpacity(0.5),
+                color:
+                    const Color.fromARGB(255, 255, 255, 255).withOpacity(0.5),
                 borderRadius: BorderRadius.circular(25.0),
               ),
               child: DropdownButtonFormField<String>(
@@ -138,11 +147,12 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
                   onPressed: selectedGroupId == null
                       ? null
                       : () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => TransferDonePage(),
-                            ),
+                          widget.addMattresses(
+                            widget.mattresses
+                                .map((mattress) => mattress.uid)
+                                .whereType<String>()
+                                .toList(), // Extract only non-null IDs
+                            selectedGroupId!,
                           );
                         },
                   child: const Text(
@@ -162,5 +172,3 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
     );
   }
 }
-
-

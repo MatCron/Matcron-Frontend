@@ -20,6 +20,8 @@ class AuthorizationService {
   Future<Map<String, dynamic>?> getTokenDetails() async {
     String? token = await getToken();
     if (token != null && token.isNotEmpty) {
+      var p = JwtDecoder.decode(token);
+      print(p['OrgId']);
       return JwtDecoder.decode(token); // Decodes payload
     }
     return null;
