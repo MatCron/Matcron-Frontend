@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
+import 'package:matcron/app/features/group/data/models/group.dart';
 import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
 import 'package:matcron/app/features/group/domain/repositories/group_repository.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
@@ -36,6 +37,7 @@ class MattressPageState extends State<MattressPage> {
   List<MattressEntity> selectedMattresses = [];
   int selectedMattressIndex = -1;
   List<MattressTypeEntity> types = [];
+  List<GroupEntity> groups = [];
   bool canRefreshList = false;
 
   final MattressRepository _mattressRepository = GetIt.instance<MattressRepository>();
@@ -137,6 +139,30 @@ class MattressPageState extends State<MattressPage> {
           return AlertDialog(
             title: const Text("Success"),
             content: const Text("Mattresses imported successfully, and group status updated to Archived."),
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            title: Text(
+              "Import Group",
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: matcronPrimaryColor),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _infoRow("Name", entity.name ?? "N/A"),
+                _infoRow("Description", entity.description ?? "N/A"),
+                _infoRow("Mattress Count", entity.mattressCount.toString()),
+                _infoRow("Sender Org", entity.senderOrganisationName ?? "N/A"),
+                _infoRow("Status", groupStatus[entity.status! - 1]),
+                _infoRow("Transfer Purpose",
+                    transferOutPurposes[entity.transferOutPurpose! - 1]),
+              ],
+            ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(dialogContext).pop(),
@@ -151,7 +177,30 @@ class MattressPageState extends State<MattressPage> {
         const SnackBar(content: Text("Error importing mattresses.")),
       );
     }
+    });
   }
+
+  void _importGroup(BuildContext context, String id) async {
+  var state = await _groupRepository.importMattressFromGroup(id);
+
+  if (state is DataSuccess) {
+    if (!mounted) return; // ✅ Ensure widget is still active
+
+    Navigator.pop(context); // ✅ Safe pop
+
+    Future.delayed(Duration.zero, () {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Mattresses imported successfully!"),
+            backgroundColor: Colors.green,
+          ),
+        );
+      }
+    });
+  }
+}
+
 
   Widget _infoRow(String label, String value) {
     return Padding(
@@ -168,14 +217,11 @@ class MattressPageState extends State<MattressPage> {
     );
   }
 
-  // ------------------- BOTTOM DRAWERS -------------------
-  void _openDPPBottomDrawer({
-    required MattressTypeEntity type,
-    required String failSafe,
-    required bool isEditable,
-  }) {
-    if (!mounted) return;
 
+  void _openDPPBottomDrawer(BuildContext context,
+      {required MattressTypeEntity type,
+      required String failSafe,
+      required bool isEditable}) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -319,7 +365,37 @@ class MattressPageState extends State<MattressPage> {
     _closeAnyOpenDialog();
   }
 
-  // ------------------- BUILD METHOD -------------------
+  void _addMattressToGroup(List<String> mattresses, String groupId) async {
+    var mattressesToAdd =
+        EditMattressesToGroupModel(groupId: groupId, mattressIds: mattresses);
+
+    var addState = await _groupRepository
+        .addMattressToGroup(mattressesToAdd); // Await the async call
+
+    if (addState is DataSuccess) {
+      // Close the current screen and go back
+      Navigator.pop(context);
+
+      // Show success notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Mattresses added to group successfully!"),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 3),
+        ),
+      );
+    } else {
+      // Show error notification
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Failed to add mattresses"),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
@@ -341,6 +417,7 @@ class MattressPageState extends State<MattressPage> {
               ..addAll(state.mattresses!);
 
             types.addAll(state.types!);
+            groups.addAll(state.groups!);
 
             if (currentSearchedEntity != null) {
               canRefreshList = true;
@@ -404,13 +481,17 @@ class MattressPageState extends State<MattressPage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => BlocProvider<RemoteMattressBloc>(
-                          create: (_) => sl<RemoteMattressBloc>(),
-                          child: TransferOutMattressPage(),
-                        ),
-                      ),
-                    );
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BlocProvider<RemoteMattressBloc>(
+                            create: (context) => sl<RemoteMattressBloc>(),
+                            child: TransferOutMattressPage(
+                              groups: groups,
+                              mattresses: selectedMattresses,
+                              addMattresses: _addMattressToGroup,
+                            ),
+                          ),
+                        ));
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: matcronPrimaryColor,
@@ -656,6 +737,15 @@ class MattressPageState extends State<MattressPage> {
                                                     mattress: mattress,
                                                     onSave: _updateMattress,
                                                   );
+                                              ),
+                                              const SizedBox(width: 5.0),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  _openDPPBottomDrawer(context,
+                                                      type: mattress
+                                                          .mattressType!,
+                                                      failSafe: mattress.uid!,
+                                                      isEditable: false);
                                                 },
                                               );
                                             },
