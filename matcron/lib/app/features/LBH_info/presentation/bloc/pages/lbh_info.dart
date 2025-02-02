@@ -5,53 +5,70 @@ class MattressDimensionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     final backgroundColor = const Color(0xFFE5E5E5);
     final primaryColor = const Color.fromARGB(255, 80, 194, 201);
-    const labelStyle = TextStyle(fontSize: 14, color: Colors.black54, fontStyle: FontStyle.italic);
-    const valueStyle = TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w600);
+
+    // Dynamic styles
+    final titleStyle = TextStyle(
+      fontSize: screenWidth * 0.06, 
+      fontWeight: FontWeight.bold,
+      color: primaryColor,
+    );
+    final labelStyle = TextStyle(
+      fontSize: screenWidth * 0.035, 
+      color: Colors.black54,
+      fontStyle: FontStyle.italic,
+    );
+    final valueStyle = TextStyle(
+      fontSize: screenWidth * 0.04, 
+      color: Colors.black87,
+      fontWeight: FontWeight.w600,
+    );
 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
         backgroundColor: backgroundColor,
         elevation: 0,
-        automaticallyImplyLeading: false,
-        title: const Text(
-          "Mattress Dimensions",
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 80, 194, 201),
+           automaticallyImplyLeading: false,
+        leading: IconButton(
+          
+          icon: Text(
+            "<",
+            style: TextStyle(
+              fontSize: screenWidth * 0.08,
+              color: Color.fromARGB(255, 80, 194, 201), 
+              fontWeight: FontWeight.bold,
+            ),
           ),
+          onPressed: () => Navigator.pop(context),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.red),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
-        iconTheme: const IconThemeData(color: Colors.black54),
+        title: Text("Mattress Dimensions", style: titleStyle),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal:16.0, vertical: 20.0),
+          padding: EdgeInsets.symmetric(
+            horizontal: screenWidth * 0.04,
+            vertical: screenHeight * 0.02,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Short introduction
-              const Text(
+              Text(
                 "Here are the detailed dimensions of your mattress. Use this information to ensure proper fitting in your bed frame and bedding.",
-                style: TextStyle(fontSize: 16, color: Colors.black87),
+                style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black87),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: screenHeight * 0.02),
 
-              // Cuboid image for visual reference
               Center(
                 child: Container(
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20.0),
-                    boxShadow: const [
+                    boxShadow: [
                       BoxShadow(
                         color: Colors.black12,
                         blurRadius: 5,
@@ -59,83 +76,34 @@ class MattressDimensionsPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  padding: const EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(screenWidth * 0.04),
                   child: Image.asset(
-                    'assets/images/bedmeasuring.png', 
-                    width: 200,
-                    height: 150,
+                    'assets/images/bedmeasuring.png',
+                    width: screenWidth * 0.8, 
+                    height: screenHeight * 0.2,
                     fit: BoxFit.contain,
                   ),
                 ),
               ),
 
-              const SizedBox(height: 20),
+              SizedBox(height: screenHeight * 0.03),
 
-              // Dimension Labels and Values
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Length
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text("Length", style: labelStyle),
-                      const SizedBox(height: 6),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: primaryColor.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal:20, vertical:10),
-                        child: Text("80 inches", style: valueStyle), 
-                      )
-                    ],
-                  ),
-
-                  // Width (Breadth)
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text("Width", style: labelStyle),
-                      const SizedBox(height: 6),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: primaryColor.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal:20, vertical:10),
-                        child: Text("60 inches", style: valueStyle), 
-                      )
-                    ],
-                  ),
-
-                  // Depth (Height)	
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Text("Depth/Height", style: labelStyle),
-                      const SizedBox(height: 6),
-                      Container(
-                        decoration: BoxDecoration(
-                          color: primaryColor.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(20.0),
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal:20, vertical:10),
-                        child: Text("10 inches", style: valueStyle), 
-                      )
-                    ],
-                  ),
+                  _buildDimensionColumn("Length", "80 inches", labelStyle, valueStyle, primaryColor),
+                  _buildDimensionColumn("Width", "60 inches", labelStyle, valueStyle, primaryColor),
+                  _buildDimensionColumn("Depth/Height", "10 inches", labelStyle, valueStyle, primaryColor),
                 ],
               ),
 
-              const SizedBox(height: 30),
+              SizedBox(height: screenHeight * 0.04),
 
-           
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(20.0),
-                  boxShadow: const [
+                  boxShadow: [
                     BoxShadow(
                       color: Colors.black12,
                       blurRadius: 5,
@@ -143,16 +111,40 @@ class MattressDimensionsPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                padding: const EdgeInsets.all(16.0),
-                child: const Text(
+                padding: EdgeInsets.all(screenWidth * 0.04),
+                child: Text(
                   "All measurements are approximate and can vary slightly. Ensure to measure your bed frame and confirm that these dimensions meet your room’s space requirements.",
-                  style: TextStyle(fontSize: 14, color: Colors.black87),
+                  style: TextStyle(fontSize: screenWidth * 0.035, color: Colors.black87),
                 ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDimensionColumn(
+    String label,
+    String value,
+    TextStyle labelStyle,
+    TextStyle valueStyle,
+    Color primaryColor,
+  ) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(label, style: labelStyle),
+        const SizedBox(height: 6),
+        Container(
+          decoration: BoxDecoration(
+            color: primaryColor.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+          child: Text(value, style: valueStyle),
+        ),
+      ],
     );
   }
 }

@@ -5,7 +5,6 @@ class MattressRecyclingInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Common styling
     const titleStyle = TextStyle(
       fontSize: 18,
       fontWeight: FontWeight.bold,
@@ -25,7 +24,7 @@ class MattressRecyclingInfoPage extends StatelessWidget {
         "title": "Disassembly Steps",
         "description":
             "Carefully remove the cover, separate foam layers, and take out the springs. Wear gloves for safety. Most centers prefer components separated.",
-        "image":'assets/images/Screwdriver.png'
+        "image": 'assets/images/Screwdriver.png'
       },
       {
         "title": "Material-Specific Tips",
@@ -49,7 +48,7 @@ class MattressRecyclingInfoPage extends StatelessWidget {
         "title": "Laws & Fees",
         "description":
             "Some regions charge fees or have specific rules. Check with municipal waste services for details on costs and regulations.",
-        "image":'assets/images/handshake.jpg'
+        "image": 'assets/images/handshake.jpg'
       },
     ];
 
@@ -59,6 +58,18 @@ class MattressRecyclingInfoPage extends StatelessWidget {
         backgroundColor: backgroundColor,
         elevation: 0,
         automaticallyImplyLeading: false,
+        leading: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: const Center(
+            child: Text(
+              "<",
+              style: TextStyle(
+                fontSize: 30,
+                color: Color.fromARGB(255, 80, 194, 201), // Match title color if desired
+                   ),
+            ),
+          ),
+        ),
         title: const Text(
           "Mattress Recycling Info",
           style: TextStyle(
@@ -68,12 +79,8 @@ class MattressRecyclingInfoPage extends StatelessWidget {
           ),
         ),
         iconTheme: const IconThemeData(color: Colors.black54),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close, color: Colors.red),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
+        // Remove the "X" button entirely
+        actions: const [],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -86,7 +93,6 @@ class MattressRecyclingInfoPage extends StatelessWidget {
                 style: TextStyle(fontSize: 16, color: Colors.black54),
               ),
               const SizedBox(height: 20),
-
               // Display each section with an image and text
               for (var section in sections) ...[
                 Container(
@@ -117,7 +123,6 @@ class MattressRecyclingInfoPage extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 10), // Reduced space between image and text
-
                       // Text section expanded to take more space
                       Expanded(
                         child: Column(

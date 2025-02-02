@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Needed for SystemUiOverlayStyle
+import 'package:flutter/services.dart'; 
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -14,22 +14,29 @@ class SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+              leading: InkWell(
+          onTap: () => Navigator.of(context).pop(),
+          child: const Center(
+            child: Text(
+              "<",
+              style: TextStyle(
+                fontSize: 30,
+                color: Colors.white, 
+                         ),
+            ),
+          ),
         ),
-        title: const Text("Settings",
-        style: TextStyle(color: Colors.white),
+        title: const Text(
+          "Settings",
+          style: TextStyle(color: Colors.white),
         ),
-        iconTheme: IconThemeData(
-          color: Colors.white 
-        ),
-        backgroundColor:  Color.fromARGB(255, 80, 194, 201),
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
         // Ensures the status bar text is appropriately colored in AppBar
         systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
-          statusBarColor:  Color.fromARGB(255, 80, 194, 201),
+          statusBarColor: Color.fromARGB(255, 80, 194, 201),
           statusBarBrightness: Brightness.light,
         ),
       ),
@@ -55,18 +62,20 @@ class SettingsPageState extends State<SettingsPage> {
   void _toggleTheme(bool darkMode) {
     if (darkMode) {
       // Apply dark theme
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
-        statusBarColor: Colors.black,
-        statusBarBrightness: Brightness.dark,
-      ));
-      // Assuming you have a Theme Manager or use Provider/Bloc to change the theme
+      SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.dark.copyWith(
+          statusBarColor: Colors.black,
+          statusBarBrightness: Brightness.dark,
+        ),
+      );
     } else {
       // Apply light theme
-      SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Colors.white,
-        statusBarBrightness: Brightness.light,
-      ));
-      // Assuming you have a Theme Manager or use Provider/Bloc to change the theme
+      SystemChrome.setSystemUIOverlayStyle(
+        SystemUiOverlayStyle.light.copyWith(
+          statusBarColor: Colors.white,
+          statusBarBrightness: Brightness.light,
+        ),
+      );
     }
   }
 }

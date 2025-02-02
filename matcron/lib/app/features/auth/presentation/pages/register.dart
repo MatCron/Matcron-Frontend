@@ -1,53 +1,124 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:matcron/app/features/profile_settings/presentation/pages/terms_condition.dart';
 import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_event.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_auth_state.dart';
 import 'package:matcron/app/features/auth/presentation/pages/login.dart';
-import 'package:matcron/app/features/auth/presentation/widgets/rounded_text_field.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/core/constants/constants.dart';
 
+
+class OutlinedTextField extends StatefulWidget {
+  final TextEditingController controller;
+  final String placeholder;
+  final TextInputType inputType;
+  final String? autofillHint;
+  final bool isPassword;
+
+const OutlinedTextField({
+    super.key, 
+    required this.controller,
+    required this.placeholder,
+    required this.inputType,
+    this.autofillHint,
+    this.isPassword = false,
+});
+
+
+  @override
+  State<OutlinedTextField> createState() => _OutlinedTextFieldState();
+}
+
+class _OutlinedTextFieldState extends State<OutlinedTextField> {
+  bool _obscureText = false;
+
+  @override
+  void initState() {
+    super.initState();
+       _obscureText = widget.isPassword;
+  }
+
+  void _toggleObscureText() {
+    setState(() => _obscureText = !_obscureText);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: widget.controller,
+      keyboardType: widget.inputType,
+      autofillHints:
+          widget.autofillHint != null ? [widget.autofillHint!] : null,
+      obscureText: _obscureText,
+      style: const TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        hintText: widget.placeholder,
+        hintStyle: TextStyle(color: Colors.grey[600]),
+        fillColor: Colors.white,
+        filled: true,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        // Less-rounded corners (~8 px) for a rectangular outline
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.transparent, width: 0),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.transparent, width: 0),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+          borderSide: const BorderSide(color: Colors.transparent, width: 0),
+        ),
+            suffixIcon: widget.isPassword
+            ? IconButton(
+                icon: Icon(
+                  _obscureText ? Icons.visibility_off : Icons.visibility,
+                  color: Colors.grey[600],
+                ),
+                onPressed: _toggleObscureText,
+              )
+            : null,
+      ),
+    );
+  }
+}
+
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+const RegisterPage({super.key});
 
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController orgCodeController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+    final TextEditingController firstNameController       = TextEditingController();
+  final TextEditingController lastNameController        = TextEditingController();
+  final TextEditingController emailController           = TextEditingController();
+  final TextEditingController orgCodeController         = TextEditingController();
+  final TextEditingController passwordController        = TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
 
-  bool agreeToTerms = false;
-
+  bool agreeToTerms    = false;
   String selectedLanguage = 'English'; // Default language
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true, // Allow body to extend behind the app bar
+      extendBodyBehindAppBar: true, // Let body extend behind the app bar
       appBar: AppBar(
-        toolbarHeight: 40, // Minimal height
-        backgroundColor: Colors.transparent, // Transparent background
-        elevation: 0, // No shadow
-        automaticallyImplyLeading: false, // No back button
+        toolbarHeight: 40, 
+        backgroundColor: Colors.transparent, 
+        elevation: 0, 
+        automaticallyImplyLeading: false, 
         actions: [
           PopupMenuButton<String>(
-            icon: const Icon(Icons.language), // Language icon
-            onSelected: (value) {
-              setState(() {
-                selectedLanguage = value;
-              });
-            },
+            icon: const Icon(Icons.language),
+            onSelected: (value) => setState(() => selectedLanguage = value),
             itemBuilder: (BuildContext context) {
               return ['English', 'German', 'Spanish'].map((String choice) {
                 return PopupMenuItem<String>(
@@ -59,93 +130,86 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
         ],
       ),
-      body: _buildBody(context),
-    );
-  }
-
-  Widget _buildBody(BuildContext context) {
-    return BlocBuilder<RemoteRegistrationBloc, RemoteAuthState>(
-      builder: (_, state) {
-        if (state is RemoteAuthLoading) {
-          return Scaffold(
-            backgroundColor: Colors.white,
-            body: Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+      body: BlocBuilder<RemoteRegistrationBloc, RemoteAuthState>(
+        builder: (context, state) {
+          if (state is RemoteAuthLoading) {
+            return Scaffold(
+              backgroundColor: Colors.white,
+              body: Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+                ),
               ),
-            ),
-          );
-        }
+            );
+          }
 
-        if (state is RemoteAuthInitial) {
-          return Stack(
-            children: [
-              // Background Image
-              Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(
-                        'assets/images/bed.jpg'), // Path to your image
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                      Colors.black.withOpacity(0.35), // Reduce opacity
-                      BlendMode.darken,
+          if (state is RemoteAuthInitial) {
+            return Stack(
+              children: [
+                // Background image with overlay
+                Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: const AssetImage('assets/images/bed.jpg'),
+                      fit: BoxFit.cover,
+                      colorFilter: ColorFilter.mode(
+                        Colors.black.withOpacity(0.35), 
+                        BlendMode.darken,
+                      ),
                     ),
                   ),
                 ),
-              ),
-
-              Center(
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: _buildRegistrationForm(state),
+                Center(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: _buildRegistrationForm(state),
+                    ),
                   ),
                 ),
-              ),
-            ],
-          );
-        }
-
-        if (state is RemoteRegistrationDone) {
-          // Show a Snackbar after the build phase completes
-          SchedulerBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text("Registration successful!"),
-                duration: const Duration(seconds: 2),
-              ),
+              ],
             );
+          }
 
-            // Immediately navigate to the login screen
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BlocProvider<RemoteLoginBloc>(
-                  create: (context) => sl<RemoteLoginBloc>(),
-                  child: const LoginPage(),
+          if (state is RemoteRegistrationDone) {
+            // Show a Snackbar after building completes
+            SchedulerBinding.instance.addPostFrameCallback((_) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("Registration successful!"),
+                  duration: Duration(seconds: 2),
                 ),
+              );
+              // Navigate to login
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BlocProvider<RemoteLoginBloc>(
+                    create: (context) => sl<RemoteLoginBloc>(),
+                    child: const LoginPage(),
+                  ),
+                ),
+              );
+            });
+          }
+
+          if (state is RemoteAuthException) {
+            return Center(
+              child: Text(
+                "Error: ${state.exception}",
+                style: const TextStyle(color: Colors.red),
               ),
             );
-          });
-        }
+          }
 
-        if (state is RemoteAuthException) {
-          return Center(
-            child: Text(
-              "Error: ${state.exception}",
-              style: const TextStyle(color: Colors.red),
-            ),
-          );
-        }
-
-        return const SizedBox();
-      },
+          return const SizedBox();
+        },
+      ),
     );
   }
 
   Widget _buildRegistrationForm(RemoteAuthInitial state) {
-    String? firstNameError;
+     String? firstNameError;
     String? lastNameError;
     String? emailError;
     String? orgCodeError;
@@ -186,36 +250,38 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 10),
 
-        // Welcome Text
+        // Title
         const Text(
           "Welcome to Matcron!",
           style: TextStyle(
-              fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+            fontSize: 30, 
+            fontWeight: FontWeight.bold, 
+            color: Colors.white,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 8),
         Text(
           "Let's create an account",
           style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: matcronPrimaryColor,
-            ),
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            color: matcronPrimaryColor,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 20),
 
-        // First and Last Name Fields with Errors
+        // First Name & Last Name in a row
         Row(
           children: [
             Expanded(
               child: Column(
                 children: [
-                  RoundedTextField(
+                  OutlinedTextField(
                     controller: firstNameController,
                     placeholder: "First Name",
                     inputType: TextInputType.name,
-                    autofillHint: AutofillHints.givenName,
                   ),
                   if (firstNameError != null)
                     Text(
@@ -229,11 +295,10 @@ class _RegisterPageState extends State<RegisterPage> {
             Expanded(
               child: Column(
                 children: [
-                  RoundedTextField(
+                  OutlinedTextField(
                     controller: lastNameController,
                     placeholder: "Last Name",
                     inputType: TextInputType.name,
-                    autofillHint: AutofillHints.familyName,
                   ),
                   if (lastNameError != null)
                     Text(
@@ -247,15 +312,14 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 20),
 
-        // Email Field with Error
+        // Email
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RoundedTextField(
+            OutlinedTextField(
               controller: emailController,
               placeholder: "Enter email",
               inputType: TextInputType.emailAddress,
-              autofillHint: AutofillHints.email,
             ),
             if (emailError != null)
               Text(
@@ -266,11 +330,11 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 20),
 
-        // Organization Code Field with Error
+        // Organization Code
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RoundedTextField(
+            OutlinedTextField(
               controller: orgCodeController,
               placeholder: "Enter organization code",
               inputType: TextInputType.text,
@@ -284,15 +348,15 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 20),
 
-        // Password Field with Error
+        // Password field with eye icon
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RoundedTextField(
+            OutlinedTextField(
               controller: passwordController,
               placeholder: "Enter a strong password",
               inputType: TextInputType.visiblePassword,
-              autofillHint: AutofillHints.newPassword,
+              isPassword: true,
             ),
             if (passwordError != null)
               Text(
@@ -303,15 +367,15 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 20),
 
-        // Confirm Password Field with Error
+        // Confirm Password field with eye icon
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            RoundedTextField(
+            OutlinedTextField(
               controller: confirmPasswordController,
               placeholder: "Confirm password",
               inputType: TextInputType.visiblePassword,
-              autofillHint: AutofillHints.newPassword,
+              isPassword: true,
             ),
             if (confirmPasswordError != null)
               Text(
@@ -322,9 +386,9 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 10),
 
-        // Terms and Conditions Checkbox
+        // Terms & Conditions
         Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Checkbox(
               value: agreeToTerms,
@@ -336,12 +400,19 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
             GestureDetector(
               onTap: () {
-                // Navigate to Terms and Conditions
+                Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const TermsAndConditionsPage(),
+      ),
+    );
               },
               child: const Text(
                 "Agree to Terms and Conditions",
                 style: TextStyle(
-                  color: Colors.blue,
+                  color: Colors.black,
+                  fontSize: 14,
+                  fontStyle: FontStyle.normal,
                   decoration: TextDecoration.underline,
                 ),
               ),
@@ -350,16 +421,13 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 20),
 
-        // Sign Up Button
+        // Sign Up button (Rectangular with minimal radius to match fields)
         ElevatedButton(
-          onPressed: agreeToTerms
-              ? () {
-                  register(context);
-                }
-              : null,
+          onPressed: agreeToTerms ? () => _register(context) : null,
           style: ElevatedButton.styleFrom(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8), // same ~8 as fields
+            ),
             padding: const EdgeInsets.symmetric(vertical: 16),
             minimumSize: const Size(double.infinity, 50),
             backgroundColor: matcronPrimaryColor,
@@ -371,7 +439,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         const SizedBox(height: 10),
 
-        // Sign In Link
+        // Already have an account? Log In
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -384,8 +452,8 @@ class _RegisterPageState extends State<RegisterPage> {
               onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => BlocProvider<RemoteLoginBloc>(
-                    create: (context) => sl<RemoteLoginBloc>(),
+                  builder: (_) => BlocProvider<RemoteLoginBloc>(
+                    create: (_) => sl<RemoteLoginBloc>(),
                     child: const LoginPage(),
                   ),
                 ),
@@ -405,18 +473,19 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  void register(BuildContext context) {
+  void _register(BuildContext context) {
     context.read<RemoteRegistrationBloc>().add(
-          RegisterUser(
-              UserRegistrationEntity(
-                firstName: firstNameController.text,
-                lastName: lastNameController.text,
-                email: emailController.text,
-                password: passwordController.text,
-                organisationCode: orgCodeController.text,
-              ),
-              confirmPasswordController.text),
-        );
+      RegisterUser(
+        UserRegistrationEntity(
+          firstName: firstNameController.text,
+          lastName: lastNameController.text,
+          email: emailController.text,
+          password: passwordController.text,
+          organisationCode: orgCodeController.text,
+        ),
+        confirmPasswordController.text,
+      ),
+    );
   }
 
   @override

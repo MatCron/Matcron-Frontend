@@ -25,21 +25,30 @@ class NotificationsPageState extends State<NotificationsPage> with SingleTickerP
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-            backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-                title: const Text('Notifications',
-        style: TextStyle(color: Colors.white),
-        ),
-        iconTheme: IconThemeData(
-          color: Colors.white 
-        ),
-        backgroundColor:  Color.fromARGB(255, 80, 194, 201),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
+        
+        leading: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: const Center(
+            child: Text(
+              "<",
+              style: TextStyle(
+                fontSize: 26,
+                color: Colors.white,
+              ),
+            ),
           ),
-        ],
+        ),
+        title: const Text(
+          'Notifications',
+          style: TextStyle(color: Colors.white),
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.white,
+        ),
+        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
+        // Removed the "X" button entirely from actions
         bottom: TabBar(
           controller: _tabController,
           tabs: const [
@@ -52,7 +61,7 @@ class NotificationsPageState extends State<NotificationsPage> with SingleTickerP
         controller: _tabController,
         children: [
           _buildNotificationsList(),
-          _buildNotificationsList(), 
+          _buildNotificationsList(),
         ],
       ),
     );
@@ -72,10 +81,13 @@ class NotificationsPageState extends State<NotificationsPage> with SingleTickerP
       itemBuilder: (context, index) {
         var notification = notifications[index];
         return ListTile(
-          leading: Icon(notification['urgent'] ? Icons.error : Icons.notifications_none, color: Colors.red),
+          leading: Icon(
+            notification['urgent'] ? Icons.error : Icons.notifications_none,
+            color: Colors.red,
+          ),
           title: Text(notification['title']),
           subtitle: Text(notification['time']),
-          trailing: Icon(Icons.arrow_forward_ios),
+          trailing: const Icon(Icons.arrow_forward_ios),
         );
       },
     );
