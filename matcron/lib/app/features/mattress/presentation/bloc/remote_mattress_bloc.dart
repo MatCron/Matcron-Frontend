@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:matcron/app/features/group/domain/repositories/group_repository.dart';
 import 'package:matcron/app/features/mattress/domain/usecases/generate_rfid_.dart';
 import 'package:matcron/app/features/mattress/domain/usecases/get_all_mattresses.dart';
 import 'package:matcron/app/features/mattress/domain/usecases/update_mattress.dart';
@@ -13,8 +14,9 @@ class RemoteMattressBloc
   final GenerateRfidUsecase _generateRfidUsecase;
   final UpdateMattressUseCase _updateMattressUseCase;
   final TypeRepository _typeRepository;
+  final GroupRepository _groupRepository;
 
-  RemoteMattressBloc(this._getAllMattressesUsecase, this._generateRfidUsecase, this._typeRepository, this._updateMattressUseCase)
+  RemoteMattressBloc(this._getAllMattressesUsecase, this._generateRfidUsecase, this._typeRepository, this._updateMattressUseCase, this._groupRepository)
       : super(const RemoteMattressInitial()) {
     on<GetAllMattresses>(onGetAllMattresses);
     on<GenerateRfid>(onGenerateRfid);
@@ -26,9 +28,14 @@ class RemoteMattressBloc
         emit(RemoteMattressesLoading());
     final dataState = await _getAllMattressesUsecase();
     final typesDataState = await _typeRepository.getTypes();
+    final groupDataState = await _groupRepository.getGroups(1);
 
-    if (dataState is DataSuccess && dataState.data != null && typesDataState is DataSuccess && typesDataState.data != null) {
-      emit(RemoteMattressesDone(dataState.data!, typesDataState.data!, ""));
+
+    if (
+      dataState is DataSuccess && dataState.data != null && 
+      typesDataState is DataSuccess && typesDataState.data != null
+      ) {
+      emit(RemoteMattressesDone(dataState.data!, typesDataState.data!, "", groupDataState is DataSuccess ? groupDataState.data! : []));
     }
 
     if (dataState is DataFailed) {
@@ -43,7 +50,7 @@ class RemoteMattressBloc
     final dataState = await _generateRfidUsecase(params: event.mattress);
 
     if (dataState is DataSuccess) {
-      emit(RemoteMattressesDone([], [], dataState.data!));
+      emit(RemoteMattressesDone([], [], dataState.data!, []));
     }
 
     if (dataState is DataFailed) {
@@ -57,9 +64,10 @@ class RemoteMattressBloc
     final dataState = await _updateMattressUseCase(params: event.mattress);
     final mattresses = await _getAllMattressesUsecase();
     final typesDataState = await _typeRepository.getTypes();
+    final groupDataState = await _groupRepository.getGroups(1);
 
     if (dataState is DataSuccess) {
-      emit(RemoteMattressesDone(mattresses.data!, typesDataState.data!, ""));
+      emit(RemoteMattressesDone(mattresses.data!, typesDataState.data!, "", groupDataState.data!));
     }
   }
 }

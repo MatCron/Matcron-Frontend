@@ -25,6 +25,7 @@ const mattressStatus = [
   {"Text": "In Use", "Color": Colors.green},
   {"Text": "Cleaning Required", "Color": Colors.red},
   {"Text": "Decommissioned", "Color": Colors.red},
+  {"Text": "In Transit", "Color": Colors.orange},
 ];
 
 const groupStatus = [ "Active", "Archived"];

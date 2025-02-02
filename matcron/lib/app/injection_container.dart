@@ -181,6 +181,6 @@ Future<void> initializeDependencies() async {
   );
 
   sl.registerFactory(
-    () => RemoteMattressBloc(sl(), sl(), sl(), sl())
+    () => RemoteMattressBloc(sl(), sl(), sl(), sl(), sl())
   );
 }

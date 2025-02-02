@@ -59,8 +59,8 @@ class GroupCardWidget extends StatelessWidget {
                 children: [
                   Image.asset(
                     isExport
-                        ? "assets/images/exportIcon.png"
-                        : "assets/images/importIcon.png",
+                        ? "assets/images/importIcon.png"
+                        : "assets/images/exportIcon.png",
                     height: 24.0,
                     width: 24.0,
                   ),
