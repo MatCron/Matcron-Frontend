@@ -9,6 +9,10 @@ import 'package:matcron/app/features/profile_settings/presentation/pages/securit
 import 'package:matcron/app/features/profile_settings/presentation/pages/settings.dart';
 import 'package:matcron/app/features/profile_settings/presentation/pages/terms_condition.dart';
 import 'package:matcron/app/features/profile_settings/presentation/pages/about_us.dart';
+import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
+import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:matcron/app/injection_container.dart'; // Add this import for sl
 
 class ProfileSettings extends StatefulWidget {
   const ProfileSettings({super.key});
@@ -114,7 +118,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
         ),
         child: Column(
           children: [
-            _createNavigationItem(icon: Icons.history, text: 'Organization', destination: OrganizationPage()),
+           _createOrganizationNavigationItem(),
             _createNavigationItem(icon: Icons.report, text: 'Reports', destination: ReportsPage()),
             _createNavigationItem(icon: Icons.security, text: 'Security', destination: SecurityPage()),
             _createNavigationItem(icon: Icons.settings, text: 'Settings', destination: SettingsPage()),
@@ -135,4 +139,23 @@ class ProfileSettingsState extends State<ProfileSettings> {
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => destination)),
     );
   }
+
+  Widget _createOrganizationNavigationItem() {
+  return ListTile(
+    leading: const Icon(Icons.business), // Organization Icon
+    title: const Text('Organization'),
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => BlocProvider(
+            create: (context) => sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
+            child: const OrganizationPage(),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 }

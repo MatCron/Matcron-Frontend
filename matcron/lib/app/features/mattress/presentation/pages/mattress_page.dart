@@ -368,7 +368,7 @@ class MattressPageState extends State<MattressPage> {
       // Show error notification
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Failed to add mattresses"),
+          content: Text("Mattresses already added to group."),
           backgroundColor: Colors.red,
           duration: const Duration(seconds: 3),
         ),

@@ -100,17 +100,33 @@ class OrganizationPageState extends State<OrganizationPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+   return Scaffold(
+      backgroundColor: HexColor("#E5E5E5"),
+      appBar: AppBar(
+        backgroundColor: Color.fromARGB(255, 80, 194, 201), 
+        title: const Text(
+          "Organization",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+         leading: InkWell(
+          onTap: () => Navigator.pop(context),
+          child: const Center(
+            child: Text(
+              "<",
+              style: TextStyle(
+                fontSize: 35,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
       body: BlocBuilder<RemoteOrganizationBloc, RemoteOrganizationState>(
         builder: (_, state) {
           if (state is RemoteOrganizationsLoading) {
-            return Scaffold(
-              backgroundColor: HexColor("#E5E5E5"),
-              body: Center(
-                child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
-                ),
-              ),
+            return const Center(
+              child: CircularProgressIndicator(),
             );
           }
           if (state is RemoteOrganizationsDone) {
