@@ -19,13 +19,13 @@ const progressBarLabels = ["Select", "Tap RFID", "Finished"];
 
 //status
 const mattressStatus = [
-  {"Text": "In Production", "Color": Colors.orange},
-  {"Text": "In Inventory", "Color": Colors.green},
+  {"Text": "Production", "Color": Colors.orange},
+  {"Text": "Inventory", "Color": Colors.green},
   {"Text": "Assigned", "Color": Colors.green},
-  {"Text": "In Use", "Color": Colors.green},
-  {"Text": "Cleaning Required", "Color": Colors.red},
+  {"Text": "Use", "Color": Colors.green},
+  {"Text": "Washing", "Color": Colors.red},
   {"Text": "Decommissioned", "Color": Colors.red},
-  {"Text": "In Transit", "Color": Colors.orange},
+  {"Text": "Transit", "Color": Colors.orange},
 ];
 
 const groupStatus = [ "Active", "Archived"];
