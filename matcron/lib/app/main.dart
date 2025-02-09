@@ -1,125 +1,254 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
+import 'package:matcron/app/features/auth/presentation/pages/login.dart';
+import 'package:matcron/app/features/dashboard/presentation/pages/dashboard.dart';
+import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
+import 'package:matcron/app/features/group/presentation/pages/group_page.dart';
+import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
+import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_event.dart';
+import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
+import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
+import 'package:matcron/app/features/type/presentation/pages/type.dart';
+import 'package:matcron/core/components/header/header.dart';
+import 'package:matcron/core/components/splash_screen.dart';
+import 'dart:developer';
+import 'dart:async';
+import 'package:matcron/core/resources/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
+import 'package:matcron/app/injection_container.dart';
+import 'package:matcron/config/theme/app_theme.dart';
+import 'package:matcron/core/resources/authorization.dart';
+import 'features/mattress/presentation/pages/mattress_page.dart';
 
-void main() {
+Future<void> main() async {
+  await initializeDependencies(); // Initialize all dependencies
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+        scaffoldBackgroundColor:
+            HexColor("#E5E5E5"), // Set background color for the whole app
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
+
+      home: const SplashScreenWrapper(),
+   
+    );
+  }
+}
+
+//Splash Screen
+class SplashScreenWrapper extends StatefulWidget {
+  const SplashScreenWrapper({super.key});
+
+  @override
+  State<SplashScreenWrapper> createState() => _SplashScreenWrapperState();
+}
+
+class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
+  final AuthorizationService _authService = AuthorizationService();
+
+  @override
+  void initState() {
+    super.initState();
+      Future.delayed(const Duration(seconds: 5), () {
+    _checkAuthToken();
+  }); // Check the token when the widget initializes
+  }
+
+  Future<void> _checkAuthToken() async {
+    String? token = await _authService.getToken();
+
+    // Check if the widget is still in the widget tree
+    if (!mounted) return;
+
+    if (token != null && token.isNotEmpty) {
+      // Token exists: Navigate to MyHomePage
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const MyHomePage()),
+      );
+    } else {
+      // No token: Navigate to InitialScreens
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const InitialScreens()),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return const SplashScreen(); // Display the splash screen while checking
+  }
+}
+
+//AUTH SCREENS
+class InitialScreens extends StatelessWidget {
+  const InitialScreens({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor:
+            Colors.transparent, // Set background color for the whole app
+      ),
+      home: BlocProvider<RemoteLoginBloc>(
+        create: (context) => sl<
+            RemoteLoginBloc>(), // Initialize the RemoteRegistrationBloc using your DI container
+        child:
+            const LoginPage(), // The RegisterPage is wrapped here with the bloc
+      ),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  final MattressEntity? searchedEntity;
+  final int startPageIndex; // Added parameter for the start page index
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
+  const MyHomePage({super.key, this.searchedEntity, this.startPageIndex = 0});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  final _pageController = PageController(); // No initial page here
+  final NotchBottomBarController _controller =
+      NotchBottomBarController(index: 0);
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+  int maxCount = 4;
+
+  /// To track the selected page index
+  int _selectedPageIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedPageIndex = widget
+        .startPageIndex; // Set initial page index from the widget parameter// Jump to the selected page index
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _pageController
+          .jumpToPage(_selectedPageIndex); // Jump to the desired page
     });
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+    /// List of NAVBAR PAGES ONLY
+    final List<Widget> bottomBarPages = [
+      DashboardPage(controller: _controller),
+      BlocProvider(
+        create: (context) => sl<RemoteMattressBloc>()..add(GetAllMattresses()),
+        child: MattressPage(widget.searchedEntity),
       ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+      BlocProvider(
+        create: (context) => sl<RemoteTypeBloc>()..add(GetTypesTiles()),
+        child: MattressTypePage(),
+      ),
+      BlocProvider(
+        create: (context) => sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
+        child: GroupPage(),
+      ),
+    ];
+
+    /// Page titles based on the index
+    final List<String> pageTitles = [
+      "Dashboard",
+      "Mattress",
+      "Types",
+      "Group",
+    ];
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        scaffoldBackgroundColor: HexColor("#E5E5E5"),
+      ),
+      home: Scaffold(
+        body: Column(
+          children: [
+            Header(title: pageTitles[_selectedPageIndex]),
+            Expanded(
+              child: PageView(
+                controller: _pageController,
+                physics: const NeverScrollableScrollPhysics(),
+                children: bottomBarPages,
+                onPageChanged: (index) {
+                  setState(() {
+                    _selectedPageIndex =
+                        index; // Update the selected page index
+                  });
+                },
+              ),
             ),
           ],
         ),
+        extendBody: true,
+        bottomNavigationBar: bottomBarPages.length <= maxCount
+            ? AnimatedNotchBottomBar(
+                notchBottomBarController: _controller,
+                   color: Color.fromRGBO(255, 255, 255, 1),
+                showLabel: true,
+                textOverflow: TextOverflow.visible,
+                maxLine: 1,
+                shadowElevation: 5,
+                kBottomRadius: 28.0,
+                notchColor: const Color.fromARGB(227, 255, 255, 255),
+                removeMargins: false,
+                bottomBarWidth: 500,
+                showShadow: false,
+                durationInMilliSeconds: 300,
+                itemLabelStyle: const TextStyle(fontSize: 10),
+                elevation: 1,
+                bottomBarItems: const [
+  BottomBarItem(
+    inActiveItem: Icon(Icons.dashboard, color: Color.fromARGB(255, 0, 0, 0)),
+    activeItem: Icon(Icons.dashboard, color: Color.fromRGBO(30, 167, 169, 1)),
+    itemLabel: 'Dashboard',
+  ),
+  BottomBarItem(
+    inActiveItem: Icon(Icons.bed, color: Color.fromARGB(255, 0, 0, 0)),
+    activeItem: Icon(Icons.bed, color: Color.fromRGBO(30, 167, 169, 1)),
+    itemLabel: 'Mattress',
+  ),
+  BottomBarItem(
+    inActiveItem: Icon(Icons.category, color: Color.fromARGB(255, 0, 0, 0)),
+    activeItem: Icon(Icons.category, color: Color.fromRGBO(30, 167, 169, 1)),
+    itemLabel: 'Type',
+  ),
+  BottomBarItem(
+    inActiveItem: Icon(Icons.groups, color: Color.fromARGB(255, 0, 0, 0)),
+    activeItem: Icon(Icons.groups, color: Color.fromRGBO(30, 167, 169, 1)),
+    itemLabel: 'Group',
+  ),
+],
+                onTap: (index) {
+                  log('current selected index $index');
+                  _pageController.jumpToPage(index);
+                },
+                kIconSize: 24.0,
+              )
+            : null,
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
