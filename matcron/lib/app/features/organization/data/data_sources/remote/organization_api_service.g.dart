@@ -119,7 +119,7 @@ class _OrganizationApiService implements OrganizationApiService {
     )
         .compose(
           _dio.options,
-          '/add',
+          '/',
           queryParameters: queryParameters,
           data: _data,
         )

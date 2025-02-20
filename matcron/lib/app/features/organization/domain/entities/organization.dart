@@ -8,6 +8,8 @@ class OrganizationEntity {
   String ? postalAddress;
   String ? normalAddress;
   String ? logo;
+  String ? eirCode;
+  String ? county;
 
   OrganizationEntity({
     this.id,
@@ -19,6 +21,8 @@ class OrganizationEntity {
     this.postalAddress,
     this.normalAddress,
     this.logo,
+    this.eirCode,
+    this.county
   });
 
   OrganizationEntity copyWith({
@@ -28,6 +32,8 @@ class OrganizationEntity {
     String? registrationNumber,
     String? postalAddress,
     String? normalAddress,
+    String ? eirCode,
+    String ? county,
   }) {
     return OrganizationEntity(
       id: id,
@@ -39,6 +45,8 @@ class OrganizationEntity {
       postalAddress: postalAddress ?? this.postalAddress,
       normalAddress: normalAddress ?? this.normalAddress,
       logo: logo,
+      eirCode: eirCode ?? this.eirCode,
+      county: county ?? this.county
     );
   }
 }
