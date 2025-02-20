@@ -70,6 +70,9 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
       var state = await _organizationRepository.addOrganization(entity);
 
       if (state is DataSuccess) {
+        // Add delay before navigating
+        await Future.delayed(Duration(milliseconds: 100));
+
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -80,7 +83,16 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
             ),
           ),
         );
-      } else {}
+      } else {
+        // Display error notification
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add organization. Please try again.'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 
