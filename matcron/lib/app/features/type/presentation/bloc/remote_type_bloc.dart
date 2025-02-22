@@ -1,6 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/type/domain/usecases/add_type.dart';
+import 'package:matcron/app/features/type/domain/usecases/delete_type.dart';
 import 'package:matcron/app/features/type/domain/usecases/get_types.dart';
+import 'package:matcron/app/features/type/domain/usecases/update_type.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_state.dart';
 import 'package:matcron/core/resources/data_state.dart';
@@ -8,10 +10,14 @@ import 'package:matcron/core/resources/data_state.dart';
 class RemoteTypeBloc extends Bloc<RemoteTypeEvent, RemoteTypeState> {
   final GetTypesUseCase _getTypesTilesUseCase;
   final AddTypeUseCase _addTypeUseCase;
+  final UpdateTypeUseCase _updateTypeUseCase;
+  final DeleteTypeUseCase _deleteTypeUseCase;
 
-  RemoteTypeBloc(this._getTypesTilesUseCase, this._addTypeUseCase) : super(RemoteTypesLoading()) {
+  RemoteTypeBloc(this._getTypesTilesUseCase, this._addTypeUseCase, this._updateTypeUseCase, this._deleteTypeUseCase) : super(RemoteTypesLoading()) {
     on<GetTypesTiles>(onGetTypes);
     on<AddType>(onAddType);
+    on<UpdateType>(onUpdateType);
+    on<DeleteType>(onDeleteType);
   }
 
   void onGetTypes(GetTypesTiles event, Emitter<RemoteTypeState> emit) async {
@@ -32,6 +38,36 @@ class RemoteTypeBloc extends Bloc<RemoteTypeEvent, RemoteTypeState> {
     final types = await _getTypesTilesUseCase();
 
     if (dataState is DataSuccess && dataState.data != null) {
+      emit(RemoteTypesDone(types.data!));
+    }
+
+    if (dataState is DataFailed) {
+      emit(RemoteTypesException(dataState.error!));
+    }
+  }
+
+  void onUpdateType(UpdateType event, Emitter<RemoteTypeState> emit) async {
+    emit(RemoteTypesLoading());
+
+    final dataState = await _updateTypeUseCase(params: event.type);
+    final types = await _getTypesTilesUseCase();
+
+    if (dataState is DataSuccess) {
+      emit(RemoteTypesDone(types.data!));
+    }
+
+    if (dataState is DataFailed) {
+      emit(RemoteTypesException(dataState.error!));
+    }
+  }
+
+  void onDeleteType(DeleteType event, Emitter<RemoteTypeState> emit) async {
+    emit(RemoteTypesLoading());
+
+    final dataState = await _deleteTypeUseCase(params: event.id);
+    final types = await _getTypesTilesUseCase();
+
+    if (dataState is DataSuccess) {
       emit(RemoteTypesDone(types.data!));
     }
 

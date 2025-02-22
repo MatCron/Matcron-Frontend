@@ -54,6 +54,43 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
     });
   }
 
+  void _saveType(BuildContext context) {
+    if (_validateFields()) {
+      //print(mattress.name);
+      widget.onSave(mattress);
+      Navigator.of(context).pop();
+    }
+  }
+
+  bool _validateFields() {
+    bool isValid = true;
+    if (mattress.name == null || mattress.name!.isEmpty) {
+      isValid = false;
+      _showErrorDialog('Name is required');
+    }
+    return isValid;
+  }
+
+   void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
@@ -121,6 +158,11 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                             label: "Mattress Name",
                             initialValue: mattress.name ?? '',
                             enabled: widget.isEditable,
+                            onChanged: (value) {
+                              setState(() {
+                                mattress.name = value;
+                              });
+                            }
                           ),
                         ),
                       ],
@@ -136,6 +178,11 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                             initialValue: mattress.width?.toString() ?? '',
                             enabled: widget.isEditable,
                             keyboardType: TextInputType.number,
+                            onChanged: (value) {
+                              setState(() {
+                                mattress.width = value as double?;
+                              });
+                            }
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -145,6 +192,11 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                             initialValue: mattress.length?.toString() ?? '',
                             enabled: widget.isEditable,
                             keyboardType: TextInputType.number,
+                            onChanged: (value) {
+                              setState(() {
+                                mattress.length = value as double?;
+                              });
+                            }
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -154,6 +206,11 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                             initialValue: mattress.height?.toString() ?? '',
                             enabled: widget.isEditable,
                             keyboardType: TextInputType.number,
+                            onChanged: (value) {
+                              setState(() {
+                                mattress.height = value as double?;
+                              });
+                            }
                           ),
                         ),
                       ],
@@ -165,6 +222,11 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                       initialValue: mattress.composition ?? '',
                       enabled: widget.isEditable,
                       maxLines: null, // Allow multiline
+                      onChanged: (value) {
+                              setState(() {
+                                mattress.composition = value;
+                              });
+                            }
                     ),
                     const SizedBox(height: 20),
                     Row(
@@ -177,6 +239,11 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                               mattress.rotationInterval?.toString() ?? '',
                           enabled: widget.isEditable,
                           keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                              setState(() {
+                                mattress.rotationInterval = value as double?;
+                              });
+                            }
                         )),
                         const SizedBox(width: 16),
                         Expanded(
@@ -186,6 +253,11 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                 mattress.expectedLifespan?.toString() ?? '',
                             enabled: widget.isEditable,
                             keyboardType: TextInputType.number,
+                            onChanged: (value) {
+                              setState(() {
+                                mattress.expectedLifespan = value as double?;
+                              });
+                            }
                           ),
                         )
                       ],
@@ -196,12 +268,22 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                       initialValue: mattress.warrantyPeriod?.toString() ?? '',
                       enabled: widget.isEditable,
                       keyboardType: TextInputType.number,
+                      onChanged: (value) {
+                              setState(() {
+                                mattress.warrantyPeriod = value as double?;
+                              });
+                            }
                     ),
                     const SizedBox(height: 20),
                     _buildTextField(
                       label: "Recycling Details",
                       initialValue: mattress.recyclingDetails ?? '',
                       enabled: widget.isEditable,
+                      onChanged: (value) {
+                              setState(() {
+                                mattress.recyclingDetails = value;
+                              });
+                            }
                     ),
                   ],
                 ),
@@ -226,7 +308,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                           label: "Save",
                           color: matcronPrimaryColor,
                           onPressed: () {
-                            // Save action placeholder
+                            _saveType(context);
                           },
                         ),
                       ],
@@ -247,12 +329,14 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
     bool enabled = true,
     TextInputType keyboardType = TextInputType.text,
     int? maxLines,
+    void Function(String)? onChanged,
   }) {
     return TextFormField(
       initialValue: initialValue,
       enabled: enabled,
       keyboardType: keyboardType,
       maxLines: maxLines,
+      onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),

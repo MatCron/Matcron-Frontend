@@ -83,4 +83,52 @@ class TypeRepositoryImpl implements TypeRepository {
       return DataFailed(e);
     }
   }
+
+  @override
+  Future<DataState<void>> updateType(MattressTypeEntity type) async {
+    final String token = 'Bearer ${await AuthorizationService().getToken()}';
+
+    try {
+      final httpResponse = await _typeApiService.updateType(token: token, model: TypeModel.fromEntity(type), id: type.id!);
+
+      if (httpResponse.response.statusCode == HttpStatus.ok) {
+        return DataSuccess(httpResponse.data);
+      } else {
+        return DataFailed(
+          DioException(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: httpResponse.response.requestOptions,
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<void>> deleteType(String id) async {
+    final String token = 'Bearer ${await AuthorizationService().getToken()}';
+
+    try {
+      final httpResponse = await _typeApiService.deleteType(token: token, id:id);
+
+      if (httpResponse.response.statusCode == HttpStatus.ok) {
+        return DataSuccess(httpResponse.data);
+      } else {
+        return DataFailed(
+          DioException(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: httpResponse.response.requestOptions,
+          ),
+        );
+      }
+    } on DioException catch (e) {
+      return DataFailed(e);
+    }
+  }
 }
