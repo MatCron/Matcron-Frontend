@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:matcron/app/features/LBH_info/presentation/bloc/pages/lbh_info.dart';
 import 'package:matcron/app/features/recycling_info/presentation/recycling_info.dart';
-import 'package:matcron/core/components/header/header.dart'; // Adjust import as needed
+import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
+import 'package:matcron/app/features/type/domain/repositories/type_repository.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
+import 'package:matcron/app/features/type/presentation/pages/type.dart';
+import 'package:matcron/app/injection_container.dart';
+import 'package:matcron/app/main.dart';
+import 'package:matcron/core/components/header/header.dart';
+import 'package:matcron/core/resources/data_state.dart'; // Adjust import as needed
 
 class AddMattressTypePage extends StatefulWidget {
   const AddMattressTypePage({
@@ -14,6 +24,7 @@ class AddMattressTypePage extends StatefulWidget {
 
 class AddMattressTypePageState extends State<AddMattressTypePage> {
   final _formKey = GlobalKey<FormState>();
+  final TypeRepository _typeRepository = GetIt.instance<TypeRepository>();
 
   // Controllers for fields
   final TextEditingController _typeNameController = TextEditingController();
@@ -50,21 +61,46 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
     return text.trim().split(RegExp(r'\s+')).length;
   }
 
-  void _onAddMattressTypePressed() {
+  void _onAddMattressTypePressed() async {
+    //print("object");
     if (_formKey.currentState!.validate()) {
-      // MattressTypeEntity entity = MattressTypeEntity(
-      //   name: _typeNameController.text.trim(),
-      //   width: double.tryParse(_widthController.text.trim()),
-      //   length: double.tryParse(_lengthController.text.trim()),
-      //   height: double.tryParse(_heightController.text.trim()),
-      //   composition: _materialCompositionController.text.trim(),
-      //   rotationInterval: double.tryParse(_rotationTimerController.text.trim()),
-      //   recyclingDetails: _recycleInfoController.text.trim(),
-      //   expectedLifespan: _lifeSpanValue != null
-      //       ? double.tryParse(_lifeSpanValue!.split(' ').first)
-      //       : null,
-      //   warrantyPeriod: _washableValue == "Yes" ? 1.0 : 0.0, // Example
-      // );
+      MattressTypeEntity entity = MattressTypeEntity(
+        name: _typeNameController.text.trim(),
+        width: double.tryParse(_widthController.text.trim()),
+        length: double.tryParse(_lengthController.text.trim()),
+        height: double.tryParse(_heightController.text.trim()),
+        composition: _materialCompositionController.text.trim(),
+        rotationInterval: double.tryParse(_rotationTimerController.text.trim()),
+        recyclingDetails: _recycleInfoController.text.trim(),
+        expectedLifespan: _lifeSpanValue != null
+            ? double.tryParse(_lifeSpanValue!.split(' ').first)
+            : null,
+        warrantyPeriod: _washableValue == "Yes" ? 1.0 : 0.0, // Example
+        stock: 0,
+      );
+
+      var state = await _typeRepository.addType(entity);
+
+      if (state is DataSuccess) {
+        await Future.delayed(Duration(milliseconds: 100));
+
+        Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyHomePage(startPageIndex: 2,),
+      ),
+      (Route<dynamic> route) => false, // Remove all previous routes
+    );
+      } else {
+        // Display error notification
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add type. Please try again.'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 

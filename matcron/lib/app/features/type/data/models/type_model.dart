@@ -33,7 +33,6 @@ class TypeModel extends MattressTypeEntity {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
       'length': length,
       'width': width,

@@ -110,7 +110,7 @@ class _TypeApiService implements TypeApiService {
     )
         .compose(
           _dio.options,
-          '/',
+          '/add',
           queryParameters: queryParameters,
           data: _data,
         )

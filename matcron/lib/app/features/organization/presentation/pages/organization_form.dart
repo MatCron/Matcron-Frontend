@@ -23,7 +23,6 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
       GetIt.instance<OrganizationRepository>();
 
   String? _industryValue;
-  bool _sameAsPostal = false;
 
   // Controllers for text fields
   final TextEditingController _nameController = TextEditingController();

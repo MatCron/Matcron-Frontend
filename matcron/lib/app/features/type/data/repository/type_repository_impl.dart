@@ -65,8 +65,9 @@ class TypeRepositoryImpl implements TypeRepository {
     final String token = 'Bearer ${await AuthorizationService().getToken()}';
 
     try {
+      //print(token);
       final httpResponse = await _typeApiService.addType(token: token, model: TypeModel.fromEntity(type));
-
+      
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         return DataSuccess(httpResponse.data);
       } else {
