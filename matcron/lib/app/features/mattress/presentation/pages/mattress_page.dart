@@ -41,6 +41,9 @@ class MattressPageState extends State<MattressPage> {
   List<GroupEntity> groups = [];
   bool canRefreshList = false;
 
+  // New: List to hold selected status filters (assuming statuses are represented as indexes)
+  List<int> selectedFilterStatuses = [];
+
   final MattressRepository _mattressRepository =
       GetIt.instance<MattressRepository>();
   final GroupRepository _groupRepository = GetIt.instance<GroupRepository>();
@@ -58,7 +61,6 @@ class MattressPageState extends State<MattressPage> {
   }
 
   void _updateMattress(MattressEntity m) {
-    //filteredMattresses.clear();
     context.read<RemoteMattressBloc>().add(UpdateMattress(m));
   }
 
@@ -72,7 +74,7 @@ class MattressPageState extends State<MattressPage> {
 
   void _refreshList() {
     setState(() {
-      filteredMattresses = mattresses; // Update with the single mattress
+      filteredMattresses = mattresses; // Reset filter
       currentSearchedEntity = null;
       canRefreshList = false;
     });
@@ -122,15 +124,11 @@ class MattressPageState extends State<MattressPage> {
                   ),
                 ),
                 onPressed: () async {
-                  BuildContext parentContext =
-                      context; // Store the valid context before popping
-
-                  Navigator.pop(context); // Close the dialog
-
+                  BuildContext parentContext = context;
+                  Navigator.pop(context);
                   Future.microtask(() {
                     if (parentContext.mounted) {
-                      _importGroup(
-                          parentContext, entity.uid!); // Use the stored context
+                      _importGroup(parentContext, entity.uid!);
                     }
                   });
                 },
@@ -144,26 +142,22 @@ class MattressPageState extends State<MattressPage> {
   }
 
   void _importGroup(BuildContext context, String id) async {
-  var state = await _groupRepository.importMattressFromGroup(id);
-
-  if (state is DataSuccess) {
-    if (!mounted) return; // ✅ Ensure widget is still active
-
-    Navigator.pop(context); // ✅ Safe pop
-
-    Future.delayed(Duration.zero, () {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Mattresses imported successfully!"),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    });
+    var state = await _groupRepository.importMattressFromGroup(id);
+    if (state is DataSuccess) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      Future.delayed(Duration.zero, () {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("Mattresses imported successfully!"),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      });
+    }
   }
-}
-
 
   Widget _infoRow(String label, String value) {
     return Padding(
@@ -172,8 +166,8 @@ class MattressPageState extends State<MattressPage> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(label,
-              style: TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.black87)),
+              style:
+                  TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
           Flexible(
             child: Text(value,
                 style: TextStyle(color: Colors.black54),
@@ -190,8 +184,8 @@ class MattressPageState extends State<MattressPage> {
       required bool isEditable}) {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Allows the drawer to take up full height
-      backgroundColor: Colors.transparent, // Matches design
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return MattressTypeBottomDrawer(
           mattress: type,
@@ -211,7 +205,6 @@ class MattressPageState extends State<MattressPage> {
     } else if (session == 'IMPORT') {
       Future.delayed(Duration(milliseconds: 100), _startImportNfcSession);
     }
-
     showDialog(
       context: context,
       builder: (context) {
@@ -221,7 +214,7 @@ class MattressPageState extends State<MattressPage> {
             children: [
               Center(
                 child: Image.asset(
-                  'assets/images/scan_icon.png', // Adjust your image path as needed
+                  'assets/images/scan_icon.png',
                   width: 275,
                   fit: BoxFit.cover,
                 ),
@@ -237,21 +230,17 @@ class MattressPageState extends State<MattressPage> {
 
   Future<void> _startImportNfcSession() async {
     if (!mounted) return;
-
     setState(() {
       isScanning = true;
       isFinished = false;
     });
-
     NfcManager.instance.startSession(onDiscovered: (NfcTag badge) async {
       try {
         var ndef = Ndef.from(badge);
         if (ndef != null && ndef.cachedMessage != null) {
           var uid = decodeNfcPayload(ndef.cachedMessage!.records[0].payload);
-
           var state =
               await _groupRepository.getImportPreviewFromMattressId(uid);
-
           if (state is DataSuccess && state.data != null) {
           } else {
             if (mounted) {
@@ -262,18 +251,14 @@ class MattressPageState extends State<MattressPage> {
               );
             }
           }
-
           NfcManager.instance.stopSession();
-
           if (mounted) {
             Navigator.of(context, rootNavigator: true)
-                .pop(); // Ensure only the dialog is closed
+                .pop(); // Close dialog
           }
-
           if (mounted) {
             _showImportPreview(context, state.data!);
           }
-          // Close the dialog safely
         } else {
           _handleNfcError("Failed to read NFC tag.");
         }
@@ -284,13 +269,11 @@ class MattressPageState extends State<MattressPage> {
   }
 
   Future<void> _startNfcSession() async {
-    if (!mounted) return; // Ensure the widget is still in the tree
-
+    if (!mounted) return;
     setState(() {
       isScanning = true;
       isFinished = false;
     });
-
     NfcManager.instance.startSession(onDiscovered: (NfcTag badge) async {
       try {
         var ndef = Ndef.from(badge);
@@ -298,9 +281,7 @@ class MattressPageState extends State<MattressPage> {
           var uid = decodeNfcPayload(ndef.cachedMessage!.records[0].payload);
           var state = await _mattressRepository.getMattressById(uid);
           state.data!.uid = uid;
-
           if (state is DataSuccess && state.data != null) {
-            // Update filteredMattresses using _searchMattress
             _searchMattress(state.data!);
           } else {
             if (mounted) {
@@ -309,13 +290,9 @@ class MattressPageState extends State<MattressPage> {
               );
             }
           }
-
           NfcManager.instance.stopSession();
-
-          // Close the dialog safely
           if (mounted) {
-            Navigator.of(context, rootNavigator: true)
-                .pop(); // Ensure only the dialog is closed
+            Navigator.of(context, rootNavigator: true).pop();
           }
         } else {
           _handleNfcError("Failed to read NFC tag.");
@@ -328,18 +305,13 @@ class MattressPageState extends State<MattressPage> {
 
   void _handleNfcError(String errorMessage) {
     if (!mounted) return;
-
     setState(() {
       isScanning = false;
     });
-
     NfcManager.instance.stopSession(errorMessage: errorMessage);
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(errorMessage)),
     );
-
-    // Close the dialog if still visible
     if (Navigator.canPop(context)) {
       Navigator.of(context, rootNavigator: true).pop();
     }
@@ -348,15 +320,9 @@ class MattressPageState extends State<MattressPage> {
   void _addMattressToGroup(List<String> mattresses, String groupId) async {
     var mattressesToAdd =
         EditMattressesToGroupModel(groupId: groupId, mattressIds: mattresses);
-
-    var addState = await _groupRepository
-        .addMattressToGroup(mattressesToAdd); // Await the async call
-
+    var addState = await _groupRepository.addMattressToGroup(mattressesToAdd);
     if (addState is DataSuccess) {
-      // Close the current screen and go back
       Navigator.pop(context);
-
-      // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Mattresses added to group successfully!"),
@@ -365,7 +331,6 @@ class MattressPageState extends State<MattressPage> {
         ),
       );
     } else {
-      // Show error notification
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Mattresses already added to group."),
@@ -374,6 +339,101 @@ class MattressPageState extends State<MattressPage> {
         ),
       );
     }
+  }
+
+  // New: Open bottom drawer to filter by statuses
+  void _openFilterBottomDrawer() {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (BuildContext context) {
+        // Create a temporary copy of selected statuses
+        List<int> tempSelectedStatuses = List.from(selectedFilterStatuses);
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: Container(
+                padding: EdgeInsets.all(16),
+                // Adjust height as needed
+                height: 350,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Filter by Status",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold, color: matcronPrimaryColor)),
+                    const SizedBox(height: 10),
+                    Container(
+                      height: 220,
+                      child: ListView.builder(
+                        itemCount: mattressStatus.length,
+                        itemBuilder: (context, index) {
+                          String statusText =
+                              mattressStatus[index]['Text'] as String;
+                          return CheckboxListTile(
+                            title: Text(statusText),
+                            checkColor: matcronPrimaryColor,
+                            activeColor: Colors.white,
+                            value: tempSelectedStatuses.contains(index),
+                            onChanged: (bool? value) {
+                              setModalState(() {
+                                if (value == true) {
+                                  tempSelectedStatuses.add(index);
+                                } else {
+                                  tempSelectedStatuses.remove(index);
+                                }
+                              });
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            // Clear filters
+                            setState(() {
+                              selectedFilterStatuses = [];
+                              filteredMattresses = mattresses;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text("Clear", style: TextStyle(color: Colors.red),),
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(backgroundColor: WidgetStateProperty.all(matcronPrimaryColor)),
+                          onPressed: () {
+                            setState(() {
+                              selectedFilterStatuses = tempSelectedStatuses;
+                              if (selectedFilterStatuses.isEmpty) {
+                                filteredMattresses = mattresses;
+                              } else {
+                                filteredMattresses = mattresses.where((mattress) =>
+                                    mattress.status != null &&
+                                    selectedFilterStatuses
+                                        .contains(mattress.status!)).toList();
+                              }
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text("Apply", style: TextStyle(color: Colors.white),),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -388,23 +448,19 @@ class MattressPageState extends State<MattressPage> {
               ),
             );
           }
-
           if (state is RemoteMattressesDone) {
             mattresses.clear();
             mattresses.addAll(state.mattresses!);
             types.addAll(state.types!);
             groups.addAll(state.groups!);
-
             if (currentSearchedEntity != null) {
               canRefreshList = true;
               currentSearchedEntity = mattresses.singleWhere(
                   (element) => element.uid == currentSearchedEntity!.uid);
               filteredMattresses = [currentSearchedEntity!];
             }
-
             return _buildDoneState(context);
           }
-
           return const SizedBox();
         },
       ),
@@ -426,24 +482,44 @@ class MattressPageState extends State<MattressPage> {
             refreshList: () => _refreshList(),
             onSearchChanged: (query) {
               setState(() {
-                filteredMattresses = mattresses
-                    .where((mattress) =>
-                        mattress.type!
-                            .toLowerCase()
-                            .contains(query.toLowerCase()) ||
-                        mattress.location!
-                            .toLowerCase()
-                            .contains(query.toLowerCase()))
-                    .toList();
+                filteredMattresses = mattresses.where((mattress) {
+                  return mattress.type!
+                          .toLowerCase()
+                          .contains(query.toLowerCase()) ||
+                      mattress.location!
+                          .toLowerCase()
+                          .contains(query.toLowerCase());
+                }).toList();
               });
             },
           ),
-
           const SizedBox(height: 10.0),
-          // Buttons
+          // Buttons row including the new Filter button
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              // Filter button
+              ElevatedButton(
+                onPressed: _openFilterBottomDrawer,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: matcronPrimaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 14,
+                  ),
+                ),
+                child: Row(
+                  children: const [
+                    Icon(Icons.filter_list, size: 20, color: Colors.white),
+                    SizedBox(width: 5),
+                    Text("Filter", style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10.0),
               if (selectedMattresses.isNotEmpty)
                 ElevatedButton(
                   onPressed: () {
@@ -534,16 +610,10 @@ class MattressPageState extends State<MattressPage> {
           Row(
             children: [
               const SizedBox(width: 50.0),
-              Expanded(
-                child: Text("Type", style: _headerStyle),
-              ),
-              Expanded(
-                child: Text("Location", style: _headerStyle),
-              ),
+              Expanded(child: Text("Type", style: _headerStyle)),
+              Expanded(child: Text("Location", style: _headerStyle)),
               const SizedBox(width: 30.0),
-              Expanded(
-                child: Text("Status", style: _headerStyle),
-              ),
+              Expanded(child: Text("Status", style: _headerStyle)),
             ],
           ),
           const Divider(color: Colors.black26),
@@ -560,9 +630,9 @@ class MattressPageState extends State<MattressPage> {
                     itemCount: filteredMattresses.length,
                     itemBuilder: (context, index) {
                       final mattress = filteredMattresses[index];
-                      final isSelected = selectedMattresses.contains(mattress);
+                      final isSelected =
+                          selectedMattresses.contains(mattress);
                       final dropdownOpen = selectedMattressIndex == index;
-
                       return GestureDetector(
                           onTap: () {
                             setState(() {
@@ -574,7 +644,8 @@ class MattressPageState extends State<MattressPage> {
                             });
                           },
                           child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 9.0),
+                            padding:
+                                const EdgeInsets.symmetric(vertical: 9.0),
                             child: Column(
                               children: [
                                 Container(
@@ -650,8 +721,9 @@ class MattressPageState extends State<MattressPage> {
                                           mattress.status != null &&
                                                   mattress.status! <
                                                       mattressStatus.length
-                                              ? mattressStatus[mattress.status!]
-                                                  ['Text'] as String
+                                              ? mattressStatus[
+                                                      mattress.status!]['Text']
+                                                  as String
                                               : 'Unknown Status',
                                           style: TextStyle(
                                             fontSize: 13.0,
@@ -659,8 +731,9 @@ class MattressPageState extends State<MattressPage> {
                                             color: mattress.status != null &&
                                                     mattress.status! <
                                                         mattressStatus.length
-                                                ? mattressStatus[mattress
-                                                    .status!]['Color'] as Color
+                                                ? mattressStatus[
+                                                        mattress.status!]
+                                                    ['Color'] as Color
                                                 : Colors.black,
                                           ),
                                           textAlign: TextAlign.justify,
@@ -675,7 +748,7 @@ class MattressPageState extends State<MattressPage> {
                                           horizontal: 10.0, vertical: 25.0),
                                       decoration: BoxDecoration(
                                         color: Colors.white,
-                                        borderRadius: BorderRadius.only(
+                                        borderRadius: const BorderRadius.only(
                                           bottomLeft: Radius.circular(10.0),
                                           bottomRight: Radius.circular(10.0),
                                         ),
@@ -734,7 +807,8 @@ class MattressPageState extends State<MattressPage> {
                                                 TextSpan(
                                                   children: [
                                                     TextSpan(
-                                                      text: "Organization: ",
+                                                      text:
+                                                          "Organization: ",
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.bold),
@@ -747,7 +821,6 @@ class MattressPageState extends State<MattressPage> {
                                               ),
                                             ],
                                           ),
-                                          //Row of buttons edit and more
                                           const SizedBox(width: 25.0),
                                           Row(
                                             children: [
@@ -766,19 +839,17 @@ class MattressPageState extends State<MattressPage> {
                                                   );
                                                 },
                                                 style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors
-                                                      .green, // Green background for Edit button
+                                                  backgroundColor:
+                                                      Colors.green,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            5.0), // Slight radius for rounded corners
+                                                        BorderRadius.circular(5.0),
                                                   ),
                                                 ),
                                                 child: const Text(
                                                   "Edit",
                                                   style: TextStyle(
-                                                    color: Colors
-                                                        .white, // White text
+                                                    color: Colors.white,
                                                   ),
                                                 ),
                                               ),
@@ -793,18 +864,16 @@ class MattressPageState extends State<MattressPage> {
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                   backgroundColor:
-                                                      matcronPrimaryColor, // Use matcronPrimaryColor for More button
+                                                      matcronPrimaryColor,
                                                   shape: RoundedRectangleBorder(
                                                     borderRadius:
-                                                        BorderRadius.circular(
-                                                            5.0), // Slight radius for rounded corners
+                                                        BorderRadius.circular(5.0),
                                                   ),
                                                 ),
                                                 child: const Text(
                                                   "More",
                                                   style: TextStyle(
-                                                    color: Colors
-                                                        .white, // White text
+                                                    color: Colors.white,
                                                   ),
                                                 ),
                                               ),
