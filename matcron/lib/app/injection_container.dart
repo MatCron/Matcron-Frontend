@@ -35,7 +35,9 @@ import 'package:matcron/app/features/type/data/data_sources/remote/type_api_serv
 import 'package:matcron/app/features/type/data/repository/type_repository_impl.dart';
 import 'package:matcron/app/features/type/domain/repositories/type_repository.dart';
 import 'package:matcron/app/features/type/domain/usecases/add_type.dart';
+import 'package:matcron/app/features/type/domain/usecases/delete_type.dart';
 import 'package:matcron/app/features/type/domain/usecases/get_types.dart';
+import 'package:matcron/app/features/type/domain/usecases/update_type.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/encryption.dart';
@@ -147,6 +149,14 @@ Future<void> initializeDependencies() async {
     AddTypeUseCase(sl())
   );
 
+  sl.registerSingleton<UpdateTypeUseCase>(
+    UpdateTypeUseCase(sl())
+  );
+
+  sl.registerSingleton<DeleteTypeUseCase>(
+    DeleteTypeUseCase(sl())
+  );
+
   sl.registerSingleton<GetAllMattressesUsecase>(
     GetAllMattressesUsecase(sl())
   );
@@ -177,7 +187,7 @@ Future<void> initializeDependencies() async {
   );
 
   sl.registerFactory<RemoteTypeBloc>(
-    () => RemoteTypeBloc(sl(), sl())
+    () => RemoteTypeBloc(sl(), sl(), sl(), sl())
   );
 
   sl.registerFactory(

@@ -5,6 +5,7 @@ import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
 import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_state.dart';
 import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dart';
 import 'package:matcron/config/theme/app_theme.dart';
@@ -164,9 +165,53 @@ class MattressTypePageState extends State<MattressTypePage> {
         return MattressTypeBottomDrawer(
           mattress: type,
           isEditable: isEditable,
-          onSave: (mattress) {
-            // Save functionality placeholder
-          },
+          onSave: _updateType,
+        );
+      },
+    );
+  }
+
+  void _updateType(MattressTypeEntity entity) {
+    filteredTypes.clear();
+
+    context.read<RemoteTypeBloc>().add(UpdateType(entity));
+  }
+
+  void _deleteType(String id) {
+    filteredTypes.clear();
+
+    context.read<RemoteTypeBloc>().add(DeleteType(id));
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context, String id) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Mattress Type'),
+          content: Text('Are you sure you want to delete this Mattress Type?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel', style: TextStyle(color: Colors.grey)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteType(id);
+              },
+              child: Text(
+                'Delete',
+                style: TextStyle(color: Colors.red), // Red color for delete button
+              ),
+            ),
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          backgroundColor: Colors.white,
         );
       },
     );
@@ -408,7 +453,7 @@ class MattressTypePageState extends State<MattressTypePage> {
                           const SizedBox(width: 30),
                           GestureDetector(
                             onTap: () {
-                              // Delete functionality placeholder
+                              _showDeleteConfirmationDialog(context, type.id!);
                             },
                             child: const CircleAvatar(
                               radius: 15,

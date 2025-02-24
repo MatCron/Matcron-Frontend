@@ -18,7 +18,7 @@ class OrganizationRepositoryImpl implements OrganizationRepository {
     try {
       final httpResponse = await _organizationApiService.addOrganization(model: OrganizationModel.fromEntity(entity), token: token);
 
-      if (httpResponse.response.statusCode == HttpStatus.ok) {
+      if (httpResponse.response.statusCode == HttpStatus.created) {
         return DataSuccess(httpResponse.data);
       } else {
         return DataFailed(

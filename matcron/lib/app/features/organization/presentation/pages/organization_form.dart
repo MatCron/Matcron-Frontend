@@ -1,5 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:matcron/app/features/organization/domain/entities/organization.dart';
+import 'package:matcron/app/features/organization/domain/repositories/organization_repository.dart';
+import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
+import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
+import 'package:matcron/app/features/organization/presentation/pages/organizations.dart';
+import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/core/components/header/header.dart';
+import 'package:matcron/core/resources/data_state.dart';
 
 class OrganizationFormPage extends StatefulWidget {
   const OrganizationFormPage({super.key});
@@ -10,9 +19,10 @@ class OrganizationFormPage extends StatefulWidget {
 
 class OrganizationFormPageState extends State<OrganizationFormPage> {
   final _formKey = GlobalKey<FormState>();
-  
+  final OrganizationRepository _organizationRepository =
+      GetIt.instance<OrganizationRepository>();
+
   String? _industryValue;
-  bool _sameAsPostal = false;
 
   // Controllers for text fields
   final TextEditingController _nameController = TextEditingController();
@@ -44,9 +54,44 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
     return text.trim().split(RegExp(r'\s+')).length;
   }
 
-  void _onAddOrganizationPressed() {
+  void _onAddOrganizationPressed() async {
     if (_formKey.currentState!.validate()) {
-       Navigator.pop(context); 
+      OrganizationEntity entity = OrganizationEntity(
+          name: _nameController.text,
+          email: _emailController.text,
+          description: _descriptionController.text,
+          eirCode: _eirCodeController.text,
+          county: _countyController.text,
+          postalAddress: _addressLine1Controller.text,
+          normalAddress: _addressLine2Controller.text,
+          type: _industryValue);
+
+      var state = await _organizationRepository.addOrganization(entity);
+
+      if (state is DataSuccess) {
+        // Add delay before navigating
+        await Future.delayed(Duration(milliseconds: 100));
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) =>
+                  sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
+              child: const OrganizationPage(),
+            ),
+          ),
+        );
+      } else {
+        // Display error notification
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add organization. Please try again.'),
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 
@@ -54,16 +99,14 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
   Widget build(BuildContext context) {
     final backgroundColor = const Color(0xFFE5E5E5);
     final fieldColor = Colors.white;
-    final primaryColor = const Color.fromARGB(255, 80, 194, 201); 
+    final primaryColor = const Color.fromARGB(255, 80, 194, 201);
     final hintTextStyle = TextStyle(color: Colors.grey[600]);
     final labelStyle = const TextStyle(fontSize: 16, color: Colors.black54);
 
     return Scaffold(
-      backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: Column(
+        backgroundColor: backgroundColor,
+        body: Column(
           children: [
-           
             const Header(title: "Organisation"),
             Expanded(
               child: SingleChildScrollView(
@@ -86,7 +129,8 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                           ),
                           hintText: "Enter organization name",
                           hintStyle: hintTextStyle,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 14),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -95,8 +139,7 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 12),
-
+                      const SizedBox(height: 18),
                       TextFormField(
                         controller: _emailController,
                         decoration: InputDecoration(
@@ -110,7 +153,8 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                           ),
                           hintText: "Enter an email address",
                           hintStyle: hintTextStyle,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 14),
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -123,8 +167,7 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 12),
-
+                      const SizedBox(height: 18),
                       Row(
                         children: [
                           Expanded(
@@ -134,47 +177,10 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                             //     color: fieldColor,
                             //     borderRadius: BorderRadius.circular(20.0),
                             //   ),
-                              child: DropdownButtonFormField<String>(
-                                value: _industryValue,
-                                decoration: InputDecoration(
-                                  labelText: "Organisation",
-                                  labelStyle: labelStyle,
-                                          filled: true,
-          fillColor: fieldColor,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(20.0),
-            borderSide: BorderSide.none,
-          ),
-                                  contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                                ),
-                                icon: const Icon(Icons.arrow_drop_down),
-                                items: <String>["Hospital", "Hotel"].map((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (val) {
-                                  setState(() {
-                                    _industryValue = val;
-                                  });
-                                },
-                                validator: (value) {
-                                  if (value == null) {
-                                    return "Select Organisation";
-                                  }
-                                  return null;
-                                },
-                              ),
-                            ),
-                         // ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            flex: 1,
-                            child: TextFormField(
-                              controller: _registrationController,
+                            child: DropdownButtonFormField<String>(
+                              value: _industryValue,
                               decoration: InputDecoration(
-                                labelText: "Organisation Code.",
+                                labelText: "Organisation",
                                 labelStyle: labelStyle,
                                 filled: true,
                                 fillColor: fieldColor,
@@ -182,20 +188,37 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                                   borderRadius: BorderRadius.circular(20.0),
                                   borderSide: BorderSide.none,
                                 ),
-                                hintText: "Enter organisation code.",
-                                hintStyle: hintTextStyle,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 14),
                               ),
+                              icon: const Icon(Icons.arrow_drop_down),
+                              items: <String>["Hospital", "Hotel"]
+                                  .map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              }).toList(),
+                              onChanged: (val) {
+                                setState(() {
+                                  _industryValue = val;
+                                });
+                              },
+                              validator: (value) {
+                                if (value == null) {
+                                  return "Select Organisation";
+                                }
+                                return null;
+                              },
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-
+                      const SizedBox(height: 18),
                       TextFormField(
                         controller: _addressLine1Controller,
                         decoration: InputDecoration(
-                          labelText: "Address / Street",
+                          labelText: "Postal Address",
                           labelStyle: labelStyle,
                           filled: true,
                           fillColor: fieldColor,
@@ -203,16 +226,17 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                             borderRadius: BorderRadius.circular(20.0),
                             borderSide: BorderSide.none,
                           ),
-                          hintText: "Address line 1",
+                          hintText: "Postal Address",
                           hintStyle: hintTextStyle,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 14),
                         ),
                       ),
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 18),
                       TextFormField(
                         controller: _addressLine2Controller,
                         decoration: InputDecoration(
-                          labelText: "Address / Street",
+                          labelText: "Normal Address",
                           labelStyle: labelStyle,
                           filled: true,
                           fillColor: fieldColor,
@@ -220,30 +244,13 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                             borderRadius: BorderRadius.circular(20.0),
                             borderSide: BorderSide.none,
                           ),
-                          hintText: "Address line 2",
+                          hintText: "Normal Address",
                           hintStyle: hintTextStyle,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 14),
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      TextFormField(
-                        controller: _addressLine3Controller,
-                        decoration: InputDecoration(
-                          labelText: "Address / Street",
-                          labelStyle: labelStyle,
-                          filled: true,
-                          fillColor: fieldColor,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          hintText: "Address line 3",
-                          hintStyle: hintTextStyle,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-
+                      const SizedBox(height: 18),
                       Row(
                         children: [
                           Expanded(
@@ -261,7 +268,8 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                                 ),
                                 hintText: "Enter EIR Code",
                                 hintStyle: hintTextStyle,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 14),
                               ),
                             ),
                           ),
@@ -281,14 +289,14 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                                 ),
                                 hintText: "Enter County",
                                 hintStyle: hintTextStyle,
-                                contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 14),
                               ),
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 12),
-
+                      const SizedBox(height: 18),
                       TextFormField(
                         controller: _descriptionController,
                         maxLines: 3,
@@ -303,7 +311,8 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                           ),
                           hintText: "Enter description",
                           hintStyle: hintTextStyle,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 14),
                         ),
                         validator: (value) {
                           if (value == null) return null;
@@ -314,25 +323,7 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                           return null;
                         },
                       ),
-                      const SizedBox(height: 12),
-
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: _sameAsPostal,
-                            onChanged: (val) {
-                              setState(() {
-                                _sameAsPostal = val ?? false;
-                              });
-                            },
-                            activeColor: Colors.purple,
-                          ),
-                          const Text("Same as Postal Address")
-                        ],
-                      ),
-
                       const SizedBox(height: 20),
-
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
@@ -352,7 +343,6 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                           ),
                         ),
                       ),
-
                       const SizedBox(height: 30),
                     ],
                   ),
@@ -360,8 +350,6 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
               ),
             ),
           ],
-        ),
-      ),
-    );
+        ));
   }
 }

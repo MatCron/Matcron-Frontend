@@ -5,4 +5,6 @@ abstract class TypeRepository {
   Future<DataState<List<MattressTypeEntity>>> getTypes();
   Future<DataState<MattressTypeEntity>> getType(String id);
   Future<DataState<void>> addType(MattressTypeEntity type);
+  Future<DataState<void>> updateType(MattressTypeEntity type);
+  Future<DataState<void>> deleteType(String id);
 }
