@@ -29,4 +29,7 @@ abstract class GroupApiService {
   
   @POST('/mattresses/multiple')
   Future <HttpResponse<void>> addMattressToGroup({@Body() required EditMattressesToGroupModel model, @Header('Authorization') required String token});
+
+  @POST('/mattresses/multiple')
+  Future <HttpResponse<void>> removeMattressFromGroup({@Body() required EditMattressesToGroupModel model, @Header('Authorization') required String token});
 }

@@ -6,9 +6,18 @@ import 'package:matcron/app/features/group/data/models/GroupWithMattressesDto.da
 class GroupDetailsPage extends StatefulWidget {
   final GroupWithMattressesDto group;
   final Function(String) transferOut;
+  final Function(String, String) removeMattressFromGroup;
+  final bool isImported;
+  final bool containsMattresses;
 
   const GroupDetailsPage(
-      {super.key, required this.group, required this.transferOut});
+      {super.key,
+      required this.group,
+      required this.transferOut,
+      required this.removeMattressFromGroup,
+      required this.isImported,
+      required this.containsMattresses
+      });
 
   @override
   GroupDetailsPageState createState() => GroupDetailsPageState();
@@ -51,6 +60,33 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
 
   void _performTransferOut() {
     widget.transferOut(widget.group.id);
+  }
+
+  void _performRemove(String mattressId) async {
+    bool success = await widget.removeMattressFromGroup(mattressId, widget.group.id);
+
+    if (success) {
+      setState(() {
+        widget.group.mattressList
+            .removeWhere((mattress) => mattress.uid == mattressId);
+      });
+
+      // Show success Snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Mattress removed from group."),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } else {
+      // Show error Snackbar
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Failed to remove mattress from group."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Widget _buildInfoBox({
@@ -206,14 +242,17 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                           ],
                         ),
                       ),
+                      !widget.isImported ? 
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          _performRemove(mattress.uid!);
+                        },
                         child: Image.asset(
                           "assets/images/minus-button.png",
                           width: 24,
                           height: 24,
                         ),
-                      ),
+                      ) : const SizedBox(width: 0),
                     ],
                   ),
                 );
@@ -226,6 +265,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 46),
         child: Row(
           children: [
+            widget.containsMattresses ? 
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: _showTransferOutDialog, // Open confirmation dialog
@@ -239,7 +279,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                       borderRadius: BorderRadius.circular(8)),
                 ),
               ),
-            ),
+            ) : const SizedBox(width: 0),
             const SizedBox(width: 16),
             Expanded(
               child: ElevatedButton.icon(

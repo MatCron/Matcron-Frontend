@@ -76,18 +76,24 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
     // Close the current screen
     if (mounted) {
       Navigator.pop(context);
-    }
 
-    // Show success notification
-    ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text("Transfer Out confirmed!"),
         backgroundColor: Colors.green,
         duration: Duration(seconds: 3),
       ),
     );
+    }
+
+    // Show success notification
+    if (mounted) {
+      
+    }
+    
   } else {
     // Show error notification
+    if (mounted) {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text("Error occurred while transferring out."),
@@ -95,6 +101,7 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
         duration: Duration(seconds: 3),
       ),
     );
+    }
   }
 }
 
@@ -167,6 +174,26 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
           );
         },
       );
+    }
+  }
+
+  Future<bool> _removeMattressFromGroup(String mattressId, String groupId) async {
+    List<String> mattressIds  = [];
+    mattressIds.add(mattressId);
+    
+    var groupModel = EditMattressesToGroupModel(groupId: groupId, mattressIds: mattressIds);
+    
+    var state = await _groupRepository.removeMattressFromGroup(groupModel);
+
+    if (state is DataSuccess) {
+      setState(() {
+        var group = activeGroups.where((group) => group.uid == groupId).first;
+        group.mattressCount = group.mattressCount! - 1;
+      });
+
+      return true;
+    } else {
+      return false;
     }
   }
 
@@ -260,11 +287,15 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
           onTap: () async {
             final groupDetails = await _groupRepository.getGroupById(group.uid!);
             if (groupDetails is DataSuccess && groupDetails.data != null) {
+              // ignore: use_build_context_synchronously
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (_) => GroupDetailsPage(
                     group: groupDetails.data!,
-                    transferOut: _transferOut,
+                    transferOut: _transferOut, 
+                    removeMattressFromGroup: _removeMattressFromGroup,
+                    isImported: group.isImported!,
+                    containsMattresses: group.mattressCount! > 0,
                   ),
                 ),
               );

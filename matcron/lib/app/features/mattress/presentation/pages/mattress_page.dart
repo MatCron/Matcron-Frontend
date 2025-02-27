@@ -367,7 +367,7 @@ class MattressPageState extends State<MattressPage> {
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold, color: matcronPrimaryColor)),
                     const SizedBox(height: 10),
-                    Container(
+                    SizedBox(
                       height: 220,
                       child: ListView.builder(
                         itemCount: mattressStatus.length,

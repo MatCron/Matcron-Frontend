@@ -134,6 +134,7 @@ Future<DataState<GroupWithMattressesDto>> getGroupById(String id) async {
       }
       
     } on DioException catch(e) {
+      print(e.response?.data["error"]);
       return DataFailed(e);
     }
   }
@@ -169,6 +170,31 @@ Future<DataState<GroupWithMattressesDto>> getGroupById(String id) async {
     
     try {
       final httpResponse = await _groupApiService.addMattressToGroup(model: model, token: token);
+
+      if (httpResponse.response.statusCode == HttpStatus.ok) {
+        return DataSuccess(httpResponse.data);
+      } else {
+        return DataFailed(
+          DioException(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: httpResponse.response.requestOptions, 
+          )
+        );
+      }
+      
+    } on DioException catch(e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<void>> removeMattressFromGroup(EditMattressesToGroupModel model) async {
+    final String token = 'Bearer ${await AuthorizationService().getToken()}';
+    
+    try {
+      final httpResponse = await _groupApiService.removeMattressFromGroup(model: model, token: token);
 
       if (httpResponse.response.statusCode == HttpStatus.ok) {
         return DataSuccess(httpResponse.data);
