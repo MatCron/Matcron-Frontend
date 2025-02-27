@@ -63,7 +63,7 @@ class OrganizationRepositoryImpl implements OrganizationRepository {
   @override
   Future<DataState<List<OrganizationEntity>>> getOrganizations() async {
     final String token = 'Bearer ${await AuthorizationService().getToken()}';
-    // TODO: implement getOrganizations
+    
     try {
       final httpResponse = await _organizationApiService.getOrganizations(token: token);
 

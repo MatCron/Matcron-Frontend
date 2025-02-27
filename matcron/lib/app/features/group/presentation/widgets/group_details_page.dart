@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:matcron/app/main.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/app/features/group/data/models/GroupWithMattressesDto.dart';
 
@@ -16,8 +15,7 @@ class GroupDetailsPage extends StatefulWidget {
       required this.transferOut,
       required this.removeMattressFromGroup,
       required this.isImported,
-      required this.containsMattresses
-      });
+      required this.containsMattresses});
 
   @override
   GroupDetailsPageState createState() => GroupDetailsPageState();
@@ -63,7 +61,8 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   }
 
   void _performRemove(String mattressId) async {
-    bool success = await widget.removeMattressFromGroup(mattressId, widget.group.id);
+    bool success =
+        await widget.removeMattressFromGroup(mattressId, widget.group.id);
 
     if (success) {
       setState(() {
@@ -87,6 +86,245 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         ),
       );
     }
+  }
+
+  Future<void> _startNfcSession() async {}
+
+  void _handleNfcError(String errorMessage) {}
+
+  void _openRfidModal(BuildContext context, String session) {
+    if (session == 'SEARCH') {
+      Future.delayed(Duration(milliseconds: 100), _startNfcSession);
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Center(
+                child: Image.asset(
+                  'assets/images/scan_icon.png',
+                  width: 275,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text("Tap On RFID..."),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _openAddMattressDrawer() {
+    // Declare selectedIds outside the builder to persist state
+    Set<String> selectedIds = {};
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        List<MattressDto> mattresses = widget.group.mattressList;
+        List<MattressDto> filteredMattresses = List.from(mattresses);
+
+        TextEditingController searchController = TextEditingController();
+
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            void _filterMattresses(String query) {
+              setModalState(() {
+                if (query.isEmpty) {
+                  filteredMattresses = List.from(mattresses);
+                } else {
+                  filteredMattresses = mattresses.where((mattress) {
+                    return (mattress.mattressTypeName ?? "")
+                            .toLowerCase()
+                            .contains(query.toLowerCase()) ||
+                        (mattress.location ?? "")
+                            .toLowerCase()
+                            .contains(query.toLowerCase());
+                  }).toList();
+                }
+              });
+            }
+
+            return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                height: 500, // Adjust height as needed
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Add Mattresses To Group",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: matcronPrimaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: searchController,
+                            onChanged: (value) {
+                              _filterMattresses(value);
+                            },
+                            decoration: InputDecoration(
+                              hintText: "Search Mattress",
+                              hintStyle: const TextStyle(color: Colors.grey),
+                              prefixIcon:
+                                  const Icon(Icons.search, color: Colors.grey),
+                              suffixIcon: IconButton(
+                                icon: Image.asset(
+                                  'assets/images/scan_icon.png', // Path to your scan icon asset
+                                  height: 36,
+                                  width: 50,
+                                ),
+                                onPressed: () {
+                                  _openRfidModal(context, 'SEARCH');
+                                },
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                                borderSide: BorderSide.none,
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey[200],
+                              contentPadding:
+                                  const EdgeInsets.symmetric(vertical: 8.0),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: filteredMattresses.length,
+                        itemBuilder: (context, index) {
+                          String mattressId = filteredMattresses[index].uid!;
+                          return CheckboxListTile(
+                            title: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  filteredMattresses[index].mattressTypeName ??
+                                      "Unknown Type",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    const Text(
+                                      "Status: ",
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    Text(
+                                      "${mattressStatus[filteredMattresses[index].status!]['Text']}",
+                                      style: TextStyle(
+                                          color: mattressStatus[
+                                              filteredMattresses[index]
+                                                  .status!]['Color'] as Color),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "Location: ${filteredMattresses[index].location ?? 'Unknown Location'}",
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                              ],
+                            ),
+                            checkColor: matcronPrimaryColor,
+                            activeColor: Colors.white,
+                            value: selectedIds.contains(mattressId),
+                            onChanged: (bool? value) {
+                              setModalState(() {
+                                if (value == true) {
+                                  selectedIds.add(mattressId);
+                                } else {
+                                  selectedIds.remove(mattressId);
+                                }
+                              });
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            setModalState(() {
+                              selectedIds.clear();
+                            });
+                          },
+                          child: const Text(
+                            "Clear",
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () {
+                            List<MattressDto> selectedMattresses = mattresses
+                                .where((mattress) =>
+                                    selectedIds.contains(mattress.uid))
+                                .toList();
+
+                            if (selectedMattresses.isNotEmpty) {
+                              Navigator.pop(context); // Close drawer
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Mattresses added to group."),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("No mattresses selected."),
+                                  backgroundColor: Colors.orange,
+                                ),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: matcronPrimaryColor,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 14, horizontal: 24),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8)),
+                          ),
+                          child: const Text(
+                            "Add Mattresses",
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   Widget _buildInfoBox({
@@ -242,17 +480,18 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                           ],
                         ),
                       ),
-                      !widget.isImported ? 
-                      GestureDetector(
-                        onTap: () {
-                          _performRemove(mattress.uid!);
-                        },
-                        child: Image.asset(
-                          "assets/images/minus-button.png",
-                          width: 24,
-                          height: 24,
-                        ),
-                      ) : const SizedBox(width: 0),
+                      !widget.isImported
+                          ? GestureDetector(
+                              onTap: () {
+                                _performRemove(mattress.uid!);
+                              },
+                              child: Image.asset(
+                                "assets/images/minus-button.png",
+                                width: 24,
+                                height: 24,
+                              ),
+                            )
+                          : const SizedBox(width: 0),
                     ],
                   ),
                 );
@@ -265,34 +504,28 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 46),
         child: Row(
           children: [
-            widget.containsMattresses ? 
-            Expanded(
-              child: ElevatedButton.icon(
-                onPressed: _showTransferOutDialog, // Open confirmation dialog
-                icon: const Icon(Icons.exit_to_app, color: Colors.white),
-                label: const Text("Transfer Out",
-                    style: TextStyle(color: Colors.white)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: matcronPrimaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                ),
-              ),
-            ) : const SizedBox(width: 0),
+            widget.containsMattresses
+                ? Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed:
+                          _showTransferOutDialog, // Open confirmation dialog
+                      icon: const Icon(Icons.exit_to_app, color: Colors.white),
+                      label: const Text("Transfer Out",
+                          style: TextStyle(color: Colors.white)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: matcronPrimaryColor,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8)),
+                      ),
+                    ),
+                  )
+                : const SizedBox(width: 0),
             const SizedBox(width: 16),
             Expanded(
               child: ElevatedButton.icon(
                 onPressed: () {
-                  Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          MyHomePage(startPageIndex: 1), // Set MattressPage tab
-                    ),
-                    (Route<dynamic> route) =>
-                        false, // Remove all previous routes
-                  );
+                  _openAddMattressDrawer();
                 },
                 icon: const Icon(Icons.add, color: Colors.white),
                 label: const Text("Add Mattresses",
