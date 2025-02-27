@@ -90,7 +90,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
 
   Future<void> _startNfcSession() async {}
 
-  void _handleNfcError(String errorMessage) {}
+ // void _handleNfcError(String errorMessage) {}
 
   void _openRfidModal(BuildContext context, String session) {
     if (session == 'SEARCH') {
