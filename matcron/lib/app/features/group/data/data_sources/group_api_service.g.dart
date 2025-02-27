@@ -14,7 +14,8 @@ class _GroupApiService implements GroupApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://www.matcron.online/api/groups';
+    baseUrl ??= 'https://api.matcron.online/api/groups';
+    
   }
 
   final Dio _dio;
@@ -242,6 +243,26 @@ Future<HttpResponse<GroupWithMattressesDto>> getGroupById({
           _dio.options.baseUrl,
           baseUrl,
         )));
+
+    final _result = await _dio.fetch<void>(_options);
+    return HttpResponse(null, _result);
+  }
+  
+  @override
+  Future<HttpResponse<void>> removeMattressFromGroup({
+    required EditMattressesToGroupModel model,
+    required String token,
+  }) async {
+    final _headers = {'Authorization': token};
+    final _data = model.toJson();
+    final _options = Options(
+      method: 'POST',
+      headers: _headers,
+    ).compose(
+      _dio.options,
+      '/mattresses/remove',
+      data: _data,
+    ).copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl);
 
     final _result = await _dio.fetch<void>(_options);
     return HttpResponse(null, _result);
