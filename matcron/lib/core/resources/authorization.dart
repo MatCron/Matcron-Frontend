@@ -27,6 +27,16 @@ class AuthorizationService {
     return null;
   }
 
+  Future<int?> getUserType() async {
+    String? token = await getToken();
+    if (token != null && token.isNotEmpty) {
+      var p = JwtDecoder.decode(token);
+      return p['UserType'];
+    }
+
+    return null;
+  }
+
   /// Check if token is expired
   Future<bool> isTokenExpired() async {
     String? token = await getToken();
