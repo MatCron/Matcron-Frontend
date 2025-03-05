@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
+import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
+import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/app/features/group/data/models/GroupWithMattressesDto.dart';
 
@@ -6,6 +9,7 @@ class GroupDetailsPage extends StatefulWidget {
   final GroupWithMattressesDto group;
   final Function(String) transferOut;
   final Function(String, String) removeMattressFromGroup;
+  final Function(List<String>, String) addNattressesToGroup;
   final bool isImported;
   final bool containsMattresses;
 
@@ -14,6 +18,7 @@ class GroupDetailsPage extends StatefulWidget {
       required this.group,
       required this.transferOut,
       required this.removeMattressFromGroup,
+      required this.addNattressesToGroup,
       required this.isImported,
       required this.containsMattresses});
 
@@ -24,6 +29,39 @@ class GroupDetailsPage extends StatefulWidget {
 class GroupDetailsPageState extends State<GroupDetailsPage> {
   String _formatDate(DateTime date) {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+  }
+
+  List<MattressEntity> globalMattresses = [];
+  final MattressRepository _mattressRepository =
+      GetIt.instance<MattressRepository>();
+  bool _loading = true; // New: Tracks if groups are still loading
+  bool _error = false; // Tracks if there was an error
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeMattresses();
+  }
+
+  void _initializeMattresses() async {
+    try {
+      var allMattresses = await _mattressRepository.getMattresses();
+
+      setState(() {
+        globalMattresses = allMattresses.data ?? [];
+        _loading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _loading = false;
+        _error = true;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text("Failed to load group. Please try again.")),
+      );
+    }
   }
 
   void _showTransferOutDialog() {
@@ -88,9 +126,26 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     }
   }
 
+  Future<bool?> _performAdd(Set<String> mattressIds) async {
+    final list = mattressIds.toList();
+    bool success = await widget.addNattressesToGroup(list, widget.group.id);
+
+    if (success) {
+      return true;
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Failed to add mattresses to group."),
+          backgroundColor: Colors.red,
+        ),
+      );
+      return false;
+    }
+  }
+
   Future<void> _startNfcSession() async {}
 
- // void _handleNfcError(String errorMessage) {}
+  // void _handleNfcError(String errorMessage) {}
 
   void _openRfidModal(BuildContext context, String session) {
     if (session == 'SEARCH') {
@@ -132,8 +187,9 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        List<MattressDto> mattresses = widget.group.mattressList;
-        List<MattressDto> filteredMattresses = List.from(mattresses);
+        List<MattressEntity> mattresses =
+            globalMattresses; //CHANNGE THIS TO GET ALL MATTERESES
+        List<MattressEntity> filteredMattresses = List.from(mattresses);
 
         TextEditingController searchController = TextEditingController();
 
@@ -145,7 +201,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                   filteredMattresses = List.from(mattresses);
                 } else {
                   filteredMattresses = mattresses.where((mattress) {
-                    return (mattress.mattressTypeName ?? "")
+                    return (mattress.type ?? "")
                             .toLowerCase()
                             .contains(query.toLowerCase()) ||
                         (mattress.location ?? "")
@@ -220,7 +276,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  filteredMattresses[index].mattressTypeName ??
+                                  filteredMattresses[index].type ??
                                       "Unknown Type",
                                   style: const TextStyle(
                                     fontWeight: FontWeight.bold,
@@ -280,20 +336,38 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                           ),
                         ),
                         ElevatedButton(
-                          onPressed: () {
-                            List<MattressDto> selectedMattresses = mattresses
+                          onPressed: () async {
+                            List<MattressEntity> selectedMattresses = mattresses
                                 .where((mattress) =>
                                     selectedIds.contains(mattress.uid))
-                                .toList();
-
+                                .toList(); // this is for local adding dynamically
+                            //convert to mattressDto
+                            
                             if (selectedMattresses.isNotEmpty) {
-                              Navigator.pop(context); // Close drawer
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Mattresses added to group."),
-                                  backgroundColor: Colors.green,
-                                ),
-                              );
+                              bool? added = await _performAdd(selectedIds);
+                              if (mounted && added!) {
+
+                                setState(() {
+                                  for (var mattress in selectedMattresses) {
+                                    MattressDto mattressDto = MattressDto(
+                                      uid: mattress.uid,
+                                      mattressTypeName: mattress.type,
+                                      location: mattress.location,
+                                      status: mattress.status,
+                                    );
+
+                                    widget.group.mattressList.add(mattressDto);
+                                  }
+                                });
+
+                                Navigator.pop(context); // Close drawer
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Mattresses added to group."),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                              }
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -381,125 +455,136 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.grey[100],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Description",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    widget.group.description ?? "No description",
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Row(
-              children: [
-                _buildInfoBox(
-                  title: "From",
-                  organization:
-                      widget.group.senderOrganisationName ?? "Unknown",
-                  date: _formatDate(widget.group.createdDate),
-                  icon: Icons.upload_rounded,
-                ),
-                const SizedBox(width: 16),
-                _buildInfoBox(
-                  title: "To",
-                  organization:
-                      widget.group.receiverOrganisationName ?? "Unknown",
-                  date: widget.group.modifiedDate != null
-                      ? _formatDate(widget.group.modifiedDate!)
-                      : "N/A",
-                  icon: Icons.download_rounded,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: widget.group.mattressList.length,
-              itemBuilder: (context, index) {
-                final mattress = widget.group.mattressList[index];
-                return Container(
-                  margin: const EdgeInsets.symmetric(vertical: 8.0),
-                  padding: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey[300]!),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
+      body: _loading
+          ? Center(
+              child: CircularProgressIndicator(
+              color: matcronPrimaryColor,
+            )) // Show loading spinner
+          : _error
+              ? const Center(
+                  child: Text("Error loading group. Try again later."))
+              : Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
+                      child: Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(10),
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              mattress.mattressTypeName ?? "Unknown",
-                              style: const TextStyle(
-                                fontSize: 16,
+                            const Text(
+                              "Description",
+                              style: TextStyle(
+                                fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
-                            const SizedBox(height: 5),
+                            const SizedBox(height: 8),
                             Text(
-                              mattress.location ?? "Unknown",
+                              widget.group.description ?? "No description",
                               style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: 16,
                                 color: Colors.grey,
                               ),
                             ),
                           ],
                         ),
                       ),
-                      !widget.isImported
-                          ? GestureDetector(
-                              onTap: () {
-                                _performRemove(mattress.uid!);
-                              },
-                              child: Image.asset(
-                                "assets/images/minus-button.png",
-                                width: 24,
-                                height: 24,
-                              ),
-                            )
-                          : const SizedBox(width: 0),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
+                          _buildInfoBox(
+                            title: "From",
+                            organization: widget.group.senderOrganisationName ??
+                                "Unknown",
+                            date: _formatDate(widget.group.createdDate),
+                            icon: Icons.upload_rounded,
+                          ),
+                          const SizedBox(width: 16),
+                          _buildInfoBox(
+                            title: "To",
+                            organization:
+                                widget.group.receiverOrganisationName ??
+                                    "Unknown",
+                            date: widget.group.modifiedDate != null
+                                ? _formatDate(widget.group.modifiedDate!)
+                                : "N/A",
+                            icon: Icons.download_rounded,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Expanded(
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: widget.group.mattressList.length,
+                        itemBuilder: (context, index) {
+                          final mattress = widget.group.mattressList[index];
+                          return Container(
+                            margin: const EdgeInsets.symmetric(vertical: 8.0),
+                            padding: const EdgeInsets.all(16.0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.grey[300]!),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        mattress.mattressTypeName ?? "Unknown",
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Text(
+                                        mattress.location ?? "Unknown",
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                !widget.isImported
+                                    ? GestureDetector(
+                                        onTap: () {
+                                          _performRemove(mattress.uid!);
+                                        },
+                                        child: Image.asset(
+                                          "assets/images/minus-button.png",
+                                          width: 24,
+                                          height: 24,
+                                        ),
+                                      )
+                                    : const SizedBox(width: 0),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 46),
         child: Row(

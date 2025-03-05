@@ -37,6 +37,7 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
     _initializeGroups();
   }
 
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -104,7 +105,6 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
     }
   }
 }
-
 
   /// Open Add Group Drawer
   void _openAddDrawer() {
@@ -189,6 +189,22 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
       setState(() {
         var group = activeGroups.where((group) => group.uid == groupId).first;
         group.mattressCount = group.mattressCount! - 1;
+      });
+
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<bool> _addMattressesToGroup(List<String> mattresses, String groupId) async {
+    var mattressToAdd = EditMattressesToGroupModel(groupId: groupId, mattressIds: mattresses);
+    var state = await _groupRepository.addMattressToGroup(mattressToAdd);
+
+    if (state is DataSuccess) {
+      setState(() {
+        var group = activeGroups.where((group) => group.uid == groupId).first;
+        group.mattressCount = group.mattressCount! +  mattresses.length;
       });
 
       return true;
@@ -294,6 +310,7 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
                     group: groupDetails.data!,
                     transferOut: _transferOut, 
                     removeMattressFromGroup: _removeMattressFromGroup,
+                    addNattressesToGroup: _addMattressesToGroup,
                     isImported: group.isImported!,
                     containsMattresses: group.mattressCount! > 0,
                   ),
