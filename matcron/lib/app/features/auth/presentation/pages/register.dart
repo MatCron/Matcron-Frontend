@@ -12,6 +12,7 @@ import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/core/constants/constants.dart';
 
 
+
 class OutlinedTextField extends StatefulWidget {
   final TextEditingController controller;
   final String placeholder;
@@ -215,6 +216,8 @@ class _RegisterPageState extends State<RegisterPage> {
     String? orgCodeError;
     String? passwordError;
     String? confirmPasswordError;
+
+   
 
     switch (state.errorType) {
       case 'NAME':
@@ -472,6 +475,8 @@ class _RegisterPageState extends State<RegisterPage> {
       ],
     );
   }
+
+  void validateTextFields() {}
 
   void _register(BuildContext context) {
     context.read<RemoteRegistrationBloc>().add(
