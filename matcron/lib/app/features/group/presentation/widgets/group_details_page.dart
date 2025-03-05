@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:matcron/app/features/mattress/data/models/matress.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
 import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
 import 'package:matcron/core/constants/constants.dart';
@@ -48,7 +49,14 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
       var allMattresses = await _mattressRepository.getMattresses();
 
       setState(() {
-        globalMattresses = allMattresses.data ?? [];
+        Set<String> existingMattressIds =
+            widget.group.mattressList.map((mattress) => mattress.uid!).toSet();
+
+        globalMattresses = allMattresses.data?.where((mattress) {
+              return !existingMattressIds.contains(mattress.uid);
+            }).toList() ??
+            [];
+
         _loading = false;
       });
     } catch (e) {
@@ -98,15 +106,23 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     widget.transferOut(widget.group.id);
   }
 
-  void _performRemove(String mattressId) async {
+  void _performRemove(String mattressId, MattressDto m) async {
     bool success =
         await widget.removeMattressFromGroup(mattressId, widget.group.id);
 
     if (success) {
       setState(() {
-        widget.group.mattressList
-            .removeWhere((mattress) => mattress.uid == mattressId);
-      });
+        widget.group.mattressList.removeWhere((mattress) => mattress.uid == mattressId);
+        MattressModel mattress = MattressModel(
+          uid: m.uid,
+          location: m.location,
+          type: m.mattressTypeName,
+          status: m.status,
+        );
+
+
+      globalMattresses.add(mattress); // Add the mattress safely
+          });
 
       // Show success Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
@@ -342,11 +358,10 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                                     selectedIds.contains(mattress.uid))
                                 .toList(); // this is for local adding dynamically
                             //convert to mattressDto
-                            
+
                             if (selectedMattresses.isNotEmpty) {
                               bool? added = await _performAdd(selectedIds);
                               if (mounted && added!) {
-
                                 setState(() {
                                   for (var mattress in selectedMattresses) {
                                     MattressDto mattressDto = MattressDto(
@@ -357,6 +372,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                                     );
 
                                     widget.group.mattressList.add(mattressDto);
+                                    globalMattresses.remove(mattress);
                                   }
                                 });
 
@@ -568,7 +584,8 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                                 !widget.isImported
                                     ? GestureDetector(
                                         onTap: () {
-                                          _performRemove(mattress.uid!);
+                                          _performRemove(
+                                              mattress.uid!, mattress);
                                         },
                                         child: Image.asset(
                                           "assets/images/minus-button.png",
