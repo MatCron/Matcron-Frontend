@@ -44,6 +44,9 @@ dependencies:
   dartz: ^0.10.1
   fl_chart: ^0.35.0
   jwt_decoder: ^2.0.1
+  shared_preferences: ^2.5.2
+  sqflite: ^2.4.1
+  path: ^1.9.0
 
 
 dev_dependencies:

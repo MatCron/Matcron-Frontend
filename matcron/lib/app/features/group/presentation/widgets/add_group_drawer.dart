@@ -107,9 +107,9 @@ class _AddGroupDrawerState extends State<AddGroupDrawer> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
+                      Text(
                         "Add New Group",
-                        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: matcronPrimaryColor),
                       ),
                       IconButton(
                         icon: const Icon(Icons.close, color: Colors.grey),

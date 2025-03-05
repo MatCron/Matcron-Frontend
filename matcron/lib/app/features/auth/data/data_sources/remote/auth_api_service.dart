@@ -10,7 +10,6 @@ part 'auth_api_service.g.dart';
 @RestApi(baseUrl: userAPIBaseURL)
 abstract class AuthApiService {
   factory AuthApiService(Dio dio) = _AuthApiService;
- 
   
   @POST('/login')
   Future<HttpResponse<LoginResponseModel>> login({@Body() required UserLoginDbModel model});

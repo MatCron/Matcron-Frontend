@@ -14,7 +14,7 @@ class _OrganizationApiService implements OrganizationApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://www.matcron.online/api/Organisation';
+    baseUrl ??= 'https://api.matcron.online/api/Organisation';
   }
 
   final Dio _dio;
