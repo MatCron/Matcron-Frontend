@@ -3,8 +3,10 @@ import 'package:get_it/get_it.dart';
 import 'package:matcron/app/features/group/data/models/group.dart';
 import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
 import 'package:matcron/app/features/group/domain/repositories/group_repository.dart';
+import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
 import 'package:matcron/app/features/organization/domain/entities/organization.dart';
 import 'package:matcron/app/features/organization/domain/repositories/organization_repository.dart';
+import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
 import 'package:matcron/core/resources/data_state.dart';
 import '../widgets/add_group_drawer.dart';
 import '../widgets/group_card_widget.dart';
@@ -22,9 +24,12 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
   List<GroupEntity> activeGroups = [];
   List<GroupEntity> archivedGroups = [];
   List<OrganizationEntity> organizations = [];
+  List<MattressEntity> mattresses = [];
 
   final GroupRepository _groupRepository = GetIt.instance<GroupRepository>();
   final OrganizationRepository _organizationRepository = GetIt.instance<OrganizationRepository>();
+    final MattressRepository _mattressRepository =
+      GetIt.instance<MattressRepository>();
 
   late TabController _tabController;
   bool _loading = true; // New: Tracks if groups are still loading
@@ -50,11 +55,13 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
       var allOrgs = await _organizationRepository.getOrganizations();
       var activeGroupsState = await _groupRepository.getGroups(1);
       var archivedGroupsState = await _groupRepository.getGroups(2);
+      var allMattresses = await _mattressRepository.getMattresses();
 
       setState(() {
         organizations = allOrgs.data ?? [];
         activeGroups = activeGroupsState.data ?? [];
         archivedGroups = archivedGroupsState.data ?? [];
+        mattresses = allMattresses.data ?? []; 
         _loading = false; // Data is fully loaded
       });
     } catch (e) {
@@ -313,6 +320,7 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
                     addNattressesToGroup: _addMattressesToGroup,
                     isImported: group.isImported!,
                     containsMattresses: group.mattressCount! > 0,
+                    mattresses: mattresses,
                   ),
                 ),
               );
