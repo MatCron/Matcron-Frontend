@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
+import 'package:matcron/app/features/mattress_history/domain/entities/mattress_history.dart';
+import 'package:matcron/app/features/mattress_history/domain/repositories/mattress_history_repository.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/domain/repositories/type_repository.dart';
 import 'package:matcron/core/constants/constants.dart';
@@ -30,6 +32,8 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
   late MattressTypeEntity mattress;
   late TypeRepository _typeRepository;
   late MattressRepository _mattressRepository;
+  late MattressHistoryRepository _mattressHistoryRepository;
+  late List<MattressHistoryEntity> history;
 
   bool isLoading = true;
   int currentTab = 0;
@@ -42,17 +46,27 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
     mattress = widget.mattress;
     _mattressRepository = GetIt.instance<MattressRepository>();
     _typeRepository = GetIt.instance<TypeRepository>();
+    _mattressHistoryRepository = GetIt.instance<MattressHistoryRepository>();
     _initializeMattress();
+  }
+
+  List<MattressHistoryEntity> sortByNewest(List<MattressHistoryEntity> list) {
+    list.sort((a, b) =>
+        (b.timeStamp ?? DateTime(0)).compareTo(a.timeStamp ?? DateTime(0)));
+    return list;
   }
 
   void _initializeMattress() async {
     String id = "";
     if (mattress.id == null) {
       var state = await _mattressRepository.getMattressById(widget.failSafe!);
+      var historyState = await _mattressHistoryRepository
+          .getMattressHistoryById(widget.failSafe!);
 
       if (state is DataSuccess && state.data != null) {
         setState(() {
           mattress = state.data!.mattressType!;
+          history = sortByNewest(historyState.data!);
           id = mattress.id!;
         });
       }
@@ -205,6 +219,101 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                   ),
                 ],
               ),
+
+              if (widget.showHistory == true && currentTab == 1)
+                Expanded(
+                  child: Column(
+                    children: [
+                      // Header Row
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Text("Details",
+                                style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 18,
+                                    color: Colors.grey)),
+                          ],
+                        ),
+                      ),
+
+                      // List of history items
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: history.length,
+                          itemBuilder: (context, index) {
+                            final item = history[index];
+                            bool isLast = index ==
+                                history.length -
+                                    1; // Check if it's the last item
+
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Timeline Indicator (Dot + Line)
+                                  Column(
+                                    children: [
+                                      // Dot
+                                      Container(
+                                        width: 12,
+                                        height: 12,
+                                        decoration: BoxDecoration(
+                                          color: matcronPrimaryColor, // Customize color
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      // Vertical Line
+                                      if (!isLast)
+                                        Container(
+                                          width: 2,
+                                          height: 40, // Adjust for spacing
+                                          color: const Color.fromARGB(255, 80, 194, 201).withOpacity(0.5),
+                                        ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                      width:
+                                          12), // Space between timeline and text
+
+                                  // Details & Timestamp
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.details ?? "No details",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          item.timeStamp != null
+                                              ? "${item.timeStamp!.day}/${item.timeStamp!.month}/${item.timeStamp!.year}"
+                                              : "No date",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey[700]),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
               if (widget.showHistory == null ||
                   widget.showHistory == false ||
