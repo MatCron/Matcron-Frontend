@@ -12,6 +12,7 @@ import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/app/features/type/presentation/pages/type_form.dart';
 import 'package:matcron/core/components/search_bar/search_bar.dart' as custom;
+import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/data_state.dart';
 import 'package:matcron/core/resources/nfc_decoder.dart';
 import 'package:nfc_manager/nfc_manager.dart';
@@ -34,17 +35,27 @@ class MattressTypePageState extends State<MattressTypePage> {
   final MattressRepository _mattressRepository =
       GetIt.instance<MattressRepository>();
 
+
   bool isScanning = true; // NFC scanning status
   bool isFinished = false; // Finished writing status
 
   MattressTypeEntity? currentSearchedEntity;
+  int userType = 0;
 
   @override
   void initState() {
     super.initState();
     filteredTypes = mattressTypes; // Initialize with all data
     canRefreshList = false;
+    _initializeUserType(); // Call an async function separately
   }
+
+  void _initializeUserType() async {
+  int type = (await AuthorizationService().getUserType())!;
+  setState(() {
+    userType = type;
+  }); 
+}
 
   @override
   void dispose() {
@@ -294,6 +305,7 @@ class MattressTypePageState extends State<MattressTypePage> {
             const SizedBox(height: 10.0),
 
             // Add mattress type button
+            if (userType == 1)
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
@@ -368,9 +380,13 @@ class MattressTypePageState extends State<MattressTypePage> {
                     ),
                   ),
                 ),
+                if (userType == 1)
                 const SizedBox(width: 20),
+                if (userType == 1)
                 const Text("Edit", style: TextStyle(fontSize: 16)),
+                if (userType == 1)
                 const SizedBox(width: 30),
+                if (userType == 1)
                 const Text("Delete", style: TextStyle(fontSize: 16)),
               ],
             ),
@@ -433,7 +449,9 @@ class MattressTypePageState extends State<MattressTypePage> {
                               ),
                             ),
                           ),
+                          if (userType == 1)
                           const SizedBox(width: 20),
+                          if (userType == 1)
                           GestureDetector(
                             onTap: () {
                               // Edit functionality placeholder
@@ -450,7 +468,9 @@ class MattressTypePageState extends State<MattressTypePage> {
                               ),
                             ),
                           ),
+                          if (userType == 1)
                           const SizedBox(width: 30),
+                          if (userType == 1)
                           GestureDetector(
                             onTap: () {
                               _showDeleteConfirmationDialog(context, type.id!);

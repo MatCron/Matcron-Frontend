@@ -5,23 +5,29 @@ import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
 import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/app/features/group/data/models/GroupWithMattressesDto.dart';
+import 'package:matcron/core/resources/data_state.dart';
+import 'package:matcron/core/resources/nfc_decoder.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
+// ignore: must_be_immutable
 class GroupDetailsPage extends StatefulWidget {
   final GroupWithMattressesDto group;
   final Function(String) transferOut;
   final Function(String, String) removeMattressFromGroup;
   final Function(List<String>, String) addNattressesToGroup;
   final bool isImported;
-  final bool containsMattresses;
+  bool containsMattresses;
+  final List<MattressEntity> mattresses;
 
-  const GroupDetailsPage(
+   GroupDetailsPage(
       {super.key,
       required this.group,
       required this.transferOut,
       required this.removeMattressFromGroup,
       required this.addNattressesToGroup,
       required this.isImported,
-      required this.containsMattresses});
+      required this.containsMattresses,
+      required this.mattresses});
 
   @override
   GroupDetailsPageState createState() => GroupDetailsPageState();
@@ -32,11 +38,15 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     return "${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
   }
 
+  final MattressRepository _mattressRepository = GetIt.instance<MattressRepository>();
+
   List<MattressEntity> globalMattresses = [];
-  final MattressRepository _mattressRepository =
-      GetIt.instance<MattressRepository>();
-  bool _loading = true; // New: Tracks if groups are still loading
-  bool _error = false; // Tracks if there was an error
+
+  bool _loading = true;
+  bool _error = false;
+
+  bool isScanning = true; // NFC scanning status
+  bool isFinished = false; // Finished writing status
 
   @override
   void initState() {
@@ -46,16 +56,15 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
 
   void _initializeMattresses() async {
     try {
-      var allMattresses = await _mattressRepository.getMattresses();
+      var allMattresses = widget.mattresses;
 
       setState(() {
         Set<String> existingMattressIds =
             widget.group.mattressList.map((mattress) => mattress.uid!).toSet();
 
-        globalMattresses = allMattresses.data?.where((mattress) {
-              return !existingMattressIds.contains(mattress.uid);
-            }).toList() ??
-            [];
+        globalMattresses = allMattresses.where((mattress) {
+          return !existingMattressIds.contains(mattress.uid);
+        }).toList();
 
         _loading = false;
       });
@@ -112,7 +121,8 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
 
     if (success) {
       setState(() {
-        widget.group.mattressList.removeWhere((mattress) => mattress.uid == mattressId);
+        widget.group.mattressList
+            .removeWhere((mattress) => mattress.uid == mattressId);
         MattressModel mattress = MattressModel(
           uid: m.uid,
           location: m.location,
@@ -120,9 +130,12 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
           status: m.status,
         );
 
+        if (widget.group.mattressList.isEmpty) {
+          widget.containsMattresses = false;
+        }
 
-      globalMattresses.add(mattress); // Add the mattress safely
-          });
+        globalMattresses.add(mattress); // Add the mattress safely
+      });
 
       // Show success Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
@@ -147,6 +160,9 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     bool success = await widget.addNattressesToGroup(list, widget.group.id);
 
     if (success) {
+      setState(() {
+        widget.containsMattresses = true;
+      });
       return true;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -159,7 +175,80 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     }
   }
 
-  Future<void> _startNfcSession() async {}
+  void _handleNfcError(String errorMessage) {
+    if (!mounted) return;
+    setState(() {
+      isScanning = false;
+    });
+    NfcManager.instance.stopSession(errorMessage: errorMessage);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(errorMessage)),
+    );
+    if (Navigator.canPop(context)) {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+  }
+
+  Future<void> _startNfcSession() async {
+  if (!mounted) return;
+  setState(() {
+    isScanning = true;
+    isFinished = false;
+  });
+
+  NfcManager.instance.startSession(onDiscovered: (NfcTag badge) async {
+    try {
+      var ndef = Ndef.from(badge);
+      if (ndef != null && ndef.cachedMessage != null) {
+        var uid = decodeNfcPayload(ndef.cachedMessage!.records[0].payload);
+        Set<String> set = {uid};
+        var state = await _performAdd(set);
+        var mattressState = await _mattressRepository.getMattressById(uid);
+
+        if (state! && mattressState is DataSuccess && mattressState.data != null) {
+          setState(() {
+            MattressDto mattressDto = MattressDto(
+              uid: uid,
+              mattressTypeName: mattressState.data!.mattressType!.name,
+              location: mattressState.data!.location,
+              status: mattressState.data!.status,
+            );
+
+            widget.group.mattressList.add(mattressDto);
+            globalMattresses.removeWhere((m) {
+              return m.uid == uid;
+            });
+          });
+
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Mattress added to group."),
+                backgroundColor: Colors.green,
+              ),
+            );
+          }
+        }
+      } else {
+        _handleNfcError("Failed to read NFC tag.");
+      }
+
+      await NfcManager.instance.stopSession();
+
+      Future.delayed(Duration(milliseconds: 200), () {
+        if (mounted) {
+          Navigator.of(context, rootNavigator: true).pop();
+        }
+        if (mounted && Navigator.canPop(context)) {
+          Navigator.pop(context); // Close modal
+        }
+      });
+    } catch (e) {
+      _handleNfcError("Error reading NFC tag: $e");
+    }
+  });
+}
+
 
   // void _handleNfcError(String errorMessage) {}
 

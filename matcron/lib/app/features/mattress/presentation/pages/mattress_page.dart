@@ -19,6 +19,7 @@ import 'package:matcron/core/components/transfer_out/transfer_reason.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/core/components/search_bar/search_bar.dart' as custom;
 import 'package:intl/intl.dart';
+import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/data_state.dart';
 import 'package:matcron/core/resources/nfc_decoder.dart';
 import 'package:nfc_manager/nfc_manager.dart';
@@ -40,6 +41,7 @@ class MattressPageState extends State<MattressPage> {
   List<MattressTypeEntity> types = [];
   List<GroupEntity> groups = [];
   bool canRefreshList = false;
+  int userType = 0;
 
   // New: List to hold selected status filters (assuming statuses are represented as indexes)
   List<int> selectedFilterStatuses = [];
@@ -55,10 +57,18 @@ class MattressPageState extends State<MattressPage> {
 
   @override
   void initState() {
-    super.initState();
-    filteredMattresses = mattresses;
-    canRefreshList = false;
-  }
+  super.initState();
+  filteredMattresses = mattresses;
+  canRefreshList = false;
+  _initializeUserType(); // Call an async function separately
+}
+
+void _initializeUserType() async {
+  int type = (await AuthorizationService().getUserType())!;
+  setState(() {
+    userType = type;
+  }); 
+}
 
   void _updateMattress(MattressEntity m) {
     context.read<RemoteMattressBloc>().add(UpdateMattress(m));
@@ -553,7 +563,11 @@ class MattressPageState extends State<MattressPage> {
                     height: 20,
                   ),
                 ),
+              
+              if (userType == 1) 
               const SizedBox(width: 10.0),
+
+              if (userType == 1) 
               ElevatedButton(
                 key: const Key('add_mattress_button'),
                 onPressed: () {
@@ -582,6 +596,7 @@ class MattressPageState extends State<MattressPage> {
                   height: 20,
                 ),
               ),
+              
               const SizedBox(width: 10.0),
               ElevatedButton(
                 onPressed: () {
@@ -833,6 +848,7 @@ class MattressPageState extends State<MattressPage> {
                                                       return MattressBottomDrawer(
                                                         mattressTypes: types,
                                                         mattress: mattress,
+                                                        userType: userType,
                                                         onSave: _updateMattress,
                                                       );
                                                     },

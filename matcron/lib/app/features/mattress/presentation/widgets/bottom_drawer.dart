@@ -11,9 +11,11 @@ class MattressBottomDrawer extends StatefulWidget {
       {super.key,
       required this.mattressTypes,
       required this.mattress,
+      required this.userType,
       required this.onSave});
   final List<MattressTypeEntity> mattressTypes;
   final MattressEntity mattress;
+  final int userType;
   final void Function(MattressEntity mattress) onSave;
 
   @override
@@ -113,7 +115,11 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
                 child: ListView(
                   controller: scrollController,
                   children: [
+                  
+                    if (widget.userType == 1)
                     const SizedBox(height: 16),
+                    
+                    if (widget.userType == 1)
                     _buildDropdownField(
                         label: "Edit Mattress Type",
                         items: uniqueMattressTypes, // Pass the unique types
