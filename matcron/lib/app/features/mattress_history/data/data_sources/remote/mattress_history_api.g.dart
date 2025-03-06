@@ -13,47 +13,55 @@ class _MattressHistoryApiService implements MattressHistoryApiService {
   String? baseUrl;
   final ParseErrorLogger? errorLogger;
 
-
   @override
-  Future<HttpResponse<List<MattressHistoryModel>>> getMattressHistory({required String token, required String id}) async {
+  Future<HttpResponse<List<MattressHistoryModel>>> getMattressHistory(
+      {required String token, required String id}) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{r'Authorization': token};
     _headers.removeWhere((k, v) => v == null);
     const Map<String, dynamic>? _data = null;
 
-    final _options = _setStreamType<HttpResponse<List<MattressHistoryModel>>>(Options(
+    final _options =
+        _setStreamType<HttpResponse<List<MattressHistoryModel>>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
     )
-        .compose(
-          _dio.options,
-          '/',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
+            .compose(
+              _dio.options,
+              '/$id/log',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            )));
 
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    // Update the fetch method to expect a List<dynamic> instead of a Map<String, dynamic>
+    final _result = await _dio.fetch<List<dynamic>>(_options);
     late List<MattressHistoryModel> _value;
 
     try {
-      _value = _result.data!['data'].map((dynamic i) => MattressHistoryModel.fromJson(i as Map<String, dynamic>))
-      .toList()
-      .cast<MattressHistoryModel>();
+      // Assuming the response directly gives you the list, map it to your model
+      if (_result.data != null) {
+        _value = _result.data!
+            .map((dynamic i) =>
+                MattressHistoryModel.fromJson(i as Map<String, dynamic>))
+            .toList();
+      } else {
+        throw Exception("Response data is null");
+      }
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
       rethrow;
     }
+
     final httpResponse = HttpResponse(_value, _result);
     return httpResponse;
   }
-
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
