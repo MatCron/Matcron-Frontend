@@ -22,6 +22,9 @@ import 'package:matcron/app/features/mattress/domain/usecases/generate_rfid_.dar
 import 'package:matcron/app/features/mattress/domain/usecases/get_all_mattresses.dart';
 import 'package:matcron/app/features/mattress/domain/usecases/update_mattress.dart';
 import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_bloc.dart';
+import 'package:matcron/app/features/mattress_history/data/data_sources/remote/mattress_history_api_service.dart';
+import 'package:matcron/app/features/mattress_history/data/repositories/mattress_history_repository_impl.dart';
+import 'package:matcron/app/features/mattress_history/domain/repositories/mattress_history_repository.dart';
 import 'package:matcron/app/features/organization/data/data_sources/remote/organization_api_service.dart';
 import 'package:matcron/app/features/organization/data/repository/organization_repository_impl.dart';
 import 'package:matcron/app/features/organization/domain/repositories/organization_repository.dart';
@@ -82,6 +85,10 @@ Future<void> initializeDependencies() async {
     GroupApiService(sl())
   );
 
+  sl.registerSingleton<MattressHistoryApiService>(
+    MattressHistoryApiService(sl())
+  );
+
   // Repositories
 
   sl.registerSingleton<AuthRepository>(
@@ -106,6 +113,10 @@ Future<void> initializeDependencies() async {
 
   sl.registerSingleton<MattressRepository>(
     MattressRepositoryImpl(sl())
+  );
+
+  sl.registerSingleton<MattressHistoryRepository>(
+    MattressHistoryRepositoryImpl(sl())
   );
 
   // UseCases
