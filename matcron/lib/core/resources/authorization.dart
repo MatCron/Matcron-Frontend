@@ -28,14 +28,23 @@ class AuthorizationService {
   }
 
   Future<int?> getUserType() async {
-    String? token = await getToken();
-    if (token != null && token.isNotEmpty) {
-      var p = JwtDecoder.decode(token);
-      return p['UserType'];
+  String? token = await getToken();
+  if (token != null && token.isNotEmpty) {
+    var p = JwtDecoder.decode(token);
+    
+    // Safely parse the 'UserType' value
+    if (p.containsKey('UserType')) {
+      try {
+        return int.parse(p['UserType'].toString()); // Convert to string first, then parse
+      } catch (e) {
+        print("Error parsing UserType: $e");
+        return null;
+      }
     }
-
-    return null;
   }
+  return null;
+}
+
 
   /// Check if token is expired
   Future<bool> isTokenExpired() async {

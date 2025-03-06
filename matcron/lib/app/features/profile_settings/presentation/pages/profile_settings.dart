@@ -12,7 +12,8 @@ import 'package:matcron/app/features/profile_settings/presentation/pages/about_u
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:matcron/app/injection_container.dart'; // Add this import for sl
+import 'package:matcron/app/injection_container.dart';
+import 'package:matcron/core/resources/authorization.dart'; // Add this import for sl
 
 class ProfileSettings extends StatefulWidget {
   const ProfileSettings({super.key});
@@ -22,6 +23,21 @@ class ProfileSettings extends StatefulWidget {
 }
 
 class ProfileSettingsState extends State<ProfileSettings> {
+  int userType = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeUserType(); // Call an async function separately
+  }
+
+  void _initializeUserType() async {
+  int type = (await AuthorizationService().getUserType())!;
+  setState(() {
+    userType = type;
+  }); 
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,8 +51,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
               "<",
               style: TextStyle(
                 fontSize: 35,
-                color: Colors.white, 
-                       ),
+                color: Colors.white,
+              ),
             ),
           ),
         ),
@@ -98,10 +114,20 @@ class ProfileSettingsState extends State<ProfileSettings> {
         ),
         child: Column(
           children: [
-            _createNavigationItem(icon: Icons.help, text: 'Help', destination: HelpPage()),
-            _createNavigationItem(icon: Icons.account_circle, text: 'Account', destination: AccountPage()),
-            _createNavigationItem(icon: Icons.article, text: 'Terms and Condition', destination: TermsAndConditionsPage()),
-            _createNavigationItem(icon: Icons.notifications, text: 'Notifications', destination: NotificationsPage()),
+            _createNavigationItem(
+                icon: Icons.help, text: 'Help', destination: HelpPage()),
+            _createNavigationItem(
+                icon: Icons.account_circle,
+                text: 'Account',
+                destination: AccountPage()),
+            _createNavigationItem(
+                icon: Icons.article,
+                text: 'Terms and Condition',
+                destination: TermsAndConditionsPage()),
+            _createNavigationItem(
+                icon: Icons.notifications,
+                text: 'Notifications',
+                destination: NotificationsPage()),
           ],
         ),
       ),
@@ -118,10 +144,20 @@ class ProfileSettingsState extends State<ProfileSettings> {
         ),
         child: Column(
           children: [
-           _createOrganizationNavigationItem(),
-            _createNavigationItem(icon: Icons.report, text: 'Reports', destination: ReportsPage()),
-            _createNavigationItem(icon: Icons.security, text: 'Security', destination: SecurityPage()),
-            _createNavigationItem(icon: Icons.settings, text: 'Settings', destination: SettingsPage()),
+            if (userType == 1)
+            _createOrganizationNavigationItem(),
+            _createNavigationItem(
+                icon: Icons.report,
+                text: 'Reports',
+                destination: ReportsPage()),
+            _createNavigationItem(
+                icon: Icons.security,
+                text: 'Security',
+                destination: SecurityPage()),
+            _createNavigationItem(
+                icon: Icons.settings,
+                text: 'Settings',
+                destination: SettingsPage()),
           ],
         ),
       ),
@@ -136,26 +172,27 @@ class ProfileSettingsState extends State<ProfileSettings> {
     return ListTile(
       leading: Icon(icon),
       title: Text(text),
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => destination)),
+      onTap: () => Navigator.push(
+          context, MaterialPageRoute(builder: (context) => destination)),
     );
   }
 
   Widget _createOrganizationNavigationItem() {
-  return ListTile(
-    leading: const Icon(Icons.business), // Organization Icon
-    title: const Text('Organization'),
-    onTap: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => BlocProvider(
-            create: (context) => sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
-            child: const OrganizationPage(),
+    return ListTile(
+      leading: const Icon(Icons.business), // Organization Icon
+      title: const Text('Organization'),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => BlocProvider(
+              create: (context) =>
+                  sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
+              child: const OrganizationPage(),
+            ),
           ),
-        ),
-      );
-    },
-  );
-}
-
+        );
+      },
+    );
+  }
 }
