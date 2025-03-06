@@ -3,6 +3,8 @@ class MattressHistoryEntity {
   String? mattressId;
   int? status;
   String? details;
+  String? oldDetails;
+  String? newDetails;
   int? type;
   DateTime? timeStamp;
 
@@ -12,6 +14,8 @@ class MattressHistoryEntity {
     this.status,
     this.details,
     this.type,
-    this.timeStamp
+    this.timeStamp,
+    this.oldDetails,
+    this.newDetails
   });
 }
