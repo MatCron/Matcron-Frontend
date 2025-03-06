@@ -294,6 +294,25 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                               fontWeight: FontWeight.bold),
                                         ),
                                         const SizedBox(height: 4),
+                                        if (item.status! == 4)
+                                        Text("Location changed from '${item.oldDetails}' to '${item.newDetails}'",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey[700],
+                                              fontStyle: FontStyle.italic
+                                              ),
+                                        ),
+
+                                        if (item.status! == 5)
+                                        Text("Status changed from '${mattressStatus[int.parse(item.oldDetails!)]['Text']}' to '${mattressStatus[int.parse(item.newDetails!)]['Text']}'",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey[700],
+                                              fontStyle: FontStyle.italic
+                                              ),
+                                        ),
+
+                                        const SizedBox(height: 4),
                                         Text(
                                           item.timeStamp != null
                                               ? "${item.timeStamp!.day}/${item.timeStamp!.month}/${item.timeStamp!.year}"
