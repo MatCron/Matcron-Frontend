@@ -201,6 +201,7 @@ void _initializeUserType() async {
           mattress: type,
           isEditable: false,
           failSafe: failSafe,
+          showHistory: true,
           onSave: (mattress) {
             // Save functionality placeholder
           },

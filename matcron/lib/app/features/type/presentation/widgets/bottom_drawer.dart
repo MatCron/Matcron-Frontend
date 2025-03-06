@@ -10,15 +10,16 @@ class MattressTypeBottomDrawer extends StatefulWidget {
   final MattressTypeEntity mattress;
   final String? failSafe;
   final bool isEditable;
+  final bool? showHistory;
   final void Function(MattressTypeEntity mattress) onSave;
 
-  const MattressTypeBottomDrawer({
-    super.key,
-    required this.mattress,
-    this.isEditable = false,
-    required this.onSave,
-    this.failSafe,
-  });
+  const MattressTypeBottomDrawer(
+      {super.key,
+      required this.mattress,
+      this.isEditable = false,
+      required this.onSave,
+      this.failSafe,
+      this.showHistory});
 
   @override
   MattressTypeBottomDrawerState createState() =>
@@ -31,6 +32,9 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
   late MattressRepository _mattressRepository;
 
   bool isLoading = true;
+  int currentTab = 0;
+  //0 == DPP Info
+  //1 = History
 
   @override
   void initState() {
@@ -140,16 +144,59 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    widget.isEditable
-                        ? "Edit Mattress Details"
-                        : "View Mattress Details",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: matcronPrimaryColor,
-                    ),
-                  ),
+                  widget.showHistory != null && widget.showHistory != false
+                      ? Row(
+                          children: [
+                            TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    currentTab = 0;
+                                  });
+                                },
+                                child: Text(
+                                  "DPP Info",
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: matcronPrimaryColor,
+                                    decoration: currentTab == 0
+                                        ? TextDecoration.underline
+                                        : TextDecoration.none,
+                                    decorationColor: matcronPrimaryColor,
+                                    decorationThickness: 2.0,
+                                  ),
+                                )),
+                            TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    currentTab = 1;
+                                  });
+                                },
+                                child: Text(
+                                  "History",
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: matcronPrimaryColor,
+                                    decoration: currentTab == 1
+                                        ? TextDecoration.underline
+                                        : TextDecoration.none,
+                                    decorationColor: matcronPrimaryColor,
+                                    decorationThickness: 2.0,
+                                  ),
+                                )),
+                          ],
+                        )
+                      : Text(
+                          widget.isEditable
+                              ? "Edit Mattress Details"
+                              : "View Mattress Details",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: matcronPrimaryColor,
+                          ),
+                        ),
                   IconButton(
                     icon: const Icon(Icons.close, color: Colors.red),
                     onPressed: () {
@@ -158,142 +205,150 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                   ),
                 ],
               ),
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  children: [
-                    const SizedBox(height: 16),
-                    // Mattress Name and Expected Lifespan in one row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: _buildTextField(
-                              label: "Mattress Name",
-                              initialValue: mattress.name ?? '',
-                              enabled: widget.isEditable,
-                              onChanged: (value) {
-                                setState(() {
-                                  mattress.name = value;
-                                });
-                              }),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    // Length, Width, Height in one row with Info Button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: _buildTextField(
-                              label: "Width (cm)",
-                              initialValue: mattress.width?.toString() ?? '',
-                              enabled: widget.isEditable,
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                setState(() {
-                                  mattress.width = value as double?;
-                                });
-                              }),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildTextField(
-                              label: "Length (cm)",
-                              initialValue: mattress.length?.toString() ?? '',
-                              enabled: widget.isEditable,
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                setState(() {
-                                  mattress.length = value as double?;
-                                });
-                              }),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildTextField(
-                              label: "Height (cm)",
-                              initialValue: mattress.height?.toString() ?? '',
-                              enabled: widget.isEditable,
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                setState(() {
-                                  mattress.height = value as double?;
-                                });
-                              }),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    // Composition with multiline input
-                    _buildTextField(
-                        label: "Composition",
-                        initialValue: mattress.composition ?? '',
-                        enabled: widget.isEditable,
-                        maxLines: null, // Allow multiline
-                        onChanged: (value) {
-                          setState(() {
-                            mattress.composition = value;
-                          });
-                        }),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
+
+              if (widget.showHistory == null ||
+                  widget.showHistory == false ||
+                  currentTab == 0)
+                Expanded(
+                  child: ListView(
+                    controller: scrollController,
+                    children: [
+                      const SizedBox(height: 16),
+                      // Mattress Name and Expected Lifespan in one row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
                             child: _buildTextField(
-                                label: "Rotation Interval (MM)",
-                                initialValue:
-                                    mattress.rotationInterval?.toString() ?? '',
+                                label: "Mattress Name",
+                                initialValue: mattress.name ?? '',
+                                enabled: widget.isEditable,
+                                onChanged: (value) {
+                                  setState(() {
+                                    mattress.name = value;
+                                  });
+                                }),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      // Length, Width, Height in one row with Info Button
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: _buildTextField(
+                                label: "Width (cm)",
+                                initialValue: mattress.width?.toString() ?? '',
                                 enabled: widget.isEditable,
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) {
                                   setState(() {
-                                    mattress.rotationInterval =
+                                    mattress.width = value as double?;
+                                  });
+                                }),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildTextField(
+                                label: "Length (cm)",
+                                initialValue: mattress.length?.toString() ?? '',
+                                enabled: widget.isEditable,
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) {
+                                  setState(() {
+                                    mattress.length = value as double?;
+                                  });
+                                }),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildTextField(
+                                label: "Height (cm)",
+                                initialValue: mattress.height?.toString() ?? '',
+                                enabled: widget.isEditable,
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) {
+                                  setState(() {
+                                    mattress.height = value as double?;
+                                  });
+                                }),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      // Composition with multiline input
+                      _buildTextField(
+                          label: "Composition",
+                          initialValue: mattress.composition ?? '',
+                          enabled: widget.isEditable,
+                          maxLines: null, // Allow multiline
+                          onChanged: (value) {
+                            setState(() {
+                              mattress.composition = value;
+                            });
+                          }),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                              child: _buildTextField(
+                                  label: "Rotation Interval (MM)",
+                                  initialValue:
+                                      mattress.rotationInterval?.toString() ??
+                                          '',
+                                  enabled: widget.isEditable,
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      mattress.rotationInterval =
+                                          value as double?;
+                                    });
+                                  })),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildTextField(
+                                label: "Expected Lifespan (YYYY)",
+                                initialValue:
+                                    mattress.expectedLifespan?.toString() ?? '',
+                                enabled: widget.isEditable,
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) {
+                                  setState(() {
+                                    mattress.expectedLifespan =
                                         value as double?;
                                   });
-                                })),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildTextField(
-                              label: "Expected Lifespan (YYYY)",
-                              initialValue:
-                                  mattress.expectedLifespan?.toString() ?? '',
-                              enabled: widget.isEditable,
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                setState(() {
-                                  mattress.expectedLifespan = value as double?;
-                                });
-                              }),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                        label: "Warranty Period",
-                        initialValue: mattress.warrantyPeriod?.toString() ?? '',
-                        enabled: widget.isEditable,
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          setState(() {
-                            mattress.warrantyPeriod = value as double?;
-                          });
-                        }),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                        label: "Recycling Details",
-                        initialValue: mattress.recyclingDetails ?? '',
-                        enabled: widget.isEditable,
-                        onChanged: (value) {
-                          setState(() {
-                            mattress.recyclingDetails = value;
-                          });
-                        }),
-                  ],
+                                }),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      _buildTextField(
+                          label: "Warranty Period",
+                          initialValue:
+                              mattress.warrantyPeriod?.toString() ?? '',
+                          enabled: widget.isEditable,
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            setState(() {
+                              mattress.warrantyPeriod = value as double?;
+                            });
+                          }),
+                      const SizedBox(height: 20),
+                      _buildTextField(
+                          label: "Recycling Details",
+                          initialValue: mattress.recyclingDetails ?? '',
+                          enabled: widget.isEditable,
+                          onChanged: (value) {
+                            setState(() {
+                              mattress.recyclingDetails = value;
+                            });
+                          }),
+                    ],
+                  ),
                 ),
-              ),
+
               if (widget.isEditable)
                 Align(
                   alignment: Alignment.bottomRight,
