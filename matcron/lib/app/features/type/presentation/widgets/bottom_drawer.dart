@@ -172,12 +172,8 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                   style: TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
-                                    color: matcronPrimaryColor,
-                                    decoration: currentTab == 0
-                                        ? TextDecoration.underline
-                                        : TextDecoration.none,
-                                    decorationColor: matcronPrimaryColor,
-                                    decorationThickness: 2.0,
+                                    color: currentTab == 0 ? matcronPrimaryColor : Colors.grey[500],
+                                    
                                   ),
                                 )),
                             TextButton(
@@ -191,12 +187,8 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                   style: TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
-                                    color: matcronPrimaryColor,
-                                    decoration: currentTab == 1
-                                        ? TextDecoration.underline
-                                        : TextDecoration.none,
-                                    decorationColor: matcronPrimaryColor,
-                                    decorationThickness: 2.0,
+                                    color: currentTab == 1 ? matcronPrimaryColor : Colors.grey[500],
+                                    
                                   ),
                                 )),
                           ],
@@ -272,7 +264,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                       if (!isLast)
                                         Container(
                                           width: 2,
-                                          height: 40, // Adjust for spacing
+                                          height: 50, // Adjust for spacing
                                           color: const Color.fromARGB(255, 80, 194, 201).withOpacity(0.5),
                                         ),
                                     ],
