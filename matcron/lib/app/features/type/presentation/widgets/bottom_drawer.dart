@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
+import 'package:matcron/app/features/mattress_history/domain/entities/mattress_history.dart';
+import 'package:matcron/app/features/mattress_history/domain/repositories/mattress_history_repository.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/domain/repositories/type_repository.dart';
 import 'package:matcron/core/constants/constants.dart';
@@ -10,15 +12,16 @@ class MattressTypeBottomDrawer extends StatefulWidget {
   final MattressTypeEntity mattress;
   final String? failSafe;
   final bool isEditable;
+  final bool? showHistory;
   final void Function(MattressTypeEntity mattress) onSave;
 
-  const MattressTypeBottomDrawer({
-    super.key,
-    required this.mattress,
-    this.isEditable = false,
-    required this.onSave,
-    this.failSafe,
-  });
+  const MattressTypeBottomDrawer(
+      {super.key,
+      required this.mattress,
+      this.isEditable = false,
+      required this.onSave,
+      this.failSafe,
+      this.showHistory});
 
   @override
   MattressTypeBottomDrawerState createState() =>
@@ -29,8 +32,13 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
   late MattressTypeEntity mattress;
   late TypeRepository _typeRepository;
   late MattressRepository _mattressRepository;
+  late MattressHistoryRepository _mattressHistoryRepository;
+  late List<MattressHistoryEntity> history;
 
   bool isLoading = true;
+  int currentTab = 0;
+  //0 == DPP Info
+  //1 = History
 
   @override
   void initState() {
@@ -38,17 +46,27 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
     mattress = widget.mattress;
     _mattressRepository = GetIt.instance<MattressRepository>();
     _typeRepository = GetIt.instance<TypeRepository>();
+    _mattressHistoryRepository = GetIt.instance<MattressHistoryRepository>();
     _initializeMattress();
+  }
+
+  List<MattressHistoryEntity> sortByNewest(List<MattressHistoryEntity> list) {
+    list.sort((a, b) =>
+        (b.timeStamp ?? DateTime(0)).compareTo(a.timeStamp ?? DateTime(0)));
+    return list;
   }
 
   void _initializeMattress() async {
     String id = "";
     if (mattress.id == null) {
       var state = await _mattressRepository.getMattressById(widget.failSafe!);
+      var historyState = await _mattressHistoryRepository
+          .getMattressHistoryById(widget.failSafe!);
 
       if (state is DataSuccess && state.data != null) {
         setState(() {
           mattress = state.data!.mattressType!;
+          history = sortByNewest(historyState.data!);
           id = mattress.id!;
         });
       }
@@ -140,16 +158,51 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    widget.isEditable
-                        ? "Edit Mattress Details"
-                        : "View Mattress Details",
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: matcronPrimaryColor,
-                    ),
-                  ),
+                  widget.showHistory != null && widget.showHistory != false
+                      ? Row(
+                          children: [
+                            TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    currentTab = 0;
+                                  });
+                                },
+                                child: Text(
+                                  "DPP Info",
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: currentTab == 0 ? matcronPrimaryColor : Colors.grey[500],
+                                    
+                                  ),
+                                )),
+                            TextButton(
+                                onPressed: () {
+                                  setState(() {
+                                    currentTab = 1;
+                                  });
+                                },
+                                child: Text(
+                                  "History",
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: currentTab == 1 ? matcronPrimaryColor : Colors.grey[500],
+                                    
+                                  ),
+                                )),
+                          ],
+                        )
+                      : Text(
+                          widget.isEditable
+                              ? "Edit Mattress Details"
+                              : "View Mattress Details",
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: matcronPrimaryColor,
+                          ),
+                        ),
                   IconButton(
                     icon: const Icon(Icons.close, color: Colors.red),
                     onPressed: () {
@@ -158,142 +211,264 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                   ),
                 ],
               ),
-              Expanded(
-                child: ListView(
-                  controller: scrollController,
-                  children: [
-                    const SizedBox(height: 16),
-                    // Mattress Name and Expected Lifespan in one row
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: _buildTextField(
-                              label: "Mattress Name",
-                              initialValue: mattress.name ?? '',
-                              enabled: widget.isEditable,
-                              onChanged: (value) {
-                                setState(() {
-                                  mattress.name = value;
-                                });
-                              }),
+
+              if (widget.showHistory == true && currentTab == 1)
+                Expanded(
+                  child: Column(
+                    children: [
+                      // Header Row
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 10, horizontal: 16),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: const [
+                            Text("Details",
+                                style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 18,
+                                    color: Colors.grey)),
+                          ],
                         ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    // Length, Width, Height in one row with Info Button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: _buildTextField(
-                              label: "Width (cm)",
-                              initialValue: mattress.width?.toString() ?? '',
-                              enabled: widget.isEditable,
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                setState(() {
-                                  mattress.width = value as double?;
-                                });
-                              }),
+                      ),
+
+                      // List of history items
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: history.length,
+                          itemBuilder: (context, index) {
+                            final item = history[index];
+                            bool isLast = index ==
+                                history.length -
+                                    1; // Check if it's the last item
+
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 16),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Timeline Indicator (Dot + Line)
+                                  Column(
+                                    children: [
+                                      // Dot
+                                      Container(
+                                        width: 12,
+                                        height: 12,
+                                        decoration: BoxDecoration(
+                                          color: matcronPrimaryColor, // Customize color
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      // Vertical Line
+                                      if (!isLast)
+                                        Container(
+                                          width: 2,
+                                          height: 50, // Adjust for spacing
+                                          color: const Color.fromARGB(255, 80, 194, 201).withOpacity(0.5),
+                                        ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                      width:
+                                          12), // Space between timeline and text
+
+                                  // Details & Timestamp
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.details ?? "No details",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        if (item.status! == 4)
+                                        Text("Location changed from '${item.oldDetails}' to '${item.newDetails}'",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey[700],
+                                              fontStyle: FontStyle.italic
+                                              ),
+                                        ),
+
+                                        if (item.status! == 5)
+                                        Text("Status changed from '${mattressStatus[int.parse(item.oldDetails!)]['Text']}' to '${mattressStatus[int.parse(item.newDetails!)]['Text']}'",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey[700],
+                                              fontStyle: FontStyle.italic
+                                              ),
+                                        ),
+
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          item.timeStamp != null
+                                              ? "${item.timeStamp!.day}/${item.timeStamp!.month}/${item.timeStamp!.year}"
+                                              : "No date",
+                                          style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.grey[700]),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildTextField(
-                              label: "Length (cm)",
-                              initialValue: mattress.length?.toString() ?? '',
-                              enabled: widget.isEditable,
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                setState(() {
-                                  mattress.length = value as double?;
-                                });
-                              }),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildTextField(
-                              label: "Height (cm)",
-                              initialValue: mattress.height?.toString() ?? '',
-                              enabled: widget.isEditable,
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                setState(() {
-                                  mattress.height = value as double?;
-                                });
-                              }),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    // Composition with multiline input
-                    _buildTextField(
-                        label: "Composition",
-                        initialValue: mattress.composition ?? '',
-                        enabled: widget.isEditable,
-                        maxLines: null, // Allow multiline
-                        onChanged: (value) {
-                          setState(() {
-                            mattress.composition = value;
-                          });
-                        }),
-                    const SizedBox(height: 20),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
+                      ),
+                    ],
+                  ),
+                ),
+
+              if (widget.showHistory == null ||
+                  widget.showHistory == false ||
+                  currentTab == 0)
+                Expanded(
+                  child: ListView(
+                    controller: scrollController,
+                    children: [
+                      const SizedBox(height: 16),
+                      // Mattress Name and Expected Lifespan in one row
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
                             child: _buildTextField(
-                                label: "Rotation Interval (MM)",
-                                initialValue:
-                                    mattress.rotationInterval?.toString() ?? '',
+                                label: "Mattress Name",
+                                initialValue: mattress.name ?? '',
+                                enabled: widget.isEditable,
+                                onChanged: (value) {
+                                  setState(() {
+                                    mattress.name = value;
+                                  });
+                                }),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      // Length, Width, Height in one row with Info Button
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: _buildTextField(
+                                label: "Width (cm)",
+                                initialValue: mattress.width?.toString() ?? '',
                                 enabled: widget.isEditable,
                                 keyboardType: TextInputType.number,
                                 onChanged: (value) {
                                   setState(() {
-                                    mattress.rotationInterval =
+                                    mattress.width = value as double?;
+                                  });
+                                }),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildTextField(
+                                label: "Length (cm)",
+                                initialValue: mattress.length?.toString() ?? '',
+                                enabled: widget.isEditable,
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) {
+                                  setState(() {
+                                    mattress.length = value as double?;
+                                  });
+                                }),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildTextField(
+                                label: "Height (cm)",
+                                initialValue: mattress.height?.toString() ?? '',
+                                enabled: widget.isEditable,
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) {
+                                  setState(() {
+                                    mattress.height = value as double?;
+                                  });
+                                }),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      // Composition with multiline input
+                      _buildTextField(
+                          label: "Composition",
+                          initialValue: mattress.composition ?? '',
+                          enabled: widget.isEditable,
+                          maxLines: null, // Allow multiline
+                          onChanged: (value) {
+                            setState(() {
+                              mattress.composition = value;
+                            });
+                          }),
+                      const SizedBox(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                              child: _buildTextField(
+                                  label: "Rotation Interval (MM)",
+                                  initialValue:
+                                      mattress.rotationInterval?.toString() ??
+                                          '',
+                                  enabled: widget.isEditable,
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      mattress.rotationInterval =
+                                          value as double?;
+                                    });
+                                  })),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildTextField(
+                                label: "Expected Lifespan (YYYY)",
+                                initialValue:
+                                    mattress.expectedLifespan?.toString() ?? '',
+                                enabled: widget.isEditable,
+                                keyboardType: TextInputType.number,
+                                onChanged: (value) {
+                                  setState(() {
+                                    mattress.expectedLifespan =
                                         value as double?;
                                   });
-                                })),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildTextField(
-                              label: "Expected Lifespan (YYYY)",
-                              initialValue:
-                                  mattress.expectedLifespan?.toString() ?? '',
-                              enabled: widget.isEditable,
-                              keyboardType: TextInputType.number,
-                              onChanged: (value) {
-                                setState(() {
-                                  mattress.expectedLifespan = value as double?;
-                                });
-                              }),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                        label: "Warranty Period",
-                        initialValue: mattress.warrantyPeriod?.toString() ?? '',
-                        enabled: widget.isEditable,
-                        keyboardType: TextInputType.number,
-                        onChanged: (value) {
-                          setState(() {
-                            mattress.warrantyPeriod = value as double?;
-                          });
-                        }),
-                    const SizedBox(height: 20),
-                    _buildTextField(
-                        label: "Recycling Details",
-                        initialValue: mattress.recyclingDetails ?? '',
-                        enabled: widget.isEditable,
-                        onChanged: (value) {
-                          setState(() {
-                            mattress.recyclingDetails = value;
-                          });
-                        }),
-                  ],
+                                }),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      _buildTextField(
+                          label: "Warranty Period",
+                          initialValue:
+                              mattress.warrantyPeriod?.toString() ?? '',
+                          enabled: widget.isEditable,
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            setState(() {
+                              mattress.warrantyPeriod = value as double?;
+                            });
+                          }),
+                      const SizedBox(height: 20),
+                      _buildTextField(
+                          label: "Recycling Details",
+                          initialValue: mattress.recyclingDetails ?? '',
+                          enabled: widget.isEditable,
+                          onChanged: (value) {
+                            setState(() {
+                              mattress.recyclingDetails = value;
+                            });
+                          }),
+                    ],
+                  ),
                 ),
-              ),
+
               if (widget.isEditable)
                 Align(
                   alignment: Alignment.bottomRight,
