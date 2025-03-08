@@ -217,7 +217,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/core/resources/authorization.dart'; 
 import 'dart:io';
-import 'dart:convert';
+// import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileSettings extends StatefulWidget {
@@ -230,7 +230,7 @@ class ProfileSettings extends StatefulWidget {
 class ProfileSettingsState extends State<ProfileSettings> {
   int userType = 0;
   File? _imageFile;
-  String? _base64Image;
+  // String? _base64Image;
 
   @override
   void initState() {
@@ -252,12 +252,13 @@ class ProfileSettingsState extends State<ProfileSettings> {
 
     if (pickedFile != null) {
       File imageFile = File(pickedFile.path);
-      List<int> imageBytes = await imageFile.readAsBytes();
-      String base64String = base64Encode(imageBytes); // Convert to Base64
+     // List<int> imageBytes = await imageFile.readAsBytes();
+      //    String base64String = base64Encode(imageBytes); 
+    
 
       setState(() {
         _imageFile = imageFile;
-        _base64Image = base64String;
+      //  _base64Image = base64String;
       });
     }
   }
