@@ -8,14 +8,13 @@ import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dar
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_state.dart';
 import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dart';
-import 'package:matcron/config/theme/app_theme.dart';
-import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/app/features/type/presentation/pages/type_form.dart';
 import 'package:matcron/core/components/search_bar/search_bar.dart' as custom;
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/data_state.dart';
 import 'package:matcron/core/resources/nfc_decoder.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+
 
 class MattressTypePage extends StatefulWidget {
   const MattressTypePage({super.key});
@@ -230,27 +229,28 @@ class MattressTypePageState extends State<MattressTypePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
      double screenWidth = MediaQuery.of(context).size.width;
     TextStyle headerStyle = TextStyle(
       fontSize: screenWidth * 0.04,
       fontWeight: FontWeight.bold,
-      color: Colors.black,
+      color: theme.colorScheme.onSurface,
       overflow: TextOverflow.ellipsis,
     );
     TextStyle dataStyle = TextStyle(
       fontSize: screenWidth * 0.035,
       fontStyle: FontStyle.italic,
-      color: Colors.grey,
+      color: theme.colorScheme.shadow,
     );
     return Scaffold(
       body: BlocBuilder<RemoteTypeBloc, RemoteTypeState>(
         builder: (context, state) {
           if (state is RemoteTypesLoading) {
             return Scaffold(
-              backgroundColor: HexColor("#E5E5E5"),
+              backgroundColor: theme.cardColor,
               body: Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+                  valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
                 ),
               ),
             );
@@ -269,7 +269,7 @@ class MattressTypePageState extends State<MattressTypePage> {
               filteredTypes = [currentSearchedEntity!];
             }
 
-            return _buildDoneState(context,headerStyle,dataStyle);
+            return _buildDoneState(context,headerStyle,dataStyle,theme);
           }
 
           return const SizedBox();
@@ -278,12 +278,12 @@ class MattressTypePageState extends State<MattressTypePage> {
     );
   }
 
-  Widget _buildDoneState(BuildContext context,TextStyle headerStyle, TextStyle dataStyle) {
+  Widget _buildDoneState(BuildContext context,TextStyle headerStyle, TextStyle dataStyle,ThemeData theme) {
    
     return Scaffold(
       body: Container(
         padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
-        color: HexColor("#E5E5E5"),
+        color: theme.cardColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -317,7 +317,7 @@ class MattressTypePageState extends State<MattressTypePage> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: matcronPrimaryColor,
+                  backgroundColor: theme.colorScheme.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
@@ -326,9 +326,9 @@ class MattressTypePageState extends State<MattressTypePage> {
                     vertical: 14,
                   ),
                 ),
-                child: const Text(
+                child:  Text(
                   "+ Add Type",
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: theme.colorScheme.onPrimary),
                 ),
               ),
             ),
@@ -341,11 +341,11 @@ class MattressTypePageState extends State<MattressTypePage> {
                   flex: 2,
                   child: Text(
                     "Type",
-                    style: const TextStyle(
+                    style:  TextStyle(
                       fontSize: 16.0,
                       fontStyle: FontStyle.italic,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                 ),
@@ -355,11 +355,11 @@ class MattressTypePageState extends State<MattressTypePage> {
                   child: Center(
                     child: Text(
                       "Inches",
-                      style: const TextStyle(
+                      style:  TextStyle(
                         fontSize: 16.0,
                         fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: theme.colorScheme.onSurface,
                       ), // Prevent wrapping
                     ),
                   ),
@@ -371,11 +371,11 @@ class MattressTypePageState extends State<MattressTypePage> {
                   child: Center(
                     child: Text(
                       "Stock",
-                      style: const TextStyle(
+                      style:  TextStyle(
                         fontSize: 16.0,
                         fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                   ),
@@ -390,7 +390,7 @@ class MattressTypePageState extends State<MattressTypePage> {
                 const Text("Delete", style: TextStyle(fontSize: 16)),
               ],
             ),
-            const Divider(color: Colors.black26),
+             Divider(color: theme.dividerColor),
 
             // Table rows with mattress types
             Expanded(
@@ -407,11 +407,11 @@ class MattressTypePageState extends State<MattressTypePage> {
                       margin: const EdgeInsets.symmetric(vertical: 6.0),
                       padding: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: theme.colorScheme.surface,
                         borderRadius: BorderRadius.circular(10.0),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black12,
+                            color: theme.colorScheme.onSecondary,
                             blurRadius: 5,
                             offset: Offset(0, 3),
                           ),
