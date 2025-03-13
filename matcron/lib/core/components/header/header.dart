@@ -4,7 +4,6 @@ import 'package:matcron/app/main.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/app/features/profile_settings/presentation/pages/profile_settings.dart';
-import 'package:matcron/config/theme/app_theme.dart'; 
 
 
 class Header extends StatefulWidget {

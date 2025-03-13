@@ -8,7 +8,6 @@ import 'bottom_bar_painter.dart';
 import '../../../constants/constants.dart';
 import '../models/bottom_bar_item_model.dart';
 import 'notch_bottom_bar_controller.dart';
-import 'package:matcron/config/theme/app_theme.dart' as theme;
 
 /// Class to generate the NotchBottomBar
 class AnimatedNotchBottomBar extends StatefulWidget {
