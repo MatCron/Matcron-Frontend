@@ -384,6 +384,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final List<Widget> bottomBarPages = [
       DashboardPage(controller: _controller),
       BlocProvider(create: (context) => sl<RemoteMattressBloc>()..add(GetAllMattresses()), child: MattressPage(widget.searchedEntity)),
@@ -412,25 +413,25 @@ class _MyHomePageState extends State<MyHomePage> {
   showLabel: true,
   kIconSize: 24.0, // Added required icon size
   kBottomRadius: 28.0, // Added required bottom radius
-  bottomBarItems: const [
+  bottomBarItems:   [
     BottomBarItem(
-      inActiveItem: Icon(Icons.dashboard, color: Colors.black),
-      activeItem: Icon(Icons.dashboard, color: Color(0xFF1EA7A9)), // Use theme color
+      inActiveItem: Icon(Icons.dashboard, color: theme.colorScheme.onSurface),
+      activeItem: Icon(Icons.dashboard, color: theme.colorScheme.primary), // Use theme color
       itemLabel: 'Dashboard',
     ),
     BottomBarItem(
-      inActiveItem: Icon(Icons.bed, color: Colors.black),
-      activeItem: Icon(Icons.bed, color: Color(0xFF1EA7A9)),
+      inActiveItem: Icon(Icons.bed, color: theme.colorScheme.onSurface),
+      activeItem: Icon(Icons.bed, color: theme.colorScheme.primary), // Use theme color
       itemLabel: 'Mattress',
     ),
     BottomBarItem(
-      inActiveItem: Icon(Icons.category, color: Colors.black),
-      activeItem: Icon(Icons.category, color: Color(0xFF1EA7A9)),
+      inActiveItem: Icon(Icons.category, color: theme.colorScheme.onSurface),
+      activeItem: Icon(Icons.category, color: theme.colorScheme.primary), // Use theme color
       itemLabel: 'Type',
     ),
     BottomBarItem(
-      inActiveItem: Icon(Icons.groups, color: Colors.black),
-      activeItem: Icon(Icons.groups, color: Color(0xFF1EA7A9)),
+      inActiveItem: Icon(Icons.groups, color: theme.colorScheme.onSurface),
+      activeItem: Icon(Icons.groups, color: theme.colorScheme.primary), // Use theme color
       itemLabel: 'Group',
     ),
   ],

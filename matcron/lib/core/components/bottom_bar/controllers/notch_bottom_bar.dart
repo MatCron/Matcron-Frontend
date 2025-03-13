@@ -8,6 +8,7 @@ import 'bottom_bar_painter.dart';
 import '../../../constants/constants.dart';
 import '../models/bottom_bar_item_model.dart';
 import 'notch_bottom_bar_controller.dart';
+import 'package:matcron/config/theme/app_theme.dart' as theme;
 
 /// Class to generate the NotchBottomBar
 class AnimatedNotchBottomBar extends StatefulWidget {
@@ -105,7 +106,8 @@ class AnimatedNotchBottomBar extends StatefulWidget {
     required this.bottomBarItems,
     required this.onTap,
     required this.kIconSize,
-    this.color = Colors.white,
+    this.color =Colors.white ,
+    this.notchColor =Colors.black,
     this.itemLabelStyle,
     this.shadowElevation,
     this.showShadow = true,
@@ -116,7 +118,6 @@ class AnimatedNotchBottomBar extends StatefulWidget {
     this.blurOpacity = 0.5,
     this.blurFilterX = 5.0,
     this.blurFilterY = 10.0,
-    this.notchColor = Colors.white,
     this.durationInMilliSeconds = 300,
     this.bottomBarWidth = 500,
     this.removeMargins = false,
@@ -179,6 +180,7 @@ class AnimatedNotchBottomBarState extends State<AnimatedNotchBottomBar> with Sin
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     /// throws exception if list length is more then 5
     if (widget.bottomBarItems.length > 5) {
       throw Exception(' Bottom bar item length should not be more than 5');
@@ -228,9 +230,12 @@ class AnimatedNotchBottomBarState extends State<AnimatedNotchBottomBar> with Sin
                             size: Size(_screenWidth, height),
                             painter: BottomBarPainter(
                                 position: _itemPosByScrollPosition(scrollPosition),
-                                color: widget.color,
+                                // color: theme.cardColor,
+                                color :theme.colorScheme.surface,
+
                                 showShadow: widget.showShadow,
-                                notchColor: widget.notchColor,
+                                // notchColor: theme.cardColor, 
+                                notchColor: theme.colorScheme.surface, 
                                 shader: widget.notchShader,
                                 shadowElevation: widget.shadowElevation,
                                 kBottomRadius: widget.kBottomRadius,

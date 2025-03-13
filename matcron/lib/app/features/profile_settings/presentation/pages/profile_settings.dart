@@ -242,7 +242,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
     final theme = Theme.of(context); // Access theme for current mode
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         backgroundColor: theme.appBarTheme.backgroundColor,
         leading: InkWell(

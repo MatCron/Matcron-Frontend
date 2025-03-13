@@ -1563,7 +1563,7 @@ void _initializeUserType() async {
               Expanded(child: Text("Status", style: _headerStyle(theme))),
             ],
           ),
-          Divider(color: theme.colorScheme.onSurface),
+          Divider(color: theme.dividerColor),
           // Mattresses List
           Expanded(
             child: filteredMattresses.isEmpty
@@ -1608,7 +1608,7 @@ void _initializeUserType() async {
                                         : BorderRadius.circular(10.0),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: theme.colorScheme.onSurface,
+                                        color: theme.colorScheme.onSecondary,
                                         blurRadius: 5,
                                         offset: const Offset(0, 3),
                                       ),
@@ -1638,7 +1638,7 @@ void _initializeUserType() async {
                                                   ? theme.colorScheme.primary
                                                   : Colors.transparent,
                                               border: Border.all(
-                                                color: theme.cardColor,
+                                                color: theme.colorScheme.shadow,
                                                 width: 2,
                                               ),
                                             ),
@@ -1701,7 +1701,7 @@ void _initializeUserType() async {
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: theme.colorScheme.onSurface,
+                                            color: theme.colorScheme.onSecondary,
                                             blurRadius: 5,
                                             offset: const Offset(0, 3),
                                           ),

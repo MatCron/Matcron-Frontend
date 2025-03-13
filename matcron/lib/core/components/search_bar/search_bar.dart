@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:matcron/config/theme/app_theme.dart';
+
 
 class SearchBar extends StatelessWidget {
   final Function(String)? onSearchChanged; // Callback for text changes
@@ -17,16 +19,17 @@ class SearchBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context ) {
+    final theme = Theme.of(context);
     return Container(
       width: 400,
       margin: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 10.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(25.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: theme.colorScheme.onSurface.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
