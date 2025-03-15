@@ -5,6 +5,11 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'package:matcron/app/features/profile_settings/domain/usecases/get_chatbot_response.dart';
+import 'package:matcron/app/features/profile_settings/data/repository/chatbot_repository_impl.dart';
+import 'package:matcron/app/features/profile_settings/data/data_sources/chatbot_remote.dart';
+
 
 class HelpPage extends StatefulWidget {
   const HelpPage({super.key});
@@ -21,6 +26,11 @@ class _HelpPageState extends State<HelpPage> {
   FlutterTts flutterTts = FlutterTts();
   stt.SpeechToText speech = stt.SpeechToText();
   String _userProfilePicture = "";
+  final GetChatbotResponse _getChatbotResponse = GetChatbotResponse(
+    repository: ChatbotRepositoryImpl(
+      remoteDataSource: ChatbotRemoteDataSourceImpl(client: http.Client()),
+    ),
+  );
 
   @override
   void initState() {
