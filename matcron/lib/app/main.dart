@@ -14,17 +14,22 @@ import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.da
 import 'package:matcron/app/features/type/presentation/pages/type.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/components/splash_screen.dart';
-import 'dart:developer';
 import 'dart:async';
 import 'package:matcron/core/resources/animated_notch_bottom_bar/animated_notch_bottom_bar.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
+import 'package:matcron/config/theme/theme_cubit.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'features/mattress/presentation/pages/mattress_page.dart';
 
-Future<void> main() async {
-  await initializeDependencies(); // Initialize all dependencies
-  runApp(const MyApp());
+void main() async {
+  await initializeDependencies();
+  runApp(
+    BlocProvider(
+      create: (context) => ThemeCubit(),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -32,21 +37,21 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor:
-            HexColor("#E5E5E5"), // Set background color for the whole app
-      ),
-      //This is set to register for now, will change to the starting screen  once done. Wee need to show page depending on if user is logged in or not
-
-      home: const SplashScreenWrapper(),
-   
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, themeMode) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: lightTheme(),
+          darkTheme: darkTheme(),
+          themeMode: themeMode,
+          home: const SplashScreenWrapper(),
+        );
+      },
     );
   }
 }
 
-//Splash Screen
+// Splash Screen
 class SplashScreenWrapper extends StatefulWidget {
   const SplashScreenWrapper({super.key});
 
@@ -60,63 +65,45 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
   @override
   void initState() {
     super.initState();
-      Future.delayed(const Duration(seconds: 5), () {
-    _checkAuthToken();
-  }); // Check the token when the widget initializes
+    Future.delayed(const Duration(seconds: 5), _checkAuthToken);
   }
 
   Future<void> _checkAuthToken() async {
     String? token = await _authService.getToken();
-
-    // Check if the widget is still in the widget tree
     if (!mounted) return;
-
-    if (token != null && token.isNotEmpty) {
-      // Token exists: Navigate to MyHomePage
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const MyHomePage()),
-      );
-    } else {
-      // No token: Navigate to InitialScreens
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const InitialScreens()),
-      );
-    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => token != null && token.isNotEmpty
+            ? const MyHomePage()
+            : const InitialScreens(),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return const SplashScreen(); // Display the splash screen while checking
+    return const SplashScreen();
   }
 }
 
-//AUTH SCREENS
+// Authentication Screens
 class InitialScreens extends StatelessWidget {
   const InitialScreens({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor:
-            Colors.transparent, // Set background color for the whole app
-      ),
-      home: BlocProvider<RemoteLoginBloc>(
-        create: (context) => sl<
-            RemoteLoginBloc>(), // Initialize the RemoteRegistrationBloc using your DI container
-        child:
-            const LoginPage(), // The RegisterPage is wrapped here with the bloc
-      ),
+    return BlocProvider<RemoteLoginBloc>(
+      create: (context) => sl<RemoteLoginBloc>(),
+      child: const LoginPage(),
     );
   }
 }
 
+// Main Home Page with Bottom Navigation
 class MyHomePage extends StatefulWidget {
   final MattressEntity? searchedEntity;
-  final int startPageIndex; // Added parameter for the start page index
+  final int startPageIndex;
 
   const MyHomePage({super.key, this.searchedEntity, this.startPageIndex = 0});
 
@@ -125,130 +112,76 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _pageController = PageController(); // No initial page here
-  final NotchBottomBarController _controller =
-      NotchBottomBarController(index: 0);
-
-  int maxCount = 4;
-
-  /// To track the selected page index
+  final _pageController = PageController();
+  final NotchBottomBarController _controller = NotchBottomBarController(index: 0);
   int _selectedPageIndex = 0;
 
   @override
   void initState() {
     super.initState();
-    _selectedPageIndex = widget
-        .startPageIndex; // Set initial page index from the widget parameter// Jump to the selected page index
+    _selectedPageIndex = widget.startPageIndex;
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _pageController
-          .jumpToPage(_selectedPageIndex); // Jump to the desired page
+      _pageController.jumpToPage(_selectedPageIndex);
     });
   }
 
   @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    /// List of NAVBAR PAGES ONLY
+    final theme = Theme.of(context);
     final List<Widget> bottomBarPages = [
       DashboardPage(controller: _controller),
-      BlocProvider(
-        create: (context) => sl<RemoteMattressBloc>()..add(GetAllMattresses()),
-        child: MattressPage(widget.searchedEntity),
-      ),
-      BlocProvider(
-        create: (context) => sl<RemoteTypeBloc>()..add(GetTypesTiles()),
-        child: MattressTypePage(),
-      ),
-      BlocProvider(
-        create: (context) => sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
-        child: GroupPage(),
-      ),
+      BlocProvider(create: (context) => sl<RemoteMattressBloc>()..add(GetAllMattresses()), child: MattressPage(widget.searchedEntity)),
+      BlocProvider(create: (context) => sl<RemoteTypeBloc>()..add(GetTypesTiles()), child: MattressTypePage()),
+      BlocProvider(create: (context) => sl<RemoteOrganizationBloc>()..add(GetOrganizations()), child: GroupPage()),
     ];
 
-    /// Page titles based on the index
-    final List<String> pageTitles = [
-      "Dashboard",
-      "Mattress",
-      "Types",
-      "Group",
-    ];
-
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        scaffoldBackgroundColor: HexColor("#E5E5E5"),
-      ),
-      home: Scaffold(
-        body: Column(
-          children: [
-            Header(title: pageTitles[_selectedPageIndex]),
-            Expanded(
-              child: PageView(
-                controller: _pageController,
-                physics: const NeverScrollableScrollPhysics(),
-                children: bottomBarPages,
-                onPageChanged: (index) {
-                  setState(() {
-                    _selectedPageIndex =
-                        index; // Update the selected page index
-                  });
-                },
-              ),
+    return Scaffold(
+      body: Column(
+        children: [
+          Header(title: ["Dashboard", "Mattress", "Types", "Group"][_selectedPageIndex]),
+          Expanded(
+            child: PageView(
+              controller: _pageController,
+              physics: const NeverScrollableScrollPhysics(),
+              children: bottomBarPages,
+              onPageChanged: (index) {
+                setState(() => _selectedPageIndex = index);
+              },
             ),
-          ],
-        ),
-        extendBody: true,
-        bottomNavigationBar: bottomBarPages.length <= maxCount
-            ? AnimatedNotchBottomBar(
-                notchBottomBarController: _controller,
-                   color: Color.fromRGBO(255, 255, 255, 1),
-                showLabel: true,
-                textOverflow: TextOverflow.visible,
-                maxLine: 1,
-                shadowElevation: 5,
-                kBottomRadius: 28.0,
-                notchColor: const Color.fromARGB(227, 255, 255, 255),
-                removeMargins: false,
-                bottomBarWidth: 500,
-                showShadow: false,
-                durationInMilliSeconds: 300,
-                itemLabelStyle: const TextStyle(fontSize: 10),
-                elevation: 1,
-                bottomBarItems: const [
-  BottomBarItem(
-    inActiveItem: Icon(Icons.dashboard, color: Color.fromARGB(255, 0, 0, 0)),
-    activeItem: Icon(Icons.dashboard, color: Color.fromRGBO(30, 167, 169, 1)),
-    itemLabel: 'Dashboard',
-  ),
-  BottomBarItem(
-    inActiveItem: Icon(Icons.bed, color: Color.fromARGB(255, 0, 0, 0)),
-    activeItem: Icon(Icons.bed, color: Color.fromRGBO(30, 167, 169, 1)),
-    itemLabel: 'Mattress',
-  ),
-  BottomBarItem(
-    inActiveItem: Icon(Icons.category, color: Color.fromARGB(255, 0, 0, 0)),
-    activeItem: Icon(Icons.category, color: Color.fromRGBO(30, 167, 169, 1)),
-    itemLabel: 'Type',
-  ),
-  BottomBarItem(
-    inActiveItem: Icon(Icons.groups, color: Color.fromARGB(255, 0, 0, 0)),
-    activeItem: Icon(Icons.groups, color: Color.fromRGBO(30, 167, 169, 1)),
-    itemLabel: 'Group',
-  ),
-],
-                onTap: (index) {
-                  log('current selected index $index');
-                  _pageController.jumpToPage(index);
-                },
-                kIconSize: 24.0,
-              )
-            : null,
+          ),
+        ],
       ),
+      bottomNavigationBar: AnimatedNotchBottomBar(
+  notchBottomBarController: _controller,
+  showLabel: true,
+  kIconSize: 24.0, // Added required icon size
+  kBottomRadius: 28.0, // Added required bottom radius
+  bottomBarItems:   [
+    BottomBarItem(
+      inActiveItem: Icon(Icons.dashboard, color: theme.colorScheme.onSurface),
+      activeItem: Icon(Icons.dashboard, color: theme.colorScheme.primary), // Use theme color
+      itemLabel: 'Dashboard',
+    ),
+    BottomBarItem(
+      inActiveItem: Icon(Icons.bed, color: theme.colorScheme.onSurface),
+      activeItem: Icon(Icons.bed, color: theme.colorScheme.primary), // Use theme color
+      itemLabel: 'Mattress',
+    ),
+    BottomBarItem(
+      inActiveItem: Icon(Icons.category, color: theme.colorScheme.onSurface),
+      activeItem: Icon(Icons.category, color: theme.colorScheme.primary), // Use theme color
+      itemLabel: 'Type',
+    ),
+    BottomBarItem(
+      inActiveItem: Icon(Icons.groups, color: theme.colorScheme.onSurface),
+      activeItem: Icon(Icons.groups, color: theme.colorScheme.primary), // Use theme color
+      itemLabel: 'Group',
+    ),
+  ],
+  onTap: (index) {
+    _pageController.jumpToPage(index);
+  },
+),
     );
   }
 }

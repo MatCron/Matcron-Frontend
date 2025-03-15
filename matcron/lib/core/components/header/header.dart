@@ -30,8 +30,11 @@ class HeaderState extends State<Header> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 40.0, left: 10.0, right: 10.0),
+    final theme = Theme.of(context);
+    return Container(
+      color: theme.cardColor,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 40.0, left: 10.0, right: 10.0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -92,12 +95,12 @@ class HeaderState extends State<Header> {
                   width: 38.0,
                   height: 38.0,
                   decoration: BoxDecoration(
-                    color: matcronPrimaryColor,
+                    color: theme.colorScheme.primary,
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(
+                  child:  Icon(
                     Icons.notifications,
-                    color: Colors.white,
+                    color: theme.colorScheme.onPrimary,
                     size: 20.0,
                   ),
                 ),
@@ -105,6 +108,7 @@ class HeaderState extends State<Header> {
             ],
           ),
         ],
+      ),
       ),
     );
   }
