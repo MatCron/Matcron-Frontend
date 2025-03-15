@@ -48,6 +48,9 @@ dependencies:
   shared_preferences: ^2.5.2
   sqflite: ^2.4.1
   path: ^1.9.0
+  flutter_tts: ^3.8.5         
+  speech_to_text: ^6.1.1      
+  provider: ^6.1.2   
 
 
 dev_dependencies:
@@ -106,3 +109,6 @@ flutter:
     - assets/sounds/sucess2.wav
     - assets/sounds/notification.wav
     - assets/sounds/error.wav
+    - assets/images/robot.gif
+    - assets/images/robot-waving.gif
+    - assets/images/download.gif
