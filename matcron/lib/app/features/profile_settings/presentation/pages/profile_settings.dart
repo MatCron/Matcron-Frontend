@@ -33,12 +33,13 @@ class ProfileSettingsState extends State<ProfileSettings> {
     _initializeUserType();
   }
 
-  void _initializeUserType() async {
-    int type = (await AuthorizationService().getUserType())!;
-    setState(() {
-      userType = type;
-    });
-  }
+void _initializeUserType() async {
+  int? type = await AuthorizationService().getUserType(); // Remove '!'
+  setState(() {
+    userType = type ?? 0; // Provide a default value (e.g., 0)
+  });
+}
+
 
   Future<void> _pickImage() async {
     final picker = ImagePicker();
