@@ -14,28 +14,29 @@ class AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
 
         leading: InkWell(
           onTap: () => Navigator.pop(context),
-          child: const Center(
+          child:  Center(
             child: Text(
               "<",
               style: TextStyle(
                 fontSize: 30,
-                color: Colors.white,  
+                color: theme.colorScheme.surface,  
                          ),
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           'Account Information',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: theme.colorScheme.surface),
         ),
-        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
-        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: theme.colorScheme.primary,
+        iconTheme:  IconThemeData(color:theme.colorScheme.surface),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
