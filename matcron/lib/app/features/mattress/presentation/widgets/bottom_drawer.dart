@@ -100,7 +100,7 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: matcronPrimaryColor,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
                   IconButton(
@@ -241,7 +241,7 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
         labelText: label,
         labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         filled: true,
-        fillColor:  theme.colorScheme.shadow.withOpacity(0.5),
+        fillColor:  theme.cardColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
           borderSide: BorderSide.none,

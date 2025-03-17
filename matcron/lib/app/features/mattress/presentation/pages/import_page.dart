@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matcron/app/features/mattress/presentation/pages/scan_page.dart';
 import 'package:matcron/app/features/mattress/presentation/widgets/progress_bar.dart';
-import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/constants/constants.dart';
 

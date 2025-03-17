@@ -94,6 +94,7 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     if (isLoading) {
       //color matcronPrimaryColor
       return Center(child: CircularProgressIndicator(color:matcronPrimaryColor));
@@ -107,14 +108,14 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
       builder: (BuildContext context, ScrollController scrollController) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration:  BoxDecoration(
+            color:theme.colorScheme.surface,
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(20),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black26,
+                color: theme.colorScheme.onSurface.withOpacity(0.1),
                 blurRadius: 10,
                 spreadRadius: 5,
               ),
@@ -137,7 +138,7 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.red),
+                    icon:  Icon(Icons.close, color: theme.colorScheme.error),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -221,7 +222,7 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
                         _buildActionButton(
                           context,
                           label: "Cancel",
-                          color: Colors.red,
+                          color: theme.colorScheme.error,
                           onPressed: () => Navigator.of(context).pop(),
                         ),
                         const SizedBox(width: 8),
@@ -251,6 +252,7 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
     bool enabled = true,
     required ValueChanged<String> onChanged,
   }) {
+    final theme = Theme.of(context);
     return TextFormField(
       initialValue: initialValue,
       enabled: enabled,
@@ -258,7 +260,7 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
         labelText: label,
         labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         filled: true,
-        fillColor: enabled ? Colors.grey[200] : Colors.grey[100],
+        fillColor: enabled ? theme.cardColor :  theme.cardColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
           borderSide: BorderSide.none,
@@ -278,6 +280,7 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
     bool enabled = true,
     required ValueChanged<String> onChanged,
   }) {
+    final theme = Theme.of(context);
     String? finalValue = initialValue;
     if (finalValue == null || !items.contains(finalValue)) {
       finalValue = "Other";
@@ -288,7 +291,7 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
         labelText: label,
         labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         filled: true,
-        fillColor: enabled ? Colors.grey[200] : Colors.grey[100],
+        fillColor: enabled ?  theme.cardColor :  theme.cardColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
           borderSide: BorderSide.none,
@@ -311,6 +314,7 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
       {required String label,
       required Color color,
       required VoidCallback onPressed}) {
+    final theme = Theme.of(context);
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
@@ -321,7 +325,7 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
       ),
       onPressed: onPressed,
       child: Text(label,
-          style: const TextStyle(color: Colors.white, fontSize: 16)),
+          style:  TextStyle(color:  theme.colorScheme.surface, fontSize: 16)),
     );
   }
 }
