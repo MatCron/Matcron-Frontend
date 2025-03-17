@@ -65,6 +65,7 @@ class OrganizationPageState extends State<OrganizationPage> {
   }
 
   void _showDeleteConfirmationDialog(BuildContext context, String orgId) {
+    final theme = Theme.of(context);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -76,7 +77,7 @@ class OrganizationPageState extends State<OrganizationPage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel', style: TextStyle(color: Colors.grey)),
+              child: Text('Cancel', style: TextStyle(color: theme.colorScheme.shadow)),
             ),
             TextButton(
               onPressed: () {
@@ -85,14 +86,14 @@ class OrganizationPageState extends State<OrganizationPage> {
               },
               child: Text(
                 'Delete',
-                style: TextStyle(color: Colors.red), // Red color for delete button
+                style: TextStyle(color:theme.colorScheme.error), // Red color for delete button
               ),
             ),
           ],
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: theme.colorScheme.surface,
         );
       },
     );
@@ -100,23 +101,24 @@ class OrganizationPageState extends State<OrganizationPage> {
 
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
-      backgroundColor: HexColor("#E5E5E5"),
+    final theme = Theme.of(context);
+      return Scaffold(
+      backgroundColor: theme.cardColor,
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 80, 194, 201), 
-        title: const Text(
+        backgroundColor: theme.colorScheme.primary, 
+        title:  Text(
           "Organization",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          style: TextStyle(color: theme.colorScheme.surface, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
          leading: InkWell(
           onTap: () => Navigator.pop(context),
-          child: const Center(
+          child:  Center(
             child: Text(
               "<",
               style: TextStyle(
                 fontSize: 35,
-                color: Colors.white,
+                color: theme.colorScheme.surface,
               ),
             ),
           ),
@@ -141,10 +143,11 @@ class OrganizationPageState extends State<OrganizationPage> {
   }
 
   Widget _buildDoneState(BuildContext context) {
+    final theme = Theme.of(context);
     return StatefulBuilder(
       builder: (context, setState) {
         return Container(
-          color: HexColor("#E5E5E5"),
+          color: theme.cardColor,
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,14 +165,14 @@ class OrganizationPageState extends State<OrganizationPage> {
                 },
                 decoration: InputDecoration(
                   hintText: "Search Organizations",
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey),
+                  hintStyle:  TextStyle(color: theme.colorScheme.shadow),
+                  prefixIcon: Icon(Icons.search, color:theme.colorScheme.shadow),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(30.0),
                     borderSide: BorderSide.none,
                   ),
                   filled: true,
-                  fillColor: Colors.white,
+                  fillColor: theme.colorScheme.surface,
                   contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
                 ),
               ),
@@ -198,9 +201,9 @@ class OrganizationPageState extends State<OrganizationPage> {
                       vertical: 14,
                     ),
                   ),
-                  child: const Text(
+                  child:  Text(
                     "+ Add Organization",
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: theme.colorScheme.surface),
                   ),
                 ),
               ),
@@ -261,11 +264,11 @@ class OrganizationPageState extends State<OrganizationPage> {
                         margin: const EdgeInsets.symmetric(vertical: 6.0),
                         padding: const EdgeInsets.all(16.0),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: theme.colorScheme.surface,
                           borderRadius: BorderRadius.circular(10.0),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black12,
+                              color: theme.colorScheme.onSecondary,
                               blurRadius: 5,
                               offset: Offset(0, 3),
                             ),
@@ -305,12 +308,12 @@ class OrganizationPageState extends State<OrganizationPage> {
                                   isEditable: true,
                                 );
                               },
-                              child: const CircleAvatar(
+                              child:  CircleAvatar(
                                 radius: 15,
-                                backgroundColor: Colors.blue,
+                                backgroundColor: theme.colorScheme.secondary,
                                 child: Icon(
                                   Icons.edit,
-                                  color: Colors.white,
+                                  color: theme.colorScheme.surface,
                                   size: 14.0,
                                 ),
                               ),
@@ -320,12 +323,12 @@ class OrganizationPageState extends State<OrganizationPage> {
                               onTap: () {
                                 _showDeleteConfirmationDialog(context, org.id!);
                               },
-                              child: const CircleAvatar(
+                              child:  CircleAvatar(
                                 radius: 15,
-                                backgroundColor: Colors.red,
+                                backgroundColor:theme.colorScheme.error,
                                 child: Icon(
                                   Icons.delete,
-                                  color: Colors.white,
+                                  color:theme.colorScheme.surface,
                                   size: 14.0,
                                 ),
                               ),
