@@ -34,7 +34,8 @@ ThemeData lightTheme() {
              shadow: Colors.grey,
       onBackground: Colors.black,
       onSurface: Colors.black87,
-      error: Color(0xFFFF5252), // Red Accent for error
+      error: Color(0xFFFF5252), 
+      // Red Accent for error
        ),
     textTheme: const TextTheme(
       bodyLarge: TextStyle(color: Colors.black),
