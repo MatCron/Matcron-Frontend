@@ -58,6 +58,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
   }
 
   void _onAddMattressTypePressed() async {
+    final theme = Theme.of(context);  
     //print("object");
     if (_formKey.currentState!.validate()) {
       MattressTypeEntity entity = MattressTypeEntity(
@@ -92,7 +93,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to add type. Please try again.'),
-            backgroundColor: Colors.red,
+            backgroundColor: theme.colorScheme.error,
             duration: Duration(seconds: 3),
           ),
         );
@@ -102,11 +103,12 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = const Color(0xFFE5E5E5);
-    final fieldColor = Colors.white;
-    final primaryColor = const Color.fromARGB(255, 80, 194, 201);
-    final hintTextStyle = TextStyle(color: Colors.grey[600]);
-    const labelStyle = TextStyle(fontSize: 16, color: Colors.black54);
+    final theme = Theme.of(context);
+    final backgroundColor = theme.cardColor;
+    final fieldColor =theme.colorScheme.surface;
+    final primaryColor =theme.colorScheme.primary;
+    final hintTextStyle = TextStyle(color: theme.colorScheme.shadow);
+    final labelStyle = TextStyle(fontSize: 16, color: theme.colorScheme.onSurface);
 
     return Scaffold(
       backgroundColor: backgroundColor,
@@ -351,7 +353,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                                   horizontal: 20, vertical: 14),
                               suffixText: "(Max: 100 word)",
                               suffixStyle: TextStyle(
-                                  color: Colors.grey[600], fontSize: 12),
+                                  color:theme.colorScheme.shadow, fontSize: 12),
                             ),
                             validator: (value) {
                               if (value == null) return null;
@@ -380,8 +382,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                             ),
                             padding: const EdgeInsets.all(4.0),
                             margin: const EdgeInsets.only(top: 8),
-                            child: const Icon(Icons.info_outline,
-                                size: 20, color: Colors.black54),
+                            child:  Icon(Icons.info_outline,
+                                size: 20, color: theme.colorScheme.onSurface),
                           ),
                         ),
                       ],
@@ -454,7 +456,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 14),
                       ),
-                      hint: const Text("washable", style: labelStyle),
+                      hint:  Text("washable", style: labelStyle),
                       icon: const Icon(Icons.arrow_drop_down),
                       items: <String>["Yes", "No"].map((String value) {
                         return DropdownMenuItem<String>(
@@ -484,9 +486,9 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                             vertical: 18.0,
                           ),
                         ),
-                        child: const Text(
+                        child:  Text(
                           "+ Add Mattress Type",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: theme.colorScheme.surface),
                         ),
                       ),
                     ),
