@@ -18,9 +18,10 @@ class ImportMattressPageState extends State<ImportMattressPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: Container(
-        color: HexColor("#E5E5E5"),
+        color: theme.cardColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -58,11 +59,11 @@ class ImportMattressPageState extends State<ImportMattressPage> {
                 padding: EdgeInsets.all(12.0),
                 margin: EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(
-                  color: _isTapped ? Colors.grey[300] : Colors.white,
+                  color: _isTapped ? theme.colorScheme.shadow : theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(15.0),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
+                      color: theme.colorScheme.shadow.withOpacity(0.1),
                       blurRadius: 4.0,
                       spreadRadius: 1.0,
                     ),
@@ -77,7 +78,7 @@ class ImportMattressPageState extends State<ImportMattressPage> {
                       child: Text(
                         "Import Single",
                         style: TextStyle(
-                          color: Colors.black,
+                          color:theme.colorScheme.onSurface,
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                         ),
@@ -93,7 +94,7 @@ class ImportMattressPageState extends State<ImportMattressPage> {
                           child: Text(
                             "This is only import one mattress  into the system.",
                             style: TextStyle(
-                              color: Colors.black,
+                              color: theme.colorScheme.onSurface,
                               fontSize: 16.0,
                             ),
                           ),
@@ -156,11 +157,11 @@ class ImportMattressPageState extends State<ImportMattressPage> {
                 padding: EdgeInsets.all(12.0),
                 margin: EdgeInsets.symmetric(horizontal: 16.0),
                 decoration: BoxDecoration(
-                  color: _isTapped2 ? Colors.grey[300] : Colors.white,
+                  color: _isTapped2 ? theme.colorScheme.shadow : theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(15.0),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
+                      color: theme.colorScheme.shadow.withOpacity(0.1),
                       blurRadius: 4.0,
                       spreadRadius: 1.0,
                     ),
@@ -175,7 +176,7 @@ class ImportMattressPageState extends State<ImportMattressPage> {
                       child: Text(
                         "Import Group",
                         style: TextStyle(
-                          color: Colors.black,
+                          color: theme.colorScheme.onSurface,
                           fontSize: 20.0,
                           fontWeight: FontWeight.bold,
                         ),
@@ -191,7 +192,7 @@ class ImportMattressPageState extends State<ImportMattressPage> {
                           child: Text(
                             "If there are multiple mattress to be added into the system and the sender has created a group.",
                             style: TextStyle(
-                              color: Colors.black,
+                              color: theme.colorScheme.onSurface,
                               fontSize: 16.0,
                             ),
                           ),
