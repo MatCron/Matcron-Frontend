@@ -55,6 +55,7 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
   }
 
   void _onAddOrganizationPressed() async {
+    final theme = Theme.of(context);
     if (_formKey.currentState!.validate()) {
       OrganizationEntity entity = OrganizationEntity(
           name: _nameController.text,
@@ -87,7 +88,7 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to add organization. Please try again.'),
-            backgroundColor: Colors.red,
+            backgroundColor: theme.colorScheme.error,
             duration: Duration(seconds: 3),
           ),
         );
@@ -97,11 +98,12 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = const Color(0xFFE5E5E5);
-    final fieldColor = Colors.white;
-    final primaryColor = const Color.fromARGB(255, 80, 194, 201);
-    final hintTextStyle = TextStyle(color: Colors.grey[600]);
-    final labelStyle = const TextStyle(fontSize: 16, color: Colors.black54);
+    final theme = Theme.of(context);
+    final backgroundColor = theme.cardColor;
+    final fieldColor = theme.colorScheme.surface;
+    final primaryColor = theme.colorScheme.primary;
+    final hintTextStyle = TextStyle(color: theme.colorScheme.shadow);
+    final labelStyle =  TextStyle(fontSize: 16, color:theme.colorScheme.onSurface);
 
     return Scaffold(
         backgroundColor: backgroundColor,
@@ -337,9 +339,9 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
                               vertical: 18.0,
                             ),
                           ),
-                          child: const Text(
+                          child: Text(
                             "+Add Organisation",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: theme.colorScheme.surface),
                           ),
                         ),
                       ),
