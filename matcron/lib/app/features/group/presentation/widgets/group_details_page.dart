@@ -523,7 +523,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: theme.cardColor!),
+          border: Border.all(color: theme.cardColor),
         ),
         child: Column(
           children: [
@@ -647,7 +647,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                             decoration: BoxDecoration(
                               color: theme.colorScheme.surface,
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: theme.cardColor!),
+                              border: Border.all(color: theme.cardColor),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,

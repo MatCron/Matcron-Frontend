@@ -220,7 +220,7 @@ class _AddGroupDrawerState extends State<AddGroupDrawer> {
       fillColor: theme.cardColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: theme.colorScheme.surface!, width: 1.5),
+        borderSide: BorderSide(color: theme.colorScheme.surface, width: 1.5),
         borderRadius: BorderRadius.circular(10.0),
       ),
       focusedBorder: OutlineInputBorder(
