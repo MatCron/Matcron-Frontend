@@ -5,27 +5,28 @@ class ReportsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
             leading: InkWell(
           onTap: () => Navigator.pop(context),
-          child: const Center(
+          child:  Center(
             child: Text(
               "<",
               style: TextStyle(
                 fontSize: 30,
-                color: Colors.white,                 fontWeight: FontWeight.bold,
+                color: theme.colorScheme.surface,                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           'Reports',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: theme.colorScheme.surface),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
+        iconTheme:  IconThemeData(color: theme.colorScheme.surface),
+        backgroundColor: theme.colorScheme.primary,
       ),
       body: const Center(
         child: Text('No reports available.'), // Placeholder text
