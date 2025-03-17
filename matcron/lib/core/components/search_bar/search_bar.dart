@@ -51,10 +51,10 @@ class SearchBar extends StatelessWidget {
           // Scan Icon
           IconButton(
             icon: canRefreshList
-                ? const Icon(
+                ?  Icon(
                     Icons.close,
                     size: 24,
-                    color: Colors.red,
+                    color: theme.colorScheme.error,
                   )
                 : Image.asset(
                     'assets/images/scan_icon.png', // Path to your scan icon asset
