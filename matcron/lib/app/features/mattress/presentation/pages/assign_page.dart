@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:matcron/app/main.dart';
+import 'package:matcron/main.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/constants/constants.dart';

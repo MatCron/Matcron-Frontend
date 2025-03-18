@@ -1,7 +1,7 @@
 class OrganizationEntity {
   String ? id;
   String ? name;
-  String ? type;
+  int ? type;
   String ? email;
   String ? registrationNumber;
   String ? description;
@@ -27,7 +27,7 @@ class OrganizationEntity {
 
   OrganizationEntity copyWith({
     String? name,
-    String? type,
+    int? type,
     String? email,
     String? registrationNumber,
     String? postalAddress,
