@@ -277,9 +277,10 @@ class _HelpPageState extends State<HelpPage> {
   stt.SpeechToText speech = stt.SpeechToText();
   String _userProfilePicture = "";
 
+
   final GetChatbotResponse _getChatbotResponse = GetChatbotResponse(
     repository: ChatbotRepositoryImpl(
-      remoteDataSource: ChatbotRemoteDataSourceImpl(websocketUrl: "wss://yourapi.com/chatbot"),
+      remoteDataSource: ChatbotRemoteDataSourceImpl(websocketUrl:"wss://ai.matcron.online/ws/chatbot"),
     ),
   );
 
@@ -287,6 +288,7 @@ class _HelpPageState extends State<HelpPage> {
   void initState() {
     super.initState();
     _loadUserProfilePicture();
+    _initializeChatbot();
 
     _getChatbotResponse.execute().listen((response) {
       setState(() {
@@ -315,6 +317,16 @@ class _HelpPageState extends State<HelpPage> {
     _getChatbotResponse.sendMessage(text);
   }
 
+   Future<void> _initializeChatbot() async {
+  await _getChatbotResponse.initialize();
+  _getChatbotResponse.execute().listen((response) {
+    setState(() {
+      messages.add({"MatBot": response.text});
+      isTyping = false;
+    });
+    flutterTts.speak(response.text);
+  });
+}
   void _startListening() async {
     bool available = await speech.initialize(
       onStatus: (status) {
