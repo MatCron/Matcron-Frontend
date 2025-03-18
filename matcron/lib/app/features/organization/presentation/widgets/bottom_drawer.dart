@@ -157,6 +157,7 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
                         organization = organization.copyWith(name: value);
                       }),
                     ),
+                    
                     // const SizedBox(height: 20),
                     // _buildDropdownField(
                     //   label: "Organization Type",
