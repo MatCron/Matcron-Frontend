@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:matcron/app/features/mattress/presentation/widgets/progress_bar.dart';
-import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/constants/constants.dart';
 
@@ -36,9 +35,10 @@ class ScanImportPageState extends State<ScanImportPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: Container(
-        color: HexColor("#E5E5E5"),
+        color:theme.cardColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [

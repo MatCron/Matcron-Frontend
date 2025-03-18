@@ -1,15 +1,19 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_event.dart';
-import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
+//import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_auth_state.dart';
-import 'package:matcron/app/features/auth/presentation/pages/register.dart';
-import 'package:matcron/app/injection_container.dart';
+//import 'package:matcron/app/features/auth/presentation/pages/register.dart';
+//import 'package:matcron/app/injection_container.dart';
+//import 'package:matcron/app/features/auth/presentation/pages/register.dart';
+//import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/main.dart';
 import 'package:matcron/core/constants/constants.dart';
+
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -47,17 +51,18 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return TextField(
       controller: widget.controller,
       keyboardType: widget.inputType,
       autofillHints: widget.autofillHint != null ? [widget.autofillHint!] : null,
       obscureText: widget.isPassword ? _obscureText : false,
-      style: const TextStyle(color: Colors.black),
+      style:  TextStyle(color: theme.colorScheme.onSurface),
       decoration: InputDecoration(
-        fillColor: Colors.white,
+        fillColor:theme.colorScheme.surface,
         filled: true,
         hintText: widget.placeholder,
-        hintStyle: TextStyle(color: Colors.grey[600]),
+        hintStyle: TextStyle(color: theme.colorScheme.shadow),
         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -75,7 +80,7 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
             ? IconButton(
                 icon: Icon(
                   _obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.grey[600],
+                  color: theme.colorScheme.shadow,
                 ),
                 onPressed: _toggleObscureText,
               )
@@ -92,6 +97,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       extendBodyBehindAppBar: true, 
       appBar: AppBar(
@@ -111,27 +117,27 @@ class _LoginPageState extends State<LoginPage> {
               return ['English', 'German', 'Spanish'].map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
-                  child: Text(choice),
+                  child: Text(choice, style:theme.textTheme.bodyMedium),
                 );
               }).toList();
             },
           ),
         ],
       ),
-      body: _buildBody(context),
+      body: _buildBody(context,theme),
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody(BuildContext context , ThemeData theme) {
     return BlocBuilder<RemoteLoginBloc, RemoteAuthState>(
       builder: (_, state) {
         // Loading spinner
         if (state is RemoteAuthLoading) {
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: theme.colorScheme.surface,
             body: Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+                valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
               ),
             ),
           );
@@ -157,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                 image: const AssetImage('assets/images/bed.jpg'),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.35),
+                  theme.colorScheme.onSurface.withOpacity(0.35),
                   BlendMode.darken,
                 ),
               ),
@@ -181,12 +187,12 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 30),
 
                       // Title
-                      const Text(
+                       Text(
                         "Welcome to Matcron!",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: theme.colorScheme.surface,
                         ),
                       ),
                       const SizedBox(height: 30),
@@ -201,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                       if (emailError != null)
                         Text(
                           emailError,
-                          style: const TextStyle(color: Colors.red, fontSize: 12),
+                          style:  TextStyle(color: theme.colorScheme.error, fontSize: 12),
                         ),
                       const SizedBox(height: 30),
 
@@ -215,7 +221,7 @@ class _LoginPageState extends State<LoginPage> {
                       if (passwordError != null)
                         Text(
                           passwordError,
-                          style: const TextStyle(color: Colors.red, fontSize: 12),
+                          style:  TextStyle(color: theme.colorScheme.error, fontSize: 12),
                         ),
                       const SizedBox(height: 15),
 
@@ -226,10 +232,10 @@ class _LoginPageState extends State<LoginPage> {
                           onTap: () {
                           
                           },
-                          child: const Text(
+                          child:  Text(
                             "Forgot Password?",
                             style: TextStyle(
-                              color: Colors.white,
+                              color: theme.colorScheme.surface,
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
                             ),
@@ -249,67 +255,67 @@ class _LoginPageState extends State<LoginPage> {
                           minimumSize: const Size(double.infinity, 50),
                           backgroundColor: matcronPrimaryColor,
                         ),
-                        child: const Text(
+                        child:  Text(
                           "Log In",
-                          style: TextStyle(color: Colors.white, fontSize: 25),
+                          style: TextStyle(color: theme.colorScheme.surface, fontSize: 25),
                         ),
                       ),
                       const SizedBox(height: 18),
 
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Divider(
-                              color: Colors.white,
-                              thickness: 1,
-                              endIndent: 10,
-                            ),
-                          ),
-                          const Text(
-                            'or',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Expanded(
-                            child: Divider(
-                              color: Colors.white,
-                              thickness: 1,
-                              indent: 10,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.center,
+                      //   children: [
+                      //     Expanded(
+                      //       child: Divider(
+                      //         color:theme.colorScheme.surface,
+                      //         thickness: 1,
+                      //         endIndent: 10,
+                      //       ),
+                      //     ),
+                      //     const Text(
+                      //       'or',
+                      //       style: TextStyle(
+                      //         color: Colors.white70,
+                      //         fontWeight: FontWeight.bold,
+                      //         fontSize: 16,
+                      //       ),
+                      //     ),
+                      //     Expanded(
+                      //       child: Divider(
+                      //         color: theme.colorScheme.surface,
+                      //         thickness: 1,
+                      //         indent: 10,
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
+                      // const SizedBox(height: 20),
 
                       // Sign Up (Outlined) Button
-                      OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BlocProvider<RemoteRegistrationBloc>(
-                                create: (_) => sl<RemoteRegistrationBloc>(),
-                                child: const RegisterPage(),
-                              ),
-                            ),
-                          );
-                        },
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.white, width: 2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
-                        child: const Text(
-                          "Sign Up",
-                          style: TextStyle(color: Colors.white, fontSize: 25),
-                        ),
-                      ),
+                      // OutlinedButton(
+                      //   onPressed: () {
+                      //     Navigator.push(
+                      //       context,
+                      //       MaterialPageRoute(
+                      //         builder: (context) => BlocProvider<RemoteRegistrationBloc>(
+                      //           create: (_) => sl<RemoteRegistrationBloc>(),
+                      //           child: const RegisterPage(),
+                      //         ),
+                      //       ),
+                      //     );
+                      //   },
+                      //   style: OutlinedButton.styleFrom(
+                      //     side:  BorderSide(color: theme.colorScheme.surface, width: 2),
+                      //     shape: RoundedRectangleBorder(
+                      //       borderRadius: BorderRadius.circular(8),
+                      //     ),
+                      //     minimumSize: const Size(double.infinity, 50),
+                      //   ),
+                      //   child:  Text(
+                      //     "Sign Up",
+                      //     style: TextStyle(color: theme.colorScheme.surface, fontSize: 25),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -342,7 +348,7 @@ class _LoginPageState extends State<LoginPage> {
           return Center(
             child: Text(
               "Error: ${state.exception}",
-              style: const TextStyle(color: Colors.red),
+              style:  TextStyle(color: theme.colorScheme.error),
             ),
           );
         }

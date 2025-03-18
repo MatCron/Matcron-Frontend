@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:matcron/main.dart';
-import 'package:matcron/config/theme/app_theme.dart';
+//import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/core/components/header/header.dart';
-import 'package:matcron/core/constants/constants.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:vibration/vibration.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -145,9 +144,10 @@ void _handleError(String errorMessage) async {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: Container(
-        color: HexColor("#E5E5E5"),
+        color: theme.cardColor,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -160,10 +160,10 @@ void _handleError(String errorMessage) async {
                 margin: const EdgeInsets.symmetric(horizontal: 20.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
-                  color: Colors.white,
+                  color:theme.colorScheme.surface,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color:theme.colorScheme.onSurface.withOpacity(0.1),
                       blurRadius: 8.0,
                       offset: const Offset(0, 2),
                     ),
@@ -197,7 +197,7 @@ void _handleError(String errorMessage) async {
                 // Writing state UI
                 Center(
                   child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+                    valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -216,7 +216,7 @@ void _handleError(String errorMessage) async {
                 Center(
                   child: Icon(
                     Icons.error,
-                    color: Colors.red,
+                    color: theme.colorScheme.error,
                     size: 50,
                   ),
                 ),

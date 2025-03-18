@@ -19,6 +19,7 @@ class GroupCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return GestureDetector(
       onTap: onTap,
       child: Card(
@@ -26,7 +27,7 @@ class GroupCardWidget extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         elevation: 3,
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -47,7 +48,7 @@ class GroupCardWidget extends StatelessWidget {
                   Text(
                     "$mattressCount mattresses",
                     style: TextStyle(
-                      color: Colors.grey[600],
+                      color:theme.colorScheme.shadow,
                       fontSize: 14.0,
                     ),
                   ),
@@ -68,7 +69,7 @@ class GroupCardWidget extends StatelessWidget {
                   Text(
                     organisationName,
                     style: TextStyle(
-                      color: Colors.grey[600],
+                      color:theme.colorScheme.shadow,
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,
                     ),

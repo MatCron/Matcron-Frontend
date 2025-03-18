@@ -5,13 +5,14 @@ class MattressRecyclingInfoPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const titleStyle = TextStyle(
+    final theme = Theme.of(context);
+    final  titleStyle = TextStyle(
       fontSize: 18,
       fontWeight: FontWeight.bold,
-      color: Color.fromARGB(255, 80, 194, 201),
+      color: theme.colorScheme.primary,
     );
-    const bodyStyle = TextStyle(fontSize: 14, color: Colors.black54);
-    const backgroundColor = Color(0xFFE5E5E5);
+    final bodyStyle = TextStyle(fontSize: 14, color: theme.colorScheme.onSurface);
+    final backgroundColor =theme.colorScheme.surface;
 
     final sections = [
       {
@@ -55,30 +56,30 @@ class MattressRecyclingInfoPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: backgroundColor,
+        backgroundColor: theme.colorScheme.primary,
         elevation: 0,
         automaticallyImplyLeading: false,
         leading: InkWell(
           onTap: () => Navigator.pop(context),
-          child: const Center(
+          child:  Center(
             child: Text(
               "<",
               style: TextStyle(
                 fontSize: 30,
-                color: Color.fromARGB(255, 80, 194, 201), // Match title color if desired
+                color: theme.colorScheme.surface, // Match title color if desired
                    ),
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           "Mattress Recycling Info",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Color.fromARGB(255, 80, 194, 201),
+            color: theme.colorScheme.surface,
           ),
         ),
-        iconTheme: const IconThemeData(color: Colors.black54),
+        iconTheme:  IconThemeData(color: theme.colorScheme.onSurface),
         // Remove the "X" button entirely
         actions: const [],
       ),
@@ -88,9 +89,9 @@ class MattressRecyclingInfoPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
+               Text(
                 "Learn how to responsibly recycle or donate your mattress. Follow these steps and tips to reduce waste and help the environment.",
-                style: TextStyle(fontSize: 16, color: Colors.black54),
+                style: TextStyle(fontSize: 16, color: theme.colorScheme.onSurface),
               ),
               const SizedBox(height: 20),
               // Display each section with an image and text
@@ -99,11 +100,11 @@ class MattressRecyclingInfoPage extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   padding: const EdgeInsets.all(12.0),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.cardColor,
                     borderRadius: BorderRadius.circular(20.0),
-                    boxShadow: const [
+                    boxShadow:  [
                       BoxShadow(
-                        color: Colors.black12,
+                        color: theme.colorScheme.onSecondary,
                         blurRadius: 5,
                         offset: Offset(0, 3),
                       ),

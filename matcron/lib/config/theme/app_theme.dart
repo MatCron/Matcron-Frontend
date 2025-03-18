@@ -26,7 +26,7 @@ ThemeData lightTheme() {
     ),
     colorScheme: const ColorScheme.light(
       primary: Color(0xFF50C2C9), // Primary button color
-      secondary: Color(0xFF38A3A5), // Secondary color
+      secondary: Colors.blue, // Secondary color
       background: Colors.white,
       surface: Colors.white,
       onPrimary: Colors.white,
@@ -34,7 +34,8 @@ ThemeData lightTheme() {
              shadow: Colors.grey,
       onBackground: Colors.black,
       onSurface: Colors.black87,
-      error: Color(0xFFFF5252), // Red Accent for error
+      error: Color(0xFFFF5252), 
+      // Red Accent for error
        ),
     textTheme: const TextTheme(
       bodyLarge: TextStyle(color: Colors.black),

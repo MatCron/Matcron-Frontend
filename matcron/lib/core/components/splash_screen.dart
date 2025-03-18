@@ -39,6 +39,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -75,16 +76,16 @@ class _SplashScreenState extends State<SplashScreen>
                       style: GoogleFonts.lato(
                         fontSize: 70,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        color:  theme.colorScheme.surface,
                       ),
                       children: [
-                        const TextSpan(text: 'Mat'),
+                         TextSpan(text: 'Mat'),
                         TextSpan(
                           text: 'Cron',
                           style: GoogleFonts.lato(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
-                            color: Colors.teal,
+                            color: theme.colorScheme.primary,
                           ),
                         ),
                       ],

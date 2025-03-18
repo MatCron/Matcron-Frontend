@@ -24,34 +24,35 @@ class NotificationsPageState extends State<NotificationsPage> with SingleTickerP
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         
         leading: InkWell(
           onTap: () => Navigator.pop(context),
-          child: const Center(
+          child:  Center(
             child: Text(
               "<",
               style: TextStyle(
                 fontSize: 26,
-                color: Colors.white,
+                color: theme.colorScheme.surface,
               ),
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           'Notifications',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: theme.colorScheme.surface),
         ),
-        iconTheme: const IconThemeData(
-          color: Colors.white,
+        iconTheme:  IconThemeData(
+          color: theme.colorScheme.surface,
         ),
-        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
+        backgroundColor: theme.colorScheme.primary,
         // Removed the "X" button entirely from actions
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
+          tabs:  [
             Tab(text: 'Unread'),
             Tab(text: 'Archive'),
           ],
@@ -68,6 +69,7 @@ class NotificationsPageState extends State<NotificationsPage> with SingleTickerP
   }
 
   Widget _buildNotificationsList() {
+    final theme = Theme.of(context);
     List<Map<String, dynamic>> notifications = [
       {'title': 'Mattress in Room 205 needs washing', 'time': '4m ago', 'urgent': true},
       {'title': 'Mattress in Room 206 needs to be rotated', 'time': '13m ago', 'urgent': false},
@@ -83,7 +85,7 @@ class NotificationsPageState extends State<NotificationsPage> with SingleTickerP
         return ListTile(
           leading: Icon(
             notification['urgent'] ? Icons.error : Icons.notifications_none,
-            color: Colors.red,
+            color: theme.colorScheme.error,
           ),
           title: Text(notification['title']),
           subtitle: Text(notification['time']),
