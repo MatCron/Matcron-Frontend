@@ -161,8 +161,8 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
                     _buildDropdownField(
                       label: "Organization Type",
                       items: ["Hotel", "Hospital", "Other"],
-                      initialValue: items[organization.type],
-                      enabled: widget.isEditable,
+                      //initialValue: items[organization.type],
+                      //enabled: widget.isEditable,
                       // onChanged: (value) => setState(() {
                       //   organization = organization.copyWith(type: value);
                       // }),
