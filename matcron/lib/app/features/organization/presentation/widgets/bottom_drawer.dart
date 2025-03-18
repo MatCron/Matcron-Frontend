@@ -157,16 +157,16 @@ class OrganizationBottomDrawerState extends State<OrganizationBottomDrawer> {
                         organization = organization.copyWith(name: value);
                       }),
                     ),
-                    const SizedBox(height: 20),
-                    _buildDropdownField(
-                      label: "Organization Type",
-                      items: ["Hotel", "Hospital", "Other"],
-                      //initialValue: items[organization.type],
-                      //enabled: widget.isEditable,
-                      // onChanged: (value) => setState(() {
-                      //   organization = organization.copyWith(type: value);
-                      // }),
-                    ),
+                    // const SizedBox(height: 20),
+                    // _buildDropdownField(
+                    //   label: "Organization Type",
+                    //   items: ["Hotel", "Hospital", "Other"],
+                    //   initialValue: organization.type,
+                    //   enabled: widget.isEditable,
+                    //   onChanged: (value) => setState(() {
+                    //     organization = organization.copyWith(type: value);
+                    //   }),
+                    // ),
                     const SizedBox(height: 20),
                     _buildTextField(
                       label: "Email",
