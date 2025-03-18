@@ -9,7 +9,7 @@ import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/re
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_auth_state.dart';
 //import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 //import 'package:matcron/app/injection_container.dart';
-import 'package:matcron/app/features/auth/presentation/pages/register.dart';
+//import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/main.dart';
 import 'package:matcron/core/constants/constants.dart';
