@@ -65,7 +65,9 @@ class OrganizationFormPageState extends State<OrganizationFormPage> {
           county: _countyController.text,
           postalAddress: _addressLine1Controller.text,
           normalAddress: _addressLine2Controller.text,
-          type: _industryValue);
+          //type: _industryValue
+          type: 1
+          );
 
       var state = await _organizationRepository.addOrganization(entity);
 
