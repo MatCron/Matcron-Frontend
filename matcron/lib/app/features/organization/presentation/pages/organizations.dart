@@ -284,18 +284,18 @@ class OrganizationPageState extends State<OrganizationPage> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            Expanded(
-                              flex: 2,
-                              child: Text(
-                                org.type!,
-                                style: const TextStyle(
-                                  fontSize: 14.0,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
+                            // Expanded(
+                            //   flex: 2,
+                            //   child: Text(
+                            //     org.type!,
+                            //     style: const TextStyle(
+                            //       fontSize: 14.0,
+                            //       fontStyle: FontStyle.italic,
+                            //     ),
+                            //     textAlign: TextAlign.center,
+                            //     overflow: TextOverflow.ellipsis,
+                            //   ),
+                            //),
                             const SizedBox(width: 30.0),
                             GestureDetector(
                               onTap: () {
