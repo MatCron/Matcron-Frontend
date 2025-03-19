@@ -11,7 +11,7 @@ import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_a
 //import 'package:matcron/app/injection_container.dart';
 //import 'package:matcron/app/features/auth/presentation/pages/register.dart';
 //import 'package:matcron/app/injection_container.dart';
-import 'package:matcron/main.dart';
+import 'package:matcron/app/main.dart';
 import 'package:matcron/core/constants/constants.dart';
 
 
