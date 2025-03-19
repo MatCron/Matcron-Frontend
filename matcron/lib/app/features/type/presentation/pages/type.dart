@@ -194,6 +194,7 @@ class MattressTypePageState extends State<MattressTypePage> {
   }
 
   void _showDeleteConfirmationDialog(BuildContext context, String id) {
+    final theme = Theme.of(context);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -205,7 +206,7 @@ class MattressTypePageState extends State<MattressTypePage> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel', style: TextStyle(color: Colors.grey)),
+              child: Text('Cancel', style: TextStyle(color: theme.colorScheme.shadow)),
             ),
             TextButton(
               onPressed: () {
@@ -214,14 +215,14 @@ class MattressTypePageState extends State<MattressTypePage> {
               },
               child: Text(
                 'Delete',
-                style: TextStyle(color: Colors.red), // Red color for delete button
+                style: TextStyle(color: theme.colorScheme.error), // Red color for delete button
               ),
             ),
           ],
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: theme.colorScheme.surface,
         );
       },
     );
@@ -458,9 +459,9 @@ class MattressTypePageState extends State<MattressTypePage> {
                               _openBottomDrawer(context,
                                   type: type, isEditable: true);
                             },
-                            child: const CircleAvatar(
+                            child:  CircleAvatar(
                               radius: 15,
-                              backgroundColor: Colors.blue,
+                              backgroundColor:theme.colorScheme.secondary,
                               child: Icon(
                                 Icons.edit,
                                 color: Colors.white,
@@ -475,12 +476,12 @@ class MattressTypePageState extends State<MattressTypePage> {
                             onTap: () {
                               _showDeleteConfirmationDialog(context, type.id!);
                             },
-                            child: const CircleAvatar(
+                            child:  CircleAvatar(
                               radius: 15,
-                              backgroundColor: Colors.red,
+                              backgroundColor:theme.colorScheme.error,
                               child: Icon(
                                 Icons.delete,
-                                color: Colors.white,
+                                color: theme.colorScheme.surface,
                                 size: 14.0,
                               ),
                             ),

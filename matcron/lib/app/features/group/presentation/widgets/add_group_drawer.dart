@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matcron/app/features/group/data/models/group.dart';
 import 'package:matcron/app/features/organization/domain/entities/organization.dart';
-import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/core/resources/authorization.dart';
 
 class AddGroupDrawer extends StatefulWidget {
@@ -86,6 +85,7 @@ class _AddGroupDrawerState extends State<AddGroupDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Container(
       padding: EdgeInsets.only(
         left: 16.0,
@@ -93,8 +93,8 @@ class _AddGroupDrawerState extends State<AddGroupDrawer> {
         top: 16.0,
         bottom: MediaQuery.of(context).viewInsets.bottom + 16.0,
       ),
-      decoration: const BoxDecoration(
-        color: Colors.white,
+      decoration:  BoxDecoration(
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.vertical(top: Radius.circular(20.0)),
       ),
       child: _loading
@@ -109,10 +109,10 @@ class _AddGroupDrawerState extends State<AddGroupDrawer> {
                     children: [
                       Text(
                         "Add New Group",
-                        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: matcronPrimaryColor),
+                        style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: theme.colorScheme.primary),
                       ),
                       IconButton(
-                        icon: const Icon(Icons.close, color: Colors.grey),
+                        icon:  Icon(Icons.close, color: theme.colorScheme.shadow),
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
@@ -174,18 +174,18 @@ class _AddGroupDrawerState extends State<AddGroupDrawer> {
                     child: ElevatedButton(
                       onPressed: _senderOrgId == null ? null : _saveGroup, // Disable if ID is not loaded
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: matcronPrimaryColor,
+                        backgroundColor: theme.colorScheme.primary,
                         padding: const EdgeInsets.symmetric(vertical: 14.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                         ),
                       ),
-                      child: const Text(
+                      child:  Text(
                         "Save",
                         style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: theme.colorScheme.surface,
                         ),
                       ),
                     ),
@@ -209,6 +209,7 @@ class _AddGroupDrawerState extends State<AddGroupDrawer> {
   }
 
   InputDecoration _buildInputDecoration(String labelText) {
+    final theme = Theme.of(context);
     return InputDecoration(
       labelText: labelText,
       border: OutlineInputBorder(
@@ -216,14 +217,14 @@ class _AddGroupDrawerState extends State<AddGroupDrawer> {
         borderSide: BorderSide.none,
       ),
       filled: true,
-      fillColor: Colors.grey[200],
+      fillColor: theme.cardColor,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.grey[300]!, width: 1.5),
+        borderSide: BorderSide(color: theme.colorScheme.surface, width: 1.5),
         borderRadius: BorderRadius.circular(10.0),
       ),
       focusedBorder: OutlineInputBorder(
-        borderSide: const BorderSide(color: Colors.blue, width: 1.5),
+        borderSide:  BorderSide(color: theme.colorScheme.secondary, width: 1.5),
         borderRadius: BorderRadius.circular(10.0),
       ),
     );

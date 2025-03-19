@@ -82,6 +82,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   }
 
   void _showTransferOutDialog() {
+    final theme = Theme.of(context);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -101,9 +102,9 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                 Navigator.pop(context); // Close dialog
                 _performTransferOut(); // Call transfer logic
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+              style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.error),
               child:
-                  const Text("Confirm", style: TextStyle(color: Colors.white)),
+                   Text("Confirm", style: TextStyle(color: theme.colorScheme.surface)),
             ),
           ],
         );
@@ -116,6 +117,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   }
 
   void _performRemove(String mattressId, MattressDto m) async {
+    final theme = Theme.of(context);
     bool success =
         await widget.removeMattressFromGroup(mattressId, widget.group.id);
 
@@ -147,15 +149,16 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     } else {
       // Show error Snackbar
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+         SnackBar(
           content: Text("Failed to remove mattress from group."),
-          backgroundColor: Colors.red,
+          backgroundColor: theme.colorScheme.error,
         ),
       );
     }
   }
 
   Future<bool?> _performAdd(Set<String> mattressIds) async {
+    final theme = Theme.of(context);
     final list = mattressIds.toList();
     bool success = await widget.addNattressesToGroup(list, widget.group.id);
 
@@ -166,9 +169,9 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
       return true;
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+         SnackBar(
           content: Text("Failed to add mattresses to group."),
-          backgroundColor: Colors.red,
+          backgroundColor:theme.colorScheme.error,
         ),
       );
       return false;
@@ -281,12 +284,13 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
   }
 
   void _openAddMattressDrawer() {
+    final theme = Theme.of(context);
     // Declare selectedIds outside the builder to persist state
     Set<String> selectedIds = {};
 
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
@@ -330,7 +334,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: matcronPrimaryColor,
+                        color: theme.colorScheme.primary,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -344,9 +348,9 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                             },
                             decoration: InputDecoration(
                               hintText: "Search Mattress",
-                              hintStyle: const TextStyle(color: Colors.grey),
+                              hintStyle:  TextStyle(color: theme.colorScheme.shadow),
                               prefixIcon:
-                                  const Icon(Icons.search, color: Colors.grey),
+                                   Icon(Icons.search, color: theme.colorScheme.shadow),
                               suffixIcon: IconButton(
                                 icon: Image.asset(
                                   'assets/images/scan_icon.png', // Path to your scan icon asset
@@ -362,7 +366,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                                 borderSide: BorderSide.none,
                               ),
                               filled: true,
-                              fillColor: Colors.grey[200],
+                              fillColor: theme.cardColor,
                               contentPadding:
                                   const EdgeInsets.symmetric(vertical: 8.0),
                             ),
@@ -383,16 +387,16 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                                 Text(
                                   filteredMattresses[index].type ??
                                       "Unknown Type",
-                                  style: const TextStyle(
+                                  style:  TextStyle(
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.black,
+                                    color: theme.colorScheme.onSurface,
                                   ),
                                 ),
                                 Row(
                                   children: [
-                                    const Text(
+                                     Text(
                                       "Status: ",
-                                      style: TextStyle(color: Colors.grey),
+                                      style: TextStyle(color: theme.colorScheme.shadow),
                                     ),
                                     Text(
                                       "${mattressStatus[filteredMattresses[index].status!]['Text']}",
@@ -405,12 +409,12 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                                 ),
                                 Text(
                                   "Location: ${filteredMattresses[index].location ?? 'Unknown Location'}",
-                                  style: const TextStyle(color: Colors.grey),
+                                  style:  TextStyle(color:theme.colorScheme.shadow),
                                 ),
                               ],
                             ),
-                            checkColor: matcronPrimaryColor,
-                            activeColor: Colors.white,
+                            checkColor: theme.colorScheme.primary,
+                            activeColor: theme.colorScheme.surface,
                             value: selectedIds.contains(mattressId),
                             onChanged: (bool? value) {
                               setModalState(() {
@@ -435,9 +439,9 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                               selectedIds.clear();
                             });
                           },
-                          child: const Text(
+                          child:  Text(
                             "Clear",
-                            style: TextStyle(color: Colors.red),
+                            style: TextStyle(color: theme.colorScheme.error),
                           ),
                         ),
                         ElevatedButton(
@@ -483,15 +487,15 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: matcronPrimaryColor,
+                            backgroundColor: theme.colorScheme.primary,
                             padding: const EdgeInsets.symmetric(
                                 vertical: 14, horizontal: 24),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8)),
                           ),
-                          child: const Text(
+                          child:  Text(
                             "Add Mattresses",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: theme.colorScheme.surface),
                           ),
                         ),
                       ],
@@ -512,17 +516,18 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     required String date,
     required IconData icon,
   }) {
+    final theme = Theme.of(context);
     return Expanded(
       child: Container(
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: Colors.grey[300]!),
+          border: Border.all(color: theme.cardColor),
         ),
         child: Column(
           children: [
-            Icon(icon, color: Colors.blue, size: 30),
+            Icon(icon, color: theme.colorScheme.secondary, size: 30),
             const SizedBox(height: 8),
             Text(
               title,
@@ -531,13 +536,13 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
             const SizedBox(height: 4),
             Text(
               organization,
-              style: const TextStyle(fontSize: 14, color: Colors.black),
+              style:  TextStyle(fontSize: 14, color: theme.colorScheme.onSurface),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 4),
             Text(
               date,
-              style: const TextStyle(fontSize: 14, color: Colors.grey),
+              style:  TextStyle(fontSize: 14, color: theme.colorScheme.shadow),
             ),
           ],
         ),
@@ -547,15 +552,16 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: theme.colorScheme.surface,
         elevation: 0,
-        iconTheme: const IconThemeData(color: Colors.black),
-        title: const Text(
+        iconTheme:  IconThemeData(color: theme.colorScheme.onSurface),
+        title:  Text(
           "Group Details",
           style: TextStyle(
-            color: Colors.black,
+            color: theme.colorScheme.onSurface,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -563,7 +569,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
       body: _loading
           ? Center(
               child: CircularProgressIndicator(
-              color: matcronPrimaryColor,
+              color: theme.colorScheme.primary,
             )) // Show loading spinner
           : _error
               ? const Center(
@@ -577,26 +583,26 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: Colors.grey[100],
+                          color: theme.cardColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
+                             Text(
                               "Description",
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.black,
+                                color: theme.colorScheme.onSurface,
                               ),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               widget.group.description ?? "No description",
-                              style: const TextStyle(
+                              style:  TextStyle(
                                 fontSize: 16,
-                                color: Colors.grey,
+                                color:theme.colorScheme.shadow,
                               ),
                             ),
                           ],
@@ -639,9 +645,9 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                             margin: const EdgeInsets.symmetric(vertical: 8.0),
                             padding: const EdgeInsets.all(16.0),
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: theme.colorScheme.surface,
                               borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.grey[300]!),
+                              border: Border.all(color: theme.cardColor),
                             ),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -653,18 +659,18 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                                     children: [
                                       Text(
                                         mattress.mattressTypeName ?? "Unknown",
-                                        style: const TextStyle(
+                                        style:  TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,
-                                          color: Colors.black,
+                                          color: theme.colorScheme.onSurface,
                                         ),
                                       ),
                                       const SizedBox(height: 5),
                                       Text(
                                         mattress.location ?? "Unknown",
-                                        style: const TextStyle(
+                                        style:  TextStyle(
                                           fontSize: 14,
-                                          color: Colors.grey,
+                                          color: theme.colorScheme.shadow,
                                         ),
                                       ),
                                     ],
@@ -700,11 +706,11 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                     child: ElevatedButton.icon(
                       onPressed:
                           _showTransferOutDialog, // Open confirmation dialog
-                      icon: const Icon(Icons.exit_to_app, color: Colors.white),
-                      label: const Text("Transfer Out",
-                          style: TextStyle(color: Colors.white)),
+                      icon:  Icon(Icons.exit_to_app, color: theme.colorScheme.surface),
+                      label:  Text("Transfer Out",
+                          style: TextStyle(color: theme.colorScheme.surface)),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: matcronPrimaryColor,
+                        backgroundColor: theme.colorScheme.primary,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8)),
@@ -718,11 +724,11 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                 onPressed: () {
                   _openAddMattressDrawer();
                 },
-                icon: const Icon(Icons.add, color: Colors.white),
-                label: const Text("Add Mattresses",
-                    style: TextStyle(color: Colors.white)),
+                icon:  Icon(Icons.add, color: theme.colorScheme.surface),
+                label:  Text("Add Mattresses",
+                    style: TextStyle(color: theme.colorScheme.surface)),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: matcronPrimaryColor,
+                  backgroundColor: theme.colorScheme.primary,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8)),

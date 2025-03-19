@@ -356,7 +356,7 @@ void _initializeUserType() async {
   void _openFilterBottomDrawer(ThemeData theme) {
     showModalBottomSheet(
       context: context,
-      backgroundColor:theme.colorScheme.onPrimary,
+      backgroundColor:theme.colorScheme.surface,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
@@ -384,9 +384,10 @@ void _initializeUserType() async {
                         itemCount: mattressStatus.length,
                         itemBuilder: (context, index) {
                           String statusText =
+                          
                               mattressStatus[index]['Text'] as String;
-                          return CheckboxListTile(
-                            title: Text(statusText),
+                                                    return CheckboxListTile(
+                            title: Text(statusText,style: TextStyle(color: theme.colorScheme.onSurface), ),
                             checkColor: theme.colorScheme.primary,
                             activeColor: theme.colorScheme.onPrimary,
                             value: tempSelectedStatuses.contains(index),
@@ -415,7 +416,7 @@ void _initializeUserType() async {
                             });
                             Navigator.pop(context);
                           },
-                          child: Text("Clear", style: TextStyle(color: Colors.red),),
+                          child: Text("Clear", style: TextStyle(color: theme.colorScheme.error),),
                         ),
                         ElevatedButton(
                           style: ButtonStyle(backgroundColor: WidgetStateProperty.all(theme.colorScheme.primary)),

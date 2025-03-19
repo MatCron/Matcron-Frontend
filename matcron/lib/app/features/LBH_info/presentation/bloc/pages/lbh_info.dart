@@ -5,11 +5,12 @@ class MattressDimensionsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
-    final backgroundColor = const Color(0xFFE5E5E5);
-    final primaryColor = const Color.fromARGB(255, 80, 194, 201);
+    final backgroundColor =theme.colorScheme.surface;
+    final primaryColor = theme.colorScheme.primary;
 
     // Dynamic styles
     final titleStyle = TextStyle(
@@ -19,12 +20,12 @@ class MattressDimensionsPage extends StatelessWidget {
     );
     final labelStyle = TextStyle(
       fontSize: screenWidth * 0.035, 
-      color: Colors.black54,
+      color: theme.colorScheme.onSurface,
       fontStyle: FontStyle.italic,
     );
     final valueStyle = TextStyle(
       fontSize: screenWidth * 0.04, 
-      color: Colors.black87,
+      color:theme.colorScheme.onSurface.withOpacity(0.32),
       fontWeight: FontWeight.w600,
     );
 
@@ -40,7 +41,7 @@ class MattressDimensionsPage extends StatelessWidget {
             "<",
             style: TextStyle(
               fontSize: screenWidth * 0.08,
-              color: Color.fromARGB(255, 80, 194, 201), 
+              color: theme.colorScheme.primary, 
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -59,18 +60,18 @@ class MattressDimensionsPage extends StatelessWidget {
             children: [
               Text(
                 "Here are the detailed dimensions of your mattress. Use this information to ensure proper fitting in your bed frame and bedding.",
-                style: TextStyle(fontSize: screenWidth * 0.04, color: Colors.black87),
+                style: TextStyle(fontSize: screenWidth * 0.04, color: theme.colorScheme.onSurface),
               ),
               SizedBox(height: screenHeight * 0.02),
 
               Center(
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.colorScheme.surface,
                     borderRadius: BorderRadius.circular(20.0),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black12,
+                        color:theme.colorScheme.onSurface.withOpacity(0.1),
                         blurRadius: 5,
                         offset: Offset(0, 3),
                       ),
@@ -101,11 +102,11 @@ class MattressDimensionsPage extends StatelessWidget {
 
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.colorScheme.surface,
                   borderRadius: BorderRadius.circular(20.0),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black12,
+                      color:theme.colorScheme.onSecondary,
                       blurRadius: 5,
                       offset: Offset(0, 3),
                     ),
@@ -114,7 +115,7 @@ class MattressDimensionsPage extends StatelessWidget {
                 padding: EdgeInsets.all(screenWidth * 0.04),
                 child: Text(
                   "All measurements are approximate and can vary slightly. Ensure to measure your bed frame and confirm that these dimensions meet your room’s space requirements.",
-                  style: TextStyle(fontSize: screenWidth * 0.035, color: Colors.black87),
+                  style: TextStyle(fontSize: screenWidth * 0.035, color: theme.colorScheme.onSurface),
                 ),
               ),
             ],

@@ -17,7 +17,7 @@ class OrganizationModel extends OrganizationEntity {
     return OrganizationModel(
       id: map['id'] ?? "",
       name: map['name'] ?? "",
-      type: map['organisationType'] ?? "",
+      type: map['organisationType'] is int ? map['organisationType'] : int.tryParse(map['organisationType'].toString()) ?? 0,
       email: map['email'] ?? "",
       registrationNumber: map['registrationNo'] ?? "",
       description: map['description'] ?? "",

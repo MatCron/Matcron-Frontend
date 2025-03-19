@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
-import 'package:matcron/config/theme/app_theme.dart';
-import 'package:matcron/core/constants/constants.dart';
 
 class TransferOutMattressPage extends StatefulWidget {
   final List<GroupEntity> groups;
@@ -39,8 +37,9 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: HexColor("#E5E5E5"),
+      backgroundColor: theme.cardColor,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -51,9 +50,9 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
             Align(
               alignment: Alignment.topRight,
               child: IconButton(
-                icon: const Icon(
+                icon:  Icon(
                   Icons.close,
-                  color: Colors.red,
+                  color: theme.colorScheme.error,
                   size: 30,
                 ),
                 onPressed: () {
@@ -65,12 +64,12 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
             const SizedBox(height: 40), // Adjust spacing
 
             // Title
-            const Text(
+             Text(
               "Add Mattresses To Group",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.black,
+                color:  theme.colorScheme.onSurface,
               ),
               textAlign: TextAlign.center,
             ),
@@ -82,7 +81,7 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               decoration: BoxDecoration(
                 color:
-                    const Color.fromARGB(255, 255, 255, 255).withOpacity(0.5),
+                     theme.colorScheme.surface.withOpacity(0.8),
                 borderRadius: BorderRadius.circular(25.0),
               ),
               child: DropdownButtonFormField<String>(
@@ -114,7 +113,7 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
                 // Cancel Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red,
+                    backgroundColor: theme.colorScheme.error,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40.0, vertical: 12.0),
                     shape: RoundedRectangleBorder(
@@ -124,11 +123,11 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: const Text(
+                  child:  Text(
                     "Cancel",
                     style: TextStyle(
                       fontSize: 18,
-                      color: Colors.white,
+                      color:  theme.colorScheme.surface,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -137,7 +136,7 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
                 // Save Button
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: matcronPrimaryColor,
+                    backgroundColor: theme.colorScheme.primary,
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40.0, vertical: 12.0),
                     shape: RoundedRectangleBorder(
@@ -155,11 +154,11 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
                             selectedGroupId!,
                           );
                         },
-                  child: const Text(
+                  child:  Text(
                     "Save",
                     style: TextStyle(
                       fontSize: 18,
-                      color: Colors.white,
+                      color:  theme.colorScheme.surface,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
