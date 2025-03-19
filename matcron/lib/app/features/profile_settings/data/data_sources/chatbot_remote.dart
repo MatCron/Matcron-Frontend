@@ -192,9 +192,7 @@ Future<void> sendMessage(String message) async {
     print("WebSocket is not connected. Retrying...");
     await connect(); // Ensure connection is established
   }
-
-  final token = await _getAuthToken();
-  final request = jsonEncode({"message": message, "token": token});
+  final request = jsonEncode({"message": message});
 
   print("📤 Sending message: $message");
 

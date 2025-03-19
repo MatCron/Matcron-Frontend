@@ -20,7 +20,7 @@ import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/config/theme/theme_cubit.dart';
 import 'package:matcron/core/resources/authorization.dart';
-import 'app/features/mattress/presentation/pages/mattress_page.dart';
+import 'features/mattress/presentation/pages/mattress_page.dart';
 
 void main() async {
   await initializeDependencies();

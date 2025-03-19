@@ -289,14 +289,6 @@ class _HelpPageState extends State<HelpPage> {
     super.initState();
     _loadUserProfilePicture();
     _initializeChatbot();
-
-    _getChatbotResponse.execute().listen((response) {
-      setState(() {
-        messages.add({"MatBot": response.text});
-        isTyping = false;
-      });
-      flutterTts.speak(response.text);
-    });
   }
 
   Future<void> _loadUserProfilePicture() async {
@@ -315,6 +307,7 @@ class _HelpPageState extends State<HelpPage> {
     _controller.clear();
 
     _getChatbotResponse.sendMessage(text);
+    print(text);
   }
 
    Future<void> _initializeChatbot() async {
@@ -324,7 +317,6 @@ class _HelpPageState extends State<HelpPage> {
       messages.add({"MatBot": response.text});
       isTyping = false;
     });
-    flutterTts.speak(response.text);
   });
 }
   void _startListening() async {
@@ -392,42 +384,57 @@ class _HelpPageState extends State<HelpPage> {
                     ),
                   )
                 : ListView.builder(
-                    itemCount: messages.length,
-                    itemBuilder: (context, index) {
-                      final message = messages[index];
-                      final isUser = message.containsKey("user");
-                      return Align(
-                        alignment: isUser ? Alignment.centerLeft : Alignment.centerRight,
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                          padding: const EdgeInsets.all(12),
-                          decoration: BoxDecoration(
-                            color: isUser ? theme.colorScheme.primary : theme.cardColor,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (isUser)
-                                CircleAvatar(
-                                  backgroundImage: AssetImage(_userProfilePicture),
-                                ),
-                              const SizedBox(width: 8),
-                              Text(
-                                message.values.first,
-                                style: TextStyle(color: theme.colorScheme.onSurface, fontSize: 12),
-                              ),
-                              if (!isUser) const SizedBox(width: 8),
-                              if (!isUser)
-                                const CircleAvatar(
-                                  backgroundImage: AssetImage('assets/images/robot.gif'),
-                                ),
-                            ],
-                          ),
+              itemCount: messages.length,
+              itemBuilder: (context, index) {
+                final message = messages[index];
+                final isUser = message.containsKey("user");
+                
+                return Align(
+                  alignment: isUser ? Alignment.centerLeft : Alignment.centerRight,
+                  child: Column(
+                    crossAxisAlignment: isUser ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: isUser ? theme.colorScheme.primary : theme.cardColor,
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                      );
-                    },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (isUser)
+                              CircleAvatar(
+                                backgroundImage: AssetImage(_userProfilePicture),
+                              ),
+                            const SizedBox(width: 8),
+                            Text(
+                              message.values.first,
+                              style: TextStyle(color: theme.colorScheme.onSurface, fontSize: 12),
+                            ),
+                            if (!isUser) const SizedBox(width: 8),
+                            if (!isUser)
+                              const CircleAvatar(
+                                backgroundImage: AssetImage('assets/images/robot.gif'),
+                              ),
+                          ],
+                        ),
+                      ),
+                      // Add a button below the message box
+                      if(!isUser) TextButton(
+                        onPressed: () {
+                          // Handle button action
+                          final this_message = message.values.first;
+                          flutterTts.speak(this_message);
+                        },
+                        child: const Icon(Icons.volume_up),
+                      ),
+                    ],
                   ),
+                );
+              },
+            ),
           ),
           if (isTyping)
             const Padding(
