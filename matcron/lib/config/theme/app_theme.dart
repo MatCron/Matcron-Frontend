@@ -18,7 +18,7 @@ ThemeData lightTheme() {
   return ThemeData(
     brightness: Brightness.light,
     primaryColor: HexColor('50C2C9'), // Light theme primary color
-    scaffoldBackgroundColor: Colors.white,
+    scaffoldBackgroundColor:HexColor('E7E8E8'),
 
     appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFF50C2C9), // Light mode app bar
@@ -53,7 +53,7 @@ ThemeData darkTheme() {
   return ThemeData(
     brightness: Brightness.dark,
     primaryColor: HexColor('38A3A5'), // Dark theme primary color
- scaffoldBackgroundColor: Colors.black,
+ scaffoldBackgroundColor: Color.fromARGB(255, 17, 17, 17),
        appBarTheme: const AppBarTheme(
       backgroundColor: Color(0xFF38A3A5), // Dark mode app bar
       iconTheme: IconThemeData(color: Colors.white),
