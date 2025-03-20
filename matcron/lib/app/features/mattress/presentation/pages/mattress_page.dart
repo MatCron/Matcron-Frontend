@@ -14,6 +14,7 @@ import 'package:matcron/app/features/mattress/presentation/widgets/bottom_drawer
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dart';
 import 'package:matcron/app/injection_container.dart';
+import 'package:matcron/config/languages.dart';
 import 'package:matcron/core/components/transfer_out/transfer_reason.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/core/components/search_bar/search_bar.dart' as custom;
@@ -41,6 +42,7 @@ class MattressPageState extends State<MattressPage> {
   List<GroupEntity> groups = [];
   bool canRefreshList = false;
   int userType = 0;
+  String? language;
 
   // New: List to hold selected status filters (assuming statuses are represented as indexes)
   List<int> selectedFilterStatuses = [];
@@ -64,8 +66,10 @@ class MattressPageState extends State<MattressPage> {
 
 void _initializeUserType() async {
   int type = (await AuthorizationService().getUserType())!;
+  String? lang = await AuthorizationService().getLanguage();
   setState(() {
     userType = type;
+    language = lang ?? "EN";
   }); 
 }
 
@@ -100,7 +104,7 @@ void _initializeUserType() async {
               borderRadius: BorderRadius.circular(12.0),
             ),
             title: Text(
-              "Import Group",
+              languages[language]!["Mattress"]!["ImportGroup"]!,
               style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -110,12 +114,12 @@ void _initializeUserType() async {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _infoRow("Name", entity.name ?? "N/A",theme),
-                _infoRow("Description", entity.description ?? "N/A",theme),
-                _infoRow("Mattress Count", entity.mattressCount.toString(),theme),
+                _infoRow(languages[language]!["Mattress"]!["ImportGroup"]!, entity.name ?? "N/A",theme),
+                _infoRow(languages[language]!["Mattress"]!["PreviewDesc"]!, entity.description ?? "N/A",theme),
+                _infoRow(languages[language]!["Mattress"]!["PreviewCount"]!, entity.mattressCount.toString(),theme),
                 _infoRow("Sender Org", entity.senderOrganisationName ?? "N/A",theme),
-                _infoRow("Status", groupStatus[entity.status! - 1],theme),
-                _infoRow("Transfer Purpose",
+                _infoRow(languages[language]!["Mattress"]!["PreviewStatus"]!, groupStatus[entity.status! - 1],theme),
+                _infoRow(languages[language]!["Mattress"]!["PreviewPurpose"]!,
                     transferOutPurposes[entity.transferOutPurpose! - 1],theme),
               ],
             ),
@@ -123,7 +127,7 @@ void _initializeUserType() async {
               TextButton(
                 onPressed: () => Navigator.pop(context),
                 child:
-                    Text("Cancel", style: TextStyle(color: Colors.redAccent)),
+                    Text(languages[language]!["Mattress"]!["PreviewCancel"]!, style: TextStyle(color: Colors.redAccent)),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -141,7 +145,7 @@ void _initializeUserType() async {
                     }
                   });
                 },
-                child: Text("Import", style: TextStyle(color: theme.colorScheme.onPrimary)),
+                child: Text(languages[language]!["Mattress"]!["PreviewImport"]!, style: TextStyle(color: theme.colorScheme.onPrimary)),
               ),
             ],
           );
@@ -158,8 +162,8 @@ void _initializeUserType() async {
       Future.delayed(Duration.zero, () {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("Mattresses imported successfully!"),
+            SnackBar(
+              content: Text(languages[language]!["Mattress"]!["PreviewImport"]!),
               backgroundColor: Colors.green,
             ),
           );
@@ -334,8 +338,8 @@ void _initializeUserType() async {
     if (addState is DataSuccess) {
       Navigator.pop(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Mattresses added to group successfully!"),
+        SnackBar(
+          content: Text(languages[language]!["Mattress"]!["MattressAddedToGroup"]!),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 3),
         ),
@@ -343,7 +347,7 @@ void _initializeUserType() async {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Mattresses already added to group."),
+          content: Text(languages[language]!["Mattress"]!["MattressAlreadyAdded"]!),
           backgroundColor: Colors.red,
           duration: const Duration(seconds: 3),
         ),
@@ -373,7 +377,7 @@ void _initializeUserType() async {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Filter by Status",
+                    Text(languages[language]!["Mattress"]!["FilterByStatus"]!,
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold, color: theme.colorScheme.primary)),
                     const SizedBox(height: 10),
@@ -489,7 +493,7 @@ void _initializeUserType() async {
         children: [
           // Search bar
           custom.SearchBar(
-            placeholder: "Search Mattress",
+            placeholder: languages[language]!["Mattress"]!["SearchMattress"]!,
             canRefreshList: canRefreshList,
             searchMattress: () => _openRfidModal(context, 'SEARCH', theme),
             refreshList: () => _refreshList(),
@@ -628,10 +632,10 @@ void _initializeUserType() async {
           Row(
             children: [
               const SizedBox(width: 50.0),
-              Expanded(child: Text("Type", style: _headerStyle(theme))),
-              Expanded(child: Text("Location", style: _headerStyle(theme))),
+              Expanded(child: Text(languages[language]!["Mattress"]!["TypeHeader"]!, style: _headerStyle(theme))),
+              Expanded(child: Text(languages[language]!["Mattress"]!["LocationHeader"]!, style: _headerStyle(theme))),
               const SizedBox(width: 30.0),
-              Expanded(child: Text("Status", style: _headerStyle(theme))),
+              Expanded(child: Text(languages[language]!["Mattress"]!["StatusHeader"]!, style: _headerStyle(theme))),
             ],
           ),
           Divider(color: theme.dividerColor),
@@ -640,7 +644,7 @@ void _initializeUserType() async {
             child: filteredMattresses.isEmpty
                 ? Center(
                     child: Text(
-                      "No mattresses available",
+                      languages[language]!["Mattress"]!["NoMattress"]!,
                       style: TextStyle(color: theme.colorScheme.onBackground),
                     ),
                   )
@@ -788,14 +792,14 @@ void _initializeUserType() async {
                                                 TextSpan(
                                                   children: [
                                                     TextSpan(
-                                                      text: "Rotate: ",
+                                                      text: "${languages[language]!["Mattress"]!["Rotate"]}: ",
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.bold),
                                                     ),
                                                     TextSpan(
                                                       text:
-                                                          "${mattress.daysToRotate} days",
+                                                          "${mattress.daysToRotate} ${languages[language]!["Mattress"]!["Days"]}",
                                                     ),
                                                   ],
                                                 ),
@@ -806,7 +810,7 @@ void _initializeUserType() async {
                                                   children: [
                                                     TextSpan(
                                                       text:
-                                                          "End of Lifecycle:\n",
+                                                          "EndOfLifecycle:\n",
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.bold),
@@ -826,7 +830,7 @@ void _initializeUserType() async {
                                                   children: [
                                                     TextSpan(
                                                       text:
-                                                          "Organization: ",
+                                                          "${languages[language]!["Mattress"]!["Organization"]}: ",
                                                       style: TextStyle(
                                                           fontWeight:
                                                               FontWeight.bold),
