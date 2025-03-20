@@ -4,7 +4,7 @@ import 'package:matcron/app/features/LBH_info/presentation/bloc/pages/lbh_info.d
 import 'package:matcron/app/features/recycling_info/presentation/recycling_info.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/domain/repositories/type_repository.dart';
-import 'package:matcron/app/main.dart';
+import 'package:matcron/main.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/resources/data_state.dart'; // Adjust import as needed
 import 'package:matcron/app/features/rotation_info/presentation/pages/rotation_info.dart';

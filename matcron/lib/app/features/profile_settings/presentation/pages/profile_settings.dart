@@ -15,7 +15,7 @@ import 'package:matcron/app/features/organization/presentation/bloc/remote_org_b
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/core/resources/authorization.dart'; 
-import 'package:matcron/app/main.dart';
+import 'package:matcron/main.dart';
 
 class ProfileSettings extends StatefulWidget {
   const ProfileSettings({super.key});
