@@ -50,7 +50,6 @@ dependencies:
   provider: ^6.1.2
   flutter_tts: ^3.8.5         
   speech_to_text: ^6.1.1      
-  provider: ^6.1.2   
   web_socket_channel: ^3.0.2
   xml: ^6.3.0
   audioplayers: ^6.4.0
