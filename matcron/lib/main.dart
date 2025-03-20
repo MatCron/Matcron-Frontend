@@ -12,6 +12,7 @@ import 'package:matcron/app/features/organization/presentation/bloc/remote_org_e
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/pages/type.dart';
+import 'package:matcron/config/languages.dart';
 import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/components/splash_screen.dart';
 import 'dart:async';
@@ -20,13 +21,24 @@ import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/config/theme/app_theme.dart';
 import 'package:matcron/config/theme/theme_cubit.dart';
 import 'package:matcron/core/resources/authorization.dart';
+import 'package:matcron/core/resources/language_provider.dart';
 import 'app/features/mattress/presentation/pages/mattress_page.dart';
+import 'package:provider/provider.dart'; // Add this import for MultiProvider
 
 void main() async {
   await initializeDependencies();
   runApp(
-    BlocProvider(
-      create: (context) => ThemeCubit(),
+    MultiProvider(
+      providers: [
+        // Add your ThemeCubit provider here
+        BlocProvider(
+          create: (context) => ThemeCubit(),
+        ),
+        // Add the LanguageProvider here
+        ChangeNotifierProvider(
+          create: (context) => LanguageProvider()..loadLanguage(),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
@@ -70,11 +82,13 @@ class _SplashScreenWrapperState extends State<SplashScreenWrapper> {
 
   Future<void> _checkAuthToken() async {
     String? token = await _authService.getToken();
+    bool? tokenExpired = await _authService.isTokenExpired();
+
     if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => token != null && token.isNotEmpty
+        builder: (context) => token != null && token.isNotEmpty && !tokenExpired
             ? const MyHomePage()
             : const InitialScreens(),
       ),
@@ -115,13 +129,24 @@ class _MyHomePageState extends State<MyHomePage> {
   final _pageController = PageController();
   final NotchBottomBarController _controller = NotchBottomBarController(index: 0);
   int _selectedPageIndex = 0;
+  String? language;
+  late LanguageProvider languageProvider;
 
   @override
   void initState() {
     super.initState();
+    languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+    _initializeLanguage();
     _selectedPageIndex = widget.startPageIndex;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _pageController.jumpToPage(_selectedPageIndex);
+    });
+  }
+
+  Future<void> _initializeLanguage() async {
+    String? lang = await AuthorizationService().getLanguage();
+    setState(() {
+      language = lang ?? "EN"; // Default to "EN" if null
     });
   }
 
@@ -138,7 +163,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       body: Column(
         children: [
-          Header(title: ["Dashboard", "Mattress", "Types", "Group"][_selectedPageIndex]),
+          Consumer<LanguageProvider>(
+            builder: (context, languageProvider, child) {
+              return Header(
+                title: [
+                  languages[languageProvider.currentLanguage]!["Header"]!["Dashboard"]!,
+                  languages[languageProvider.currentLanguage]!["Header"]!["Mattress"]!,
+                  languages[languageProvider.currentLanguage]!["Header"]!["Types"]!,
+                  languages[languageProvider.currentLanguage]!["Header"]!["Group"]!,
+                ][_selectedPageIndex],
+              );
+            },
+          ),
           Expanded(
             child: PageView(
               controller: _pageController,

@@ -14,7 +14,11 @@ import 'package:matcron/app/features/profile_settings/presentation/pages/about_u
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
 import 'package:matcron/app/injection_container.dart';
-import 'package:matcron/core/resources/authorization.dart'; 
+import 'package:matcron/core/resources/authorization.dart';
+import 'package:matcron/core/resources/language_provider.dart';
+import 'package:provider/provider.dart'; 
+
+// Assuming you have AuthorizationService already set up
 
 class ProfileSettings extends StatefulWidget {
   const ProfileSettings({super.key});
@@ -40,19 +44,16 @@ class ProfileSettingsState extends State<ProfileSettings> {
     });
   }
 
-  Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-      });
-    }
+  void _changeLanguage(String languageCode) async {
+    final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+    await languageProvider.setLanguage(languageCode);  // Update language globally
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final languageProvider = Provider.of<LanguageProvider>(context);
+
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
@@ -69,6 +70,15 @@ class ProfileSettingsState extends State<ProfileSettings> {
           _buildProfileHeader(theme),
           _buildGroupedContainer(theme),
           _buildGroupedContainer1(theme),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: _createNavigationItem(
+              icon: Icons.language,
+              text: 'Change Language (${languageProvider.currentLanguage})', // Show current language
+              theme: theme,
+              onTap: () => _showLanguageSelectionDialog(),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: _createNavigationItem(
@@ -151,11 +161,11 @@ class ProfileSettingsState extends State<ProfileSettings> {
     );
   }
 
-  Widget _createNavigationItem({required IconData icon, required String text, required Widget destination, required ThemeData theme}) {
+  Widget _createNavigationItem({required IconData icon, required String text, Widget? destination, required ThemeData theme, Function()? onTap}) {
     return ListTile(
       leading: Icon(icon, color: theme.colorScheme.onSurface),
       title: Text(text, style: TextStyle(color: theme.colorScheme.onSurface)),
-      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => destination)),
+      onTap: onTap ?? (destination != null ? () => Navigator.push(context, MaterialPageRoute(builder: (context) => destination)) : null),
     );
   }
 
@@ -175,5 +185,52 @@ class ProfileSettingsState extends State<ProfileSettings> {
         );
       },
     );
+  }
+
+  void _showLanguageSelectionDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select Language'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                title: const Text('English'),
+                onTap: () {
+                  _changeLanguage('EN');
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Deutsch'),
+                onTap: () {
+                  _changeLanguage('DE');
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Español'),
+                onTap: () {
+                  _changeLanguage('ES');
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path);
+      });
+    }
   }
 }
