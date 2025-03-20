@@ -38,7 +38,7 @@ dependencies:
   animated_notch_bottom_bar: ^1.0.0
   crypto: ^3.0.6
   encrypt: ^5.0.3
-  flutter_secure_storage: ^8.1.0
+  flutter_secure_storage: ^9.0.0
   nfc_manager: ^3.5.0
   intl: ^0.17.0
   dartz: ^0.10.1
@@ -47,9 +47,9 @@ dependencies:
   shared_preferences: ^2.5.2
   sqflite: ^2.4.1
   path: ^1.9.0
+  provider: ^6.1.2
   flutter_tts: ^3.8.5         
   speech_to_text: ^6.1.1      
-  provider: ^6.1.2   
   web_socket_channel: ^3.0.2
   xml: ^6.3.0
   audioplayers: ^6.4.0
