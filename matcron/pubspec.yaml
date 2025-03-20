@@ -21,7 +21,6 @@ dependencies:
 
   vibration: ^1.7.5
 
-  audioplayers: ^6.1.0
 
   google_fonts: ^4.0.3
 
@@ -53,6 +52,7 @@ dependencies:
   provider: ^6.1.2   
   web_socket_channel: ^3.0.2
   xml: ^6.3.0
+  audioplayers: ^6.4.0
 
 
 dev_dependencies:
@@ -114,3 +114,4 @@ flutter:
     - assets/images/robot.gif
     - assets/images/robot-waving.gif
     - assets/images/download.gif
+    - assets/images/grouping.gif

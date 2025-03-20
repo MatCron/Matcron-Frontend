@@ -15,6 +15,7 @@ import 'package:matcron/app/features/organization/presentation/bloc/remote_org_b
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
 import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/core/resources/authorization.dart'; 
+import 'package:matcron/main.dart';
 
 class ProfileSettings extends StatefulWidget {
   const ProfileSettings({super.key});
@@ -26,6 +27,7 @@ class ProfileSettings extends StatefulWidget {
 class ProfileSettingsState extends State<ProfileSettings> {
   int userType = 0;
   File? _imageFile;
+   final AuthorizationService _authService = AuthorizationService();
 
   @override
   void initState() {
@@ -48,6 +50,16 @@ void _initializeUserType() async {
       setState(() {
         _imageFile = File(pickedFile.path);
       });
+    }
+  }
+
+  void _logout() async {
+    _authService.deleteToken(); // Delete token
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const InitialScreens()),
+      );
     }
   }
 
@@ -79,6 +91,18 @@ void _initializeUserType() async {
               theme: theme,
             ),
           ),
+             Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+            child: ElevatedButton(
+              onPressed: _logout,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.cardColor, // Logout color
+                                padding: const EdgeInsets.all(15),
+              ),
+              child:  Text("Log Out", style: TextStyle(fontSize: 16, color: theme.colorScheme.primary)),
+            ),
+          ),
+    
         ],
       ),
     );
@@ -178,3 +202,5 @@ void _initializeUserType() async {
     );
   }
 }
+
+
