@@ -29,7 +29,7 @@ class HeaderState extends State<Header> {
               style: TextStyle(
                 fontSize: 30.0,
                 fontWeight: FontWeight.bold,
-                color: matcronPrimaryColor,
+                color: theme.colorScheme.primary,
               ),
             ),
 
