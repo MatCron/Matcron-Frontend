@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-=======
-
->>>>>>> c4c60b26bfe6123460be68f73c86922ae8a60dcd
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
