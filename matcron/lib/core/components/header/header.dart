@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:matcron/app/features/profile_settings/presentation/pages/notification.dart';
-import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/app/features/profile_settings/presentation/pages/profile_settings.dart';
 
 class Header extends StatefulWidget {
