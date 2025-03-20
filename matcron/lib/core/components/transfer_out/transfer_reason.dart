@@ -7,24 +7,21 @@ class TransferOutMattressPage extends StatefulWidget {
   final List<MattressEntity> mattresses;
   final Function(List<String>, String) addMattresses;
 
-  TransferOutMattressPage(
-      {super.key,
-      required List<GroupEntity> groups,
-      required this.mattresses,
-      required this.addMattresses})
-      : groups = _removeDuplicates(
-            groups); // Filter duplicates before passing to state
+  TransferOutMattressPage({
+    super.key,
+    required List<GroupEntity> groups,
+    required this.mattresses,
+    required this.addMattresses,
+  }) : groups = _removeDuplicates(groups);
 
   @override
-  _TransferOutMattressPageState createState() =>
-      _TransferOutMattressPageState();
+  _TransferOutMattressPageState createState() => _TransferOutMattressPageState();
 
-  // Function to remove duplicates based on UID
   static List<GroupEntity> _removeDuplicates(List<GroupEntity> groups) {
     final seen = <String>{};
     return groups.where((group) {
       if (group.uid == null || seen.contains(group.uid)) {
-        return false; // Skip duplicate
+        return false;
       }
       seen.add(group.uid!);
       return true;
@@ -38,56 +35,67 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: theme.cardColor,
+      backgroundColor: theme.colorScheme.surface,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start, // Move items up
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Close button in the top right corner
+            // **Close Button**
             Align(
               alignment: Alignment.topRight,
               child: IconButton(
-                icon:  Icon(
-                  Icons.close,
-                  color: theme.colorScheme.error,
-                  size: 30,
-                ),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
+                icon: Icon(Icons.close, color: theme.colorScheme.error, size: 30),
+                onPressed: () => Navigator.pop(context),
               ),
             ),
 
-            const SizedBox(height: 40), // Adjust spacing
+            // **GIF as a Static Image with Background (Larger Size)**
+            Container(
+              width: double.infinity,
+              height: 180, // Increased height
+              padding: const EdgeInsets.all(16), // More padding
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary,
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Center(
+                child: Image.asset(
+                  'assets/images/grouping.gif', // Ensure this path is correct
+                  height: 150, // Increased size
+                  width: 150,
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
 
-            // Title
-             Text(
+            const SizedBox(height: 20), // Reduced spacing
+
+            // **Title**
+            Text(
               "Add Mattresses To Group",
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 26, // Slightly bigger text
                 fontWeight: FontWeight.bold,
-                color:  theme.colorScheme.onSurface,
+                color: theme.colorScheme.primary,
               ),
               textAlign: TextAlign.center,
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
-            // Dropdown for selecting group
+            // **Dropdown for selecting a group**
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
               decoration: BoxDecoration(
-                color:
-                     theme.colorScheme.surface.withOpacity(0.8),
+                color: theme.colorScheme.surface.withOpacity(0.9),
                 borderRadius: BorderRadius.circular(25.0),
               ),
               child: DropdownButtonFormField<String>(
-                decoration: const InputDecoration(
-                  border: InputBorder.none,
-                ),
+                decoration: const InputDecoration(border: InputBorder.none),
                 hint: const Text("Select Group"),
                 value: selectedGroupId,
                 items: widget.groups.map((GroupEntity group) {
@@ -104,41 +112,37 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
               ),
             ),
 
-            const SizedBox(height: 40),
+            const SizedBox(height: 30),
 
-            // Buttons
+            // **Buttons Row**
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                // Cancel Button
+                // **Cancel Button**
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: theme.colorScheme.error,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40.0, vertical: 12.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 12.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child:  Text(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
                     "Cancel",
                     style: TextStyle(
                       fontSize: 18,
-                      color:  theme.colorScheme.surface,
+                      color: theme.colorScheme.surface,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
 
-                // Save Button
+                // **Save Button**
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primary,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40.0, vertical: 12.0),
+                    backgroundColor: selectedGroupId == null ? theme.disabledColor : theme.colorScheme.primary,
+                    padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 12.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
@@ -150,15 +154,15 @@ class _TransferOutMattressPageState extends State<TransferOutMattressPage> {
                             widget.mattresses
                                 .map((mattress) => mattress.uid)
                                 .whereType<String>()
-                                .toList(), // Extract only non-null IDs
+                                .toList(),
                             selectedGroupId!,
                           );
                         },
-                  child:  Text(
+                  child: Text(
                     "Save",
                     style: TextStyle(
                       fontSize: 18,
-                      color:  theme.colorScheme.surface,
+                      color: theme.colorScheme.surface,
                       fontWeight: FontWeight.bold,
                     ),
                   ),

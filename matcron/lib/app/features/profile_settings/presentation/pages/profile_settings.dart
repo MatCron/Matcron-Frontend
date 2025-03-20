@@ -17,8 +17,7 @@ import 'package:matcron/app/injection_container.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/language_provider.dart';
 import 'package:provider/provider.dart'; 
-
-// Assuming you have AuthorizationService already set up
+import 'package:matcron/main.dart';
 
 class ProfileSettings extends StatefulWidget {
   const ProfileSettings({super.key});
@@ -30,6 +29,7 @@ class ProfileSettings extends StatefulWidget {
 class ProfileSettingsState extends State<ProfileSettings> {
   int userType = 0;
   File? _imageFile;
+   final AuthorizationService _authService = AuthorizationService();
 
   @override
   void initState() {
@@ -37,16 +37,27 @@ class ProfileSettingsState extends State<ProfileSettings> {
     _initializeUserType();
   }
 
-  void _initializeUserType() async {
-    int type = (await AuthorizationService().getUserType())!;
-    setState(() {
-      userType = type;
-    });
-  }
+void _initializeUserType() async {
+  int? type = await AuthorizationService().getUserType(); // Remove '!'
+  setState(() {
+    userType = type ?? 0; // Provide a default value (e.g., 0)
+  });
+}
+
 
   void _changeLanguage(String languageCode) async {
     final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
     await languageProvider.setLanguage(languageCode);  // Update language globally
+  }
+
+  void _logout() async {
+    _authService.deleteToken(); // Delete token
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const InitialScreens()),
+      );
+    }
   }
 
   @override
@@ -88,6 +99,18 @@ class ProfileSettingsState extends State<ProfileSettings> {
               theme: theme,
             ),
           ),
+             Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+            child: ElevatedButton(
+              onPressed: _logout,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.cardColor, // Logout color
+                                padding: const EdgeInsets.all(15),
+              ),
+              child:  Text("Log Out", style: TextStyle(fontSize: 16, color: theme.colorScheme.primary)),
+            ),
+          ),
+    
         ],
       ),
     );
@@ -234,3 +257,5 @@ class ProfileSettingsState extends State<ProfileSettings> {
     }
   }
 }
+
+

@@ -25,6 +25,7 @@ import 'package:matcron/core/resources/language_provider.dart';
 import 'app/features/mattress/presentation/pages/mattress_page.dart';
 import 'package:provider/provider.dart'; // Add this import for MultiProvider
 
+
 void main() async {
   await initializeDependencies();
   runApp(
