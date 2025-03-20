@@ -5,28 +5,29 @@ class SecurityPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         
         leading: InkWell(
           onTap: () => Navigator.of(context).pop(),
-          child: const Center(
+          child:  Center(
             child: Text(
               "<",
               style: TextStyle(
                 fontSize: 30,
-                color: Colors.white,
+                color: theme.colorScheme.surface,
                            ),
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           'Data Security',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: theme.colorScheme.surface),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
+        iconTheme:  IconThemeData(color: theme.colorScheme.surface),
+        backgroundColor: theme.colorScheme.primary,
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -42,27 +43,27 @@ class SecurityPage extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ListTile(
-              leading: const Icon(Icons.security, color: Color.fromARGB(255, 80, 194, 201)),
+              leading:  Icon(Icons.security, color:theme.colorScheme.primary),
               title: const Text('Secure Connections'),
               subtitle: const Text('We use SSL/TLS to secure data in transit.'),
             ),
             ListTile(
-              leading: const Icon(Icons.storage, color: Color.fromARGB(255, 80, 194, 201)),
+              leading:  Icon(Icons.storage, color:theme.colorScheme.primary),
               title: const Text('Data Encryption'),
               subtitle: const Text('Sensitive data is encrypted at rest and in transit.'),
             ),
             ListTile(
-              leading: const Icon(Icons.verified_user, color: Color.fromARGB(255, 80, 194, 201)),
+              leading:  Icon(Icons.verified_user, color:theme.colorScheme.primary),
               title: const Text('Regular Audits'),
               subtitle: const Text('Our systems undergo regular security audits.'),
             ),
             ListTile(
-              leading: const Icon(Icons.update, color: Color.fromARGB(255, 80, 194, 201)),
+              leading:  Icon(Icons.update, color:theme.colorScheme.primary),
               title: const Text('Updates'),
               subtitle: const Text('We promptly update software to protect against potential threats.'),
             ),
             ListTile(
-              leading: const Icon(Icons.lock_outline, color: Color.fromARGB(255, 80, 194, 201)),
+              leading:  Icon(Icons.lock_outline, color:theme.colorScheme.primary),
               title: const Text('Access Control'),
               subtitle: const Text('Strict access controls are in place to ensure that only authorized personnel can access sensitive data.'),
             ),

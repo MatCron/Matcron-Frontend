@@ -125,10 +125,11 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     if (isLoading) {
       //color matcronPrimaryColor
       return Center(
-          child: CircularProgressIndicator(color: matcronPrimaryColor));
+          child: CircularProgressIndicator(color: theme.colorScheme.primary));
     }
 
     return DraggableScrollableSheet(
@@ -137,16 +138,17 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
       minChildSize: 0.4,
       maxChildSize: 1.0,
       builder: (BuildContext context, ScrollController scrollController) {
+        final theme = Theme.of(context);
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration:  BoxDecoration(
+            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(20),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black26,
+                color:theme.colorScheme.onSurface .withOpacity(0.2),
                 blurRadius: 10,
                 spreadRadius: 5,
               ),
@@ -172,7 +174,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                   style: TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
-                                    color: currentTab == 0 ? matcronPrimaryColor : Colors.grey[500],
+                                    color: currentTab == 0 ? theme.colorScheme.primary : theme.cardColor,
                                     
                                   ),
                                 )),
@@ -187,7 +189,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                   style: TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
-                                    color: currentTab == 1 ? matcronPrimaryColor : Colors.grey[500],
+                                    color: currentTab == 1 ? theme.colorScheme.primary :theme.cardColor,
                                     
                                   ),
                                 )),
@@ -204,7 +206,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                           ),
                         ),
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.red),
+                    icon:  Icon(Icons.close, color: theme.colorScheme.error),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -222,12 +224,12 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                             vertical: 10, horizontal: 16),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: const [
+                          children:  [
                             Text("Details",
                                 style: TextStyle(
                                     fontStyle: FontStyle.italic,
                                     fontSize: 18,
-                                    color: Colors.grey)),
+                                    color: theme.cardColor)),
                           ],
                         ),
                       ),
@@ -265,7 +267,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                         Container(
                                           width: 2,
                                           height: 50, // Adjust for spacing
-                                          color: const Color.fromARGB(255, 80, 194, 201).withOpacity(0.5),
+                                          color:theme.colorScheme.primary.withOpacity(0.1),
                                         ),
                                     ],
                                   ),
@@ -290,7 +292,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                         Text("Location changed from '${item.oldDetails}' to '${item.newDetails}'",
                                           style: TextStyle(
                                               fontSize: 14,
-                                              color: Colors.grey[700],
+                                              color:theme.cardColor,
                                               fontStyle: FontStyle.italic
                                               ),
                                         ),
@@ -299,7 +301,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                         Text("Status changed from '${mattressStatus[int.parse(item.oldDetails!)]['Text']}' to '${mattressStatus[int.parse(item.newDetails!)]['Text']}'",
                                           style: TextStyle(
                                               fontSize: 14,
-                                              color: Colors.grey[700],
+                                              color: theme.cardColor,
                                               fontStyle: FontStyle.italic
                                               ),
                                         ),
@@ -311,7 +313,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                               : "No date",
                                           style: TextStyle(
                                               fontSize: 14,
-                                              color: Colors.grey[700]),
+                                              color:theme.cardColor),
                                         ),
                                       ],
                                     ),
@@ -480,7 +482,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                         _buildActionButton(
                           context,
                           label: "Cancel",
-                          color: Colors.red,
+                          color: theme.colorScheme.error,
                           onPressed: () => Navigator.of(context).pop(),
                         ),
                         const SizedBox(width: 8),
@@ -505,6 +507,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
 
   // Helper method for building text fields
   Widget _buildTextField({
+
     required String label,
     required String initialValue,
     bool enabled = true,
@@ -512,6 +515,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
     int? maxLines,
     void Function(String)? onChanged,
   }) {
+    final theme = Theme.of(context);
     return TextFormField(
       initialValue: initialValue,
       enabled: enabled,
@@ -522,7 +526,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
         labelText: label,
         labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         filled: true,
-        fillColor: enabled ? Colors.grey[200] : Colors.grey[100],
+        fillColor: enabled ? theme.cardColor :theme.cardColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
           borderSide: BorderSide.none,
@@ -538,6 +542,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
       {required String label,
       required Color color,
       required VoidCallback onPressed}) {
+    final theme = Theme.of(context);
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
@@ -548,7 +553,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
       ),
       onPressed: onPressed,
       child: Text(label,
-          style: const TextStyle(color: Colors.white, fontSize: 16)),
+          style:  TextStyle(color: theme.colorScheme.surface, fontSize: 16)),
     );
   }
 }

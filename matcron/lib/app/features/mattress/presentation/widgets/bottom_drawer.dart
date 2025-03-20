@@ -73,16 +73,17 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
       minChildSize: 0.55, // Minimum height, keeping it from collapsing too much
       maxChildSize: 1.0, // Full-screen expansion
       builder: (BuildContext context, ScrollController scrollController) {
+        final theme = Theme.of(context);
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration:  BoxDecoration(
+            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(20),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black26,
+                color: theme.colorScheme.onSurface.withOpacity(0.5),
                 blurRadius: 10,
                 spreadRadius: 5,
               ),
@@ -99,11 +100,11 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: matcronPrimaryColor,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.red),
+                    icon:  Icon(Icons.close, color:  theme.colorScheme.error),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -138,7 +139,7 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Row(
+                         Row(
                           children: [
                             Text(
                               "Lateral Rotation Done?",
@@ -150,7 +151,7 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
                               message:
                                   'Indicates if the lateral rotation has been completed',
                               child: Icon(Icons.info_outline,
-                                  size: 20, color: Colors.grey),
+                                  size: 20, color:  theme.colorScheme.shadow),
                             ),
                           ],
                         ),
@@ -177,14 +178,14 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
                       _buildActionButton(
                         context,
                         label: "Cancel",
-                        color: Colors.red,
+                        color:  theme.colorScheme.error,
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       const SizedBox(width: 8),
                       _buildActionButton(
                         context,
                         label: "Save",
-                        color: matcronPrimaryColor,
+                        color: theme.colorScheme.primary,
                         onPressed: () {
                           _saveMattress(context);
                         },
@@ -234,12 +235,13 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
       required List<String> items,
       String? value,
       required purpose}) {
+        final theme = Theme.of(context);
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         filled: true,
-        fillColor: Colors.grey[200],
+        fillColor:  theme.cardColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
           borderSide: BorderSide.none,
@@ -274,12 +276,13 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
 
   // Helper method for building text fields
   Widget _buildTextField(String label, String? value) {
+    final theme = Theme.of(context);
     return TextFormField(
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         filled: true,
-        fillColor: Colors.grey[200],
+        fillColor:  theme.colorScheme.shadow.withOpacity(0.5),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
           borderSide: BorderSide.none,
@@ -299,6 +302,7 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
       {required String label,
       required Color color,
       required VoidCallback onPressed}) {
+        final theme = Theme.of(context);
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
@@ -309,7 +313,7 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
       ),
       onPressed: onPressed,
       child: Text(label,
-          style: const TextStyle(color: Colors.white, fontSize: 16)),
+          style:  TextStyle(color:  theme.colorScheme.surface, fontSize: 16)),
     );
   }
 }

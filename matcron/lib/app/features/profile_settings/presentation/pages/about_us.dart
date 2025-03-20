@@ -16,28 +16,29 @@ class AboutUsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
+        backgroundColor: theme.colorScheme.primary,
         leading: InkWell(
           onTap: () => Navigator.of(context).pop(),
-          child: const Center(
+          child:  Center(
             child: Text(
               "<",
               style: TextStyle(
                 fontSize: 26,
-                color: Colors.white,  
+                color: theme.colorScheme.surface,  
            
               ),
             ),
           ),
         ),
-        title: const Text(
+        title:  Text(
           'About Us',
-          style: TextStyle(color: Colors.white),
+          style: TextStyle(color: theme.colorScheme.surface),
         ),
-        iconTheme: const IconThemeData(color: Colors.white),
+        iconTheme: IconThemeData(color:theme.colorScheme.surface),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -83,7 +84,7 @@ class AboutUsPage extends StatelessWidget {
                   icon: const Icon(Icons.facebook),
                   onPressed: () =>
                       _launchURL('https://twitter.com/YourTwitterHandle'),
-                  color: Colors.blue,
+                  color:theme.colorScheme.secondary,
                   iconSize: 30,
                 ),
                 IconButton(

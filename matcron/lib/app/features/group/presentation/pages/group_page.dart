@@ -10,7 +10,6 @@ import 'package:matcron/app/features/mattress/domain/repositories/mattress_repos
 import 'package:matcron/core/resources/data_state.dart';
 import '../widgets/add_group_drawer.dart';
 import '../widgets/group_card_widget.dart';
-import 'package:matcron/core/constants/constants.dart';
 import '../widgets/group_details_page.dart';
 
 class GroupPage extends StatefulWidget {
@@ -78,6 +77,7 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
 
   /// Transfer Out a Group
   void _transferOut(String uid) async {
+    final theme = Theme.of(context);
   var transferOutState = await _groupRepository.transferOut(uid);
 
   if (transferOutState is DataSuccess) {
@@ -103,9 +103,9 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
     // Show error notification
     if (mounted) {
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
+       SnackBar(
         content: Text("Error occurred while transferring out."),
-        backgroundColor: Colors.red,
+        backgroundColor: theme.colorScheme.error,
         duration: Duration(seconds: 3),
       ),
     );
@@ -222,9 +222,10 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: _loading
-          ? Center(child: CircularProgressIndicator(color: matcronPrimaryColor,)) // Show loading spinner
+          ? Center(child: CircularProgressIndicator(color: theme.colorScheme.primary,)) // Show loading spinner
           : _error
               ? const Center(child: Text("Error loading groups. Try again later."))
               : Column(
@@ -245,7 +246,7 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
                                   borderSide: BorderSide.none,
                                 ),
                                 filled: true,
-                                fillColor: Colors.grey[200],
+                                fillColor: theme.cardColor,
                                 contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
                               ),
                             ),
@@ -253,10 +254,10 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
                           const SizedBox(width: 10),
                           ElevatedButton.icon(
                             onPressed: _openAddDrawer,
-                            icon: const Icon(Icons.add, color: Colors.white),
-                            label: const Text("Add", style: TextStyle(color: Colors.white)),
+                            icon:  Icon(Icons.add, color: theme.colorScheme.surface),
+                            label:  Text("Add", style: TextStyle(color: theme.colorScheme.surface)),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: matcronPrimaryColor,
+                              backgroundColor: theme.colorScheme.primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0),
                               ),
@@ -269,9 +270,9 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
                     // Tabs
                     TabBar(
                       controller: _tabController,
-                      labelColor: matcronPrimaryColor,
-                      unselectedLabelColor: Colors.grey,
-                      indicatorColor: matcronPrimaryColor,
+                      labelColor: theme.colorScheme.primary,
+                      unselectedLabelColor: theme.colorScheme.shadow,
+                      indicatorColor: theme.colorScheme.primary,
                       tabs: const [
                         Tab(text: "Active"),
                         Tab(text: "Archived"),
@@ -295,8 +296,9 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
 
   /// Builds the list of groups
   Widget _buildGroupList(List<GroupEntity> groups) {
+    final theme = Theme.of(context);
     if (groups.isEmpty) {
-      return const Center(child: Text("No groups available", style: TextStyle(color: Colors.grey)));
+      return  Center(child: Text("No groups available", style: TextStyle(color: theme.colorScheme.shadow)));
     }
     return ListView.builder(
       itemCount: groups.length,
