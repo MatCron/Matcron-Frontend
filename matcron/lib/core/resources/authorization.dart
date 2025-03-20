@@ -60,4 +60,19 @@ class AuthorizationService {
     }
     return true; // If no token, consider it expired
   }
+
+  /// Save language preference
+  void setLanguage(String languageCode) async {
+    const allowedLanguages = ['EN', 'DE', 'ES'];
+    if (allowedLanguages.contains(languageCode.toUpperCase())) {
+      await secureStorage.write(key: 'languageCode', value: languageCode.toUpperCase());
+    } else {
+      print("Invalid language code: $languageCode");
+    }
+  }
+
+  /// Get saved language preference
+  Future<String?> getLanguage() async {
+    return await secureStorage.read(key: 'languageCode') ?? 'ES'; // Default to English
+  }
 }
