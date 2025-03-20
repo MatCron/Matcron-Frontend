@@ -1,4 +1,4 @@
-final languages = {
+const languages = {
   "EN": {
     "Header": {
       "Dashboard": "Dashboard",
@@ -6,21 +6,19 @@ final languages = {
       "Types": "Types",
       "Group": "Group"
     },
-
     "Login": {
       "WelcomeToMatcron!": "Welcome to Matcron!",
       "EnterEmail": "Enter email",
       "EnterPassword": "Enter password",
       "ForgotPassword": "Forgot Password",
-      "LogIn": "Log In"
+      "LogIn": "Log In",
+      "WelcomeBack": "Welcome Back"
     },
-
     "Dashboard": {
       "MattressLifecycle": "Mattress Lifecycle",
       "MattressMaintenance": "Mattress Maintenance",
-      "RequesWash": "Request Wash",
+      "RequesWash": "Request Wash"
     },
-
     "Mattress": {
       "ImportGroup": "Import Group",
       "PreviewName": "Name",
@@ -28,8 +26,8 @@ final languages = {
       "PreviewCount": "Mattress Count",
       "PreviewStatus": "Status",
       "PreviewPurpose": "Transfer Purpose",
-      "PreviewCancel": "PreviewCancel",
-      "PreviewImport": "PreviewImport",
+      "PreviewCancel": "Cancel",
+      "PreviewImport": "Import",
       "ImportSuccess": "Mattresses imported successfully!",
       "MattressAddedToGroup": "Mattresses added to group successfully!",
       "MattressAlreadyAdded": "Mattresses already added to group.",
@@ -45,17 +43,134 @@ final languages = {
       "Organization": "Organization",
       "MattressEdit": "Edit",
       "MattressMore": "More",
-
       "AddMattressTitle": "Mattress",
       "EnterLocation": "Enter Location",
       "SelectMattressType": "Search Mattress Type",
       "AddCustomType": "+ Add custom type",
       "SelectDate": "Select Date",
       "Generate RFID": "Generate RFID",
-      
+      "ErrorWrtiting": "Error while writing to badge",
+      "NotWritable": "Tag is not writable",
+      "TapRFID": "Tap On Mattress RFID...",
+      "Processing": "Processing...",
+      "FinishhedWriting": "Finished writing to NFC tag!",
+      "FailedWriting": "Failed or no writable tag found."
     }
-
   },
+  "DE": {
+    "Header": {
+      "Dashboard": "Dashboard",
+      "Mattress": "Matratze",
+      "Types": "Typen",
+      "Group": "Gruppe"
+    },
+    "Login": {
+      "WelcomeToMatcron!": "Willkommen bei Matcron!",
+      "EnterEmail": "E-Mail eingeben",
+      "EnterPassword": "Passwort eingeben",
+      "ForgotPassword": "Passwort vergessen",
+      "LogIn": "Einloggen",
+      "WelcomeBack": "Willkommen zurück"
+    },
+    "Dashboard": {
+      "MattressLifecycle": "Matratzenlebenszyklus",
+      "MattressMaintenance": "Matratzenwartung",
+      "RequesWash": "Wäsche anfordern"
+    },
+    "Mattress": {
+      "ImportGroup": "Gruppe importieren",
+      "PreviewName": "Name",
+      "PreviewDesc": "Beschreibung",
+      "PreviewCount": "Matratzenanzahl",
+      "PreviewStatus": "Status",
+      "PreviewPurpose": "Transferzweck",
+      "PreviewCancel": "Abbrechen",
+      "PreviewImport": "Importieren",
+      "ImportSuccess": "Matratzen erfolgreich importiert!",
+      "MattressAddedToGroup": "Matratzen erfolgreich zur Gruppe hinzugefügt!",
+      "MattressAlreadyAdded": "Matratzen bereits zur Gruppe hinzugefügt.",
+      "FilterByStatus": "Nach Status filtern",
+      "SearchMattress": "Matratze suchen",
+      "TypeHeader": "Typ",
+      "LocationHeader": "Ort",
+      "StatusHeader": "Status",
+      "NoMattress": "Keine Matratzen verfügbar",
+      "Rotate": "Drehen",
+      "Days": "Tage",
+      "EndOfLifecycle": "Ende des Lebenszyklus",
+      "Organization": "Organisation",
+      "MattressEdit": "Bearbeiten",
+      "MattressMore": "Mehr",
+      "AddMattressTitle": "Matratze",
+      "EnterLocation": "Ort eingeben",
+      "SelectMattressType": "Matratzentyp suchen",
+      "AddCustomType": "+ Benutzerdefinierten Typ hinzufügen",
+      "SelectDate": "Datum auswählen",
+      "Generate RFID": "RFID generieren",
+      "ErrorWrtiting": "Fehler beim Schreiben auf das Abzeichen",
+      "NotWritable": "Tag ist nicht beschreibbar",
+      "TapRFID": "Tippen Sie auf Matratzen-RFID...",
+      "Processing": "Verarbeitung...",
+      "FinishhedWriting": "Schreiben auf NFC-Tag abgeschlossen!",
+      "FailedWriting": "Fehlgeschlagen oder kein beschreibbarer Tag gefunden."
+    }
+  },
+  "ES": {
+    "Header": {
+      "Dashboard": "Tablero",
+      "Mattress": "Colchón",
+      "Types": "Tipos",
+      "Group": "Grupo"
+    },
+    "Login": {
+      "WelcomeToMatcron!": "¡Bienvenido a Matcron!",
+      "EnterEmail": "Ingresar correo electrónico",
+      "EnterPassword": "Ingresar contraseña",
+      "ForgotPassword": "¿Olvidaste tu contraseña?",
+      "LogIn": "Iniciar sesión",
+      "WelcomeBack": "Bienvenido de nuevo"
+    },
+    "Dashboard": {
+      "MattressLifecycle": "Ciclo de vida del colchón",
+      "MattressMaintenance": "Mantenimiento del colchón",
+      "RequesWash": "Solicitar lavado"
+    },
+    "Mattress": {
+      "ImportGroup": "Importar grupo",
+      "PreviewName": "Nombre",
+      "PreviewDesc": "Descripción",
+      "PreviewCount": "Cantidad de colchones",
+      "PreviewStatus": "Estado",
+      "PreviewPurpose": "Propósito de transferencia",
+      "PreviewCancel": "Cancelar",
+      "PreviewImport": "Importar",
+      "ImportSuccess": "¡Colchones importados con éxito!",
+      "MattressAddedToGroup": "¡Colchones añadidos al grupo con éxito!",
+      "MattressAlreadyAdded": "Colchones ya añadidos al grupo.",
+      "FilterByStatus": "Filtrar por estado",
+      "SearchMattress": "Buscar colchón",
+      "TypeHeader": "Tipo",
+      "LocationHeader": "Ubicación",
+      "StatusHeader": "Estado",
+      "NoMattress": "No hay colchones disponibles",
+      "Rotate": "Rotar",
+      "Days": "días",
+      "EndOfLifecycle": "Fin del ciclo de vida",
+      "Organization": "Organización",
+      "MattressEdit": "Editar",
+      "MattressMore": "Más",
+      "AddMattressTitle": "Colchón",
+      "EnterLocation": "Ingresar ubicación",
+      "SelectMattressType": "Buscar tipo de colchón",
+      "AddCustomType": "+ Agregar tipo personalizado",
+      "SelectDate": "Seleccionar fecha",
+      "Generate RFID": "Generar RFID",
+      "ErrorWrtiting": "Error al escribir en la etiqueta",
+      "NotWritable": "La etiqueta no es escribible",
+      "TapRFID": "Toca la etiqueta RFID del colchón...",
+      "Processing": "Procesando...",
+      "FinishhedWriting": "¡Escritura en etiqueta NFC completada!",
+      "FailedWriting": "Falló o no se encontró una etiqueta escribible."
+    }
+  }
 };
-
-//handle constants
