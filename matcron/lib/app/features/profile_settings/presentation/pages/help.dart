@@ -253,9 +253,10 @@
 
 
 // help_page.dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:speech_to_text/speech_to_text.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:matcron/app/features/profile_settings/domain/usecases/get_chatbot_response.dart';
 import 'package:matcron/app/features/profile_settings/data/repository/chatbot_repository_impl.dart';
@@ -274,7 +275,7 @@ class _HelpPageState extends State<HelpPage> {
   bool isTyping = false;
   bool isListening = false;
   FlutterTts flutterTts = FlutterTts();
-  stt.SpeechToText speech = stt.SpeechToText();
+  SpeechToText speech = SpeechToText();
   String _userProfilePicture = "";
 
 
@@ -289,6 +290,7 @@ class _HelpPageState extends State<HelpPage> {
     super.initState();
     _loadUserProfilePicture();
     _initializeChatbot();
+    _checkMicrophoneAvailability();
   }
 
   Future<void> _loadUserProfilePicture() async {
@@ -319,34 +321,81 @@ class _HelpPageState extends State<HelpPage> {
     });
   });
 }
-  void _startListening() async {
-    bool available = await speech.initialize(
-      onStatus: (status) {
-        if (status == "done") {
-          setState(() => isListening = false);
-        }
-      },
-      onError: (error) {
-        setState(() => isListening = false);
-      },
-    );
 
-    if (available) {
-      setState(() => isListening = true);
-      speech.listen(
-        onResult: (result) {
+void _checkMicrophoneAvailability() async {
+  bool available = await speech.initialize();
+  if (available) {
+    setState(() {
+      if (kDebugMode) {
+        print('Microphone available: $available');
+      }
+    });
+  } else {
+    if (kDebugMode) {
+      print("The user has denied the use of speech recognition.");
+    }
+  }
+}
+  void _startListening() async {
+    // print("Phone is listening to the user speaking now.");
+
+    // if (isListening) {
+    //   setState(() => isListening = false);
+    //   speech.stop();
+    //   return;
+    // }
+
+    // bool available = await speech.initialize(
+    //   onStatus: (status) {
+    //     print(status);
+    //     if (status == "done") {
+    //       setState(() => isListening = true);
+    //     }
+    //   },
+    //   onError: (error) {
+    //     print(error);
+    //     setState(() => isListening = false);
+    //   },
+    // );
+
+    // if (available) {
+    //   setState(() => isListening = true);
+    //   speech.listen(
+    //     onResult: (result) {
+    //       setState(() {
+    //         _controller.text = result.recognizedWords;
+    //       });
+    //     },
+    //     listenFor: Duration(seconds: 10),
+    //     pauseFor: Duration(seconds: 3),
+    //     cancelOnError: true,
+    //   );
+    // } else {
+    //   setState(() => isListening = false);
+    // } 
+
+    if(!isListening){
+      var available = await speech.initialize();
+      if(available){
+        setState(() {
+          isListening = true;
+        });
+          speech.listen(
+            listenFor: const Duration(days: 1),
+            onResult: (result) {
           setState(() {
             _controller.text = result.recognizedWords;
           });
-        },
-        listenFor: Duration(seconds: 10),
-        pauseFor: Duration(seconds: 3),
-        cancelOnError: true,
-      );
-    } else {
-      setState(() => isListening = false);
+        });
+      }
+      }else {
+      setState(() {
+        isListening = false;
+      });
+        speech.stop();
     }
   }
+  
 
   @override
   void dispose() {
