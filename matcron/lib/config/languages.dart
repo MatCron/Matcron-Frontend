@@ -54,7 +54,14 @@ const languages = {
       "TapRFID": "Tap On Mattress RFID...",
       "Processing": "Processing...",
       "FinishhedWriting": "Finished writing to NFC tag!",
-      "FailedWriting": "Failed or no writable tag found."
+      "FailedWriting": "Failed or no writable tag found.",
+      "In Production": "In Production",
+      "In Inventory": "In Inventory",
+      "Assigned": "Assigned",
+      "In Use": "In Use",
+      "Cleaning Required": "Cleaning Required",
+      "Decommissoned": "Decommissioned",
+      "In Transit": "In Transit",
     }
   },
   "DE": {
@@ -112,7 +119,16 @@ const languages = {
       "TapRFID": "Tippen Sie auf Matratzen-RFID...",
       "Processing": "Verarbeitung...",
       "FinishhedWriting": "Schreiben auf NFC-Tag abgeschlossen!",
-      "FailedWriting": "Fehlgeschlagen oder kein beschreibbarer Tag gefunden."
+      "FailedWriting": "Fehlgeschlagen oder kein beschreibbarer Tag gefunden.",
+
+      //STATUSUES
+      "In Production": "In Produktion",
+    "In Inventory": "Im Lager",
+    "Assigned": "Zugewiesen",
+    "In Use": "In Gebrauch",
+    "Cleaning Required": "Reinigung erforderlich",
+    "Decommissioned": "Außer Dienst gestellt",
+    "In Transit": "Im Transit"
     }
   },
   "ES": {
@@ -170,7 +186,15 @@ const languages = {
       "TapRFID": "Toca la etiqueta RFID del colchón...",
       "Processing": "Procesando...",
       "FinishhedWriting": "¡Escritura en etiqueta NFC completada!",
-      "FailedWriting": "Falló o no se encontró una etiqueta escribible."
+      "FailedWriting": "Falló o no se encontró una etiqueta escribible.",
+
+      "In Production": "En producción",
+    "In Inventory": "En inventario",
+    "Assigned": "Asignado",
+    "In Use": "En uso",
+    "Cleaning Required": "Limpieza requerida",
+    "Decommissioned": "Fuera de servicio",
+    "In Transit": "En tránsito"
     }
   }
 };
