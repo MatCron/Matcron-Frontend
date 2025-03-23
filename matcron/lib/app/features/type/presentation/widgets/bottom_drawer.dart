@@ -292,7 +292,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                         Text("Location changed from '${item.oldDetails}' to '${item.newDetails}'",
                                           style: TextStyle(
                                               fontSize: 14,
-                                              color:theme.cardColor,
+                                              
                                               fontStyle: FontStyle.italic
                                               ),
                                         ),
@@ -301,7 +301,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                         Text("Status changed from '${mattressStatus[int.parse(item.oldDetails!)]['Text']}' to '${mattressStatus[int.parse(item.newDetails!)]['Text']}'",
                                           style: TextStyle(
                                               fontSize: 14,
-                                              color: theme.cardColor,
+                                              
                                               fontStyle: FontStyle.italic
                                               ),
                                         ),
@@ -313,7 +313,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                               : "No date",
                                           style: TextStyle(
                                               fontSize: 14,
-                                              color:theme.cardColor),
+                                              ),
                                         ),
                                       ],
                                     ),
