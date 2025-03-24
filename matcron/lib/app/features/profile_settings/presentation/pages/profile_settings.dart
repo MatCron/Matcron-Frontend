@@ -14,9 +14,10 @@ import 'package:matcron/app/features/profile_settings/presentation/pages/about_u
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_bloc.dart';
 import 'package:matcron/app/features/organization/presentation/bloc/remote_org_event.dart';
 import 'package:matcron/app/injection_container.dart';
+import 'package:matcron/config/languages.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/language_provider.dart';
-import 'package:provider/provider.dart'; 
+import 'package:provider/provider.dart';
 import 'package:matcron/main.dart';
 
 class ProfileSettings extends StatefulWidget {
@@ -29,25 +30,29 @@ class ProfileSettings extends StatefulWidget {
 class ProfileSettingsState extends State<ProfileSettings> {
   int userType = 0;
   File? _imageFile;
-   final AuthorizationService _authService = AuthorizationService();
+  final AuthorizationService _authService = AuthorizationService();
+  late LanguageProvider languageProvider;
 
   @override
   void initState() {
     super.initState();
+    languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+
     _initializeUserType();
   }
 
-void _initializeUserType() async {
-  int? type = await AuthorizationService().getUserType(); // Remove '!'
-  setState(() {
-    userType = type ?? 0; // Provide a default value (e.g., 0)
-  });
-}
-
+  void _initializeUserType() async {
+    int? type = await AuthorizationService().getUserType(); // Remove '!'
+    setState(() {
+      userType = type ?? 0; // Provide a default value (e.g., 0)
+    });
+  }
 
   void _changeLanguage(String languageCode) async {
-    final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
-    await languageProvider.setLanguage(languageCode);  // Update language globally
+    final languageProvider =
+        Provider.of<LanguageProvider>(context, listen: false);
+    await languageProvider
+        .setLanguage(languageCode); // Update language globally
   }
 
   void _logout() async {
@@ -85,7 +90,8 @@ void _initializeUserType() async {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: _createNavigationItem(
               icon: Icons.language,
-              text: 'Change Language (${languageProvider.currentLanguage})', // Show current language
+              text:
+                  '${languages[languageProvider.currentLanguage]!["Profile"]!["Language"]!} (${languageProvider.currentLanguage})', // Show current language
               theme: theme,
               onTap: () => _showLanguageSelectionDialog(),
             ),
@@ -94,23 +100,25 @@ void _initializeUserType() async {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: _createNavigationItem(
               icon: Icons.info_outline,
-              text: 'About Us',
+              text: languages[languageProvider.currentLanguage]!["Profile"]!["About"]!,
               destination: AboutUsPage(),
               theme: theme,
             ),
           ),
-             Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
             child: ElevatedButton(
               onPressed: _logout,
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.cardColor, // Logout color
-                                padding: const EdgeInsets.all(15),
+                padding: const EdgeInsets.all(15),
               ),
-              child:  Text("Log Out", style: TextStyle(fontSize: 16, color: theme.colorScheme.primary)),
+              child: Text(languages[languageProvider.currentLanguage]!["Profile"]!["Log Out"]!,
+                  style: TextStyle(
+                      fontSize: 16, color: theme.colorScheme.primary)),
             ),
           ),
-    
         ],
       ),
     );
@@ -131,7 +139,8 @@ void _initializeUserType() async {
                 CircleAvatar(
                   backgroundColor: Colors.white,
                   radius: 50,
-                  backgroundImage: _imageFile != null ? FileImage(_imageFile!) : null,
+                  backgroundImage:
+                      _imageFile != null ? FileImage(_imageFile!) : null,
                   child: _imageFile == null
                       ? const Icon(Icons.person, size: 50.0, color: Colors.grey)
                       : null,
@@ -140,9 +149,11 @@ void _initializeUserType() async {
                   bottom: 5,
                   right: 5,
                   child: Container(
-                    decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.blueAccent),
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle, color: Colors.blueAccent),
                     padding: const EdgeInsets.all(5),
-                    child: const Icon(Icons.edit, size: 20, color: Colors.white),
+                    child:
+                        const Icon(Icons.edit, size: 20, color: Colors.white),
                   ),
                 ),
               ],
@@ -150,7 +161,8 @@ void _initializeUserType() async {
           ),
           const SizedBox(height: 16),
           Text('Jane Doe', style: theme.textTheme.titleLarge),
-          Text('jane.doe@example.com', style: TextStyle(color: theme.colorScheme.onPrimary)),
+          Text('jane.doe@example.com',
+              style: TextStyle(color: theme.colorScheme.onPrimary)),
         ],
       ),
     );
@@ -158,19 +170,47 @@ void _initializeUserType() async {
 
   Widget _buildGroupedContainer(ThemeData theme) {
     return _buildContainer(theme, [
-      _createNavigationItem(icon: Icons.help, text: 'Help', destination: HelpPage(), theme: theme),
-      _createNavigationItem(icon: Icons.account_circle, text: 'Account', destination: AccountPage(), theme: theme),
-      _createNavigationItem(icon: Icons.article, text: 'Terms and Condition', destination: TermsAndConditionsPage(), theme: theme),
-      _createNavigationItem(icon: Icons.notifications, text: 'Notifications', destination: NotificationsPage(), theme: theme),
+      _createNavigationItem(
+          icon: Icons.help,
+          text: languages[languageProvider.currentLanguage]!["Profile"]!["Help"]!,
+          destination: HelpPage(),
+          theme: theme),
+      _createNavigationItem(
+          icon: Icons.account_circle,
+          text: languages[languageProvider.currentLanguage]!["Profile"]!["Account"]!,
+          destination: AccountPage(),
+          theme: theme),
+      _createNavigationItem(
+          icon: Icons.article,
+          text: languages[languageProvider.currentLanguage]!["Profile"]!["Terms"]!,
+          destination: TermsAndConditionsPage(),
+          theme: theme),
+      _createNavigationItem(
+          icon: Icons.notifications,
+          text: languages[languageProvider.currentLanguage]!["Profile"]!["Notifications"]!,
+          destination: NotificationsPage(),
+          theme: theme),
     ]);
   }
 
   Widget _buildGroupedContainer1(ThemeData theme) {
     return _buildContainer(theme, [
       if (userType == 1) _createOrganizationNavigationItem(theme),
-      _createNavigationItem(icon: Icons.report, text: 'Reports', destination: ReportsPage(), theme: theme),
-      _createNavigationItem(icon: Icons.security, text: 'Security', destination: SecurityPage(), theme: theme),
-      _createNavigationItem(icon: Icons.settings, text: 'Settings', destination: SettingsPage(), theme: theme),
+      _createNavigationItem(
+          icon: Icons.report,
+          text: languages[languageProvider.currentLanguage]!["Profile"]!["Reports"]!,
+          destination: ReportsPage(),
+          theme: theme),
+      _createNavigationItem(
+          icon: Icons.security,
+          text: languages[languageProvider.currentLanguage]!["Profile"]!["Security"]!,
+          destination: SecurityPage(),
+          theme: theme),
+      _createNavigationItem(
+          icon: Icons.settings,
+          text: languages[languageProvider.currentLanguage]!["Profile"]!["Language"]!,
+          destination: SettingsPage(),
+          theme: theme),
     ]);
   }
 
@@ -178,30 +218,42 @@ void _initializeUserType() async {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Container(
-        decoration: BoxDecoration(color: theme.cardColor, borderRadius: BorderRadius.circular(15.0)),
+        decoration: BoxDecoration(
+            color: theme.cardColor, borderRadius: BorderRadius.circular(15.0)),
         child: Column(children: children),
       ),
     );
   }
 
-  Widget _createNavigationItem({required IconData icon, required String text, Widget? destination, required ThemeData theme, Function()? onTap}) {
+  Widget _createNavigationItem(
+      {required IconData icon,
+      required String text,
+      Widget? destination,
+      required ThemeData theme,
+      Function()? onTap}) {
     return ListTile(
       leading: Icon(icon, color: theme.colorScheme.onSurface),
       title: Text(text, style: TextStyle(color: theme.colorScheme.onSurface)),
-      onTap: onTap ?? (destination != null ? () => Navigator.push(context, MaterialPageRoute(builder: (context) => destination)) : null),
+      onTap: onTap ??
+          (destination != null
+              ? () => Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => destination))
+              : null),
     );
   }
 
   Widget _createOrganizationNavigationItem(ThemeData theme) {
     return ListTile(
       leading: const Icon(Icons.business),
-      title: Text('Organization', style: TextStyle(color: theme.colorScheme.onSurface)),
+      title: Text('Organization',
+          style: TextStyle(color: theme.colorScheme.onSurface)),
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
             builder: (context) => BlocProvider(
-              create: (context) => sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
+              create: (context) =>
+                  sl<RemoteOrganizationBloc>()..add(GetOrganizations()),
               child: const OrganizationPage(),
             ),
           ),
@@ -257,5 +309,3 @@ void _initializeUserType() async {
     }
   }
 }
-
-
