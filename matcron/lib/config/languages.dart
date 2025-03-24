@@ -62,6 +62,28 @@ const languages = {
       "Cleaning Required": "Cleaning Required",
       "Decommissoned": "Decommissioned",
       "In Transit": "In Transit",
+    },
+    "Type": {
+      "SearchType": "Search Mattress Type",
+      "AddType": "+ Add Type",
+      "TypeHeader": "Type",
+      "InchesHeader": "Inches",
+      "StockHeader": "Stock",
+      "Edit": "Edit",
+      "Delete": "Delete",
+    },
+    "Profile": {
+      "Help": "Help",
+      "Account": "Account",
+      "Terms": "Terms and Conditions",
+      "Notifications": "Notifications",
+      "Organization": "Organization",
+      "Reports": "Reports",
+      "Security": "Security",
+      "Settings": "Settings",
+      "Language": "Change Language",
+      "About": "About Us",
+      "Log Out": "Log Out"
     }
   },
   "DE": {
@@ -123,13 +145,36 @@ const languages = {
 
       //STATUSUES
       "In Production": "In Produktion",
-    "In Inventory": "Im Lager",
-    "Assigned": "Zugewiesen",
-    "In Use": "In Gebrauch",
-    "Cleaning Required": "Reinigung erforderlich",
-    "Decommissioned": "Außer Dienst gestellt",
-    "In Transit": "Im Transit"
+      "In Inventory": "Im Lager",
+      "Assigned": "Zugewiesen",
+      "In Use": "In Gebrauch",
+      "Cleaning Required": "Reinigung erforderlich",
+      "Decommissioned": "Außer Dienst gestellt",
+      "In Transit": "Im Transit"
+    },
+    "Type": {
+      "SearchType": "Matratzentyp suchen",
+      "AddType": "+ Typ hinzufügen",
+      "TypeHeader": "Typ",
+      "InchesHeader": "Zoll",
+      "StockHeader": "Bestand",
+      "Edit": "Bearbeiten",
+      "Delete": "Löschen"
+    },
+    "Profile": {
+      "Help": "Hilfe",
+      "Account": "Konto",
+      "Terms": "Allgemeine Geschäftsbedingungen",
+      "Notifications": "Benachrichtigungen",
+      "Organization": "Organisation",
+      "Reports": "Berichte",
+      "Security": "Sicherheit",
+      "Settings": "Einstellungen",
+      "Language": "Sprache ändern",
+      "About": "Über uns",
+      "Log Out": "Abmelden"
     }
+
   },
   "ES": {
     "Header": {
@@ -187,14 +232,37 @@ const languages = {
       "Processing": "Procesando...",
       "FinishhedWriting": "¡Escritura en etiqueta NFC completada!",
       "FailedWriting": "Falló o no se encontró una etiqueta escribible.",
-
       "In Production": "En producción",
-    "In Inventory": "En inventario",
-    "Assigned": "Asignado",
-    "In Use": "En uso",
-    "Cleaning Required": "Limpieza requerida",
-    "Decommissioned": "Fuera de servicio",
-    "In Transit": "En tránsito"
+      "In Inventory": "En inventario",
+      "Assigned": "Asignado",
+      "In Use": "En uso",
+      "Cleaning Required": "Limpieza requerida",
+      "Decommissioned": "Fuera de servicio",
+      "In Transit": "En tránsito"
+    },
+
+    "Type": {
+      "SearchType": "Buscar tipo de colchón",
+      "AddType": "+ Agregar tipo",
+      "TypeHeader": "Tipo",
+      "InchesHeader": "Pulgadas",
+      "StockHeader": "Stock",
+      "Edit": "Editar",
+      "Delete": "Eliminar"
+    },
+    "Profile": {
+      "Help": "Ayuda",
+      "Account": "Cuenta",
+      "Terms": "Términos y condiciones",
+      "Notifications": "Notificaciones",
+      "Organization": "Organización",
+      "Reports": "Informes",
+      "Security": "Seguridad",
+      "Settings": "Configuración",
+      "Language": "Cambiar idioma",
+      "About": "Sobre nosotros",
+      "Log Out": "Cerrar sesión"
     }
+
   }
 };
