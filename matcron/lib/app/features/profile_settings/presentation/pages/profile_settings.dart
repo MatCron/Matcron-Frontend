@@ -245,7 +245,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
   Widget _createOrganizationNavigationItem(ThemeData theme) {
     return ListTile(
       leading: const Icon(Icons.business),
-      title: Text('Organization',
+      title: Text(languages[languageProvider.currentLanguage]!["Profile"]!["Organization"]!,
           style: TextStyle(color: theme.colorScheme.onSurface)),
       onTap: () {
         Navigator.push(
