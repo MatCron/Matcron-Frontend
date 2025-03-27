@@ -100,7 +100,8 @@ class ProfileSettingsState extends State<ProfileSettings> {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: _createNavigationItem(
               icon: Icons.info_outline,
-              text: languages[languageProvider.currentLanguage]!["Profile"]!["About"]!,
+              text: languages[languageProvider.currentLanguage]!["Profile"]![
+                  "About"]!,
               destination: AboutUsPage(),
               theme: theme,
             ),
@@ -114,7 +115,9 @@ class ProfileSettingsState extends State<ProfileSettings> {
                 backgroundColor: theme.cardColor, // Logout color
                 padding: const EdgeInsets.all(15),
               ),
-              child: Text(languages[languageProvider.currentLanguage]!["Profile"]!["Log Out"]!,
+              child: Text(
+                  languages[languageProvider.currentLanguage]!["Profile"]![
+                      "Log Out"]!,
                   style: TextStyle(
                       fontSize: 16, color: theme.colorScheme.primary)),
             ),
@@ -172,22 +175,26 @@ class ProfileSettingsState extends State<ProfileSettings> {
     return _buildContainer(theme, [
       _createNavigationItem(
           icon: Icons.help,
-          text: languages[languageProvider.currentLanguage]!["Profile"]!["Help"]!,
+          text:
+              languages[languageProvider.currentLanguage]!["Profile"]!["Help"]!,
           destination: HelpPage(),
           theme: theme),
       _createNavigationItem(
           icon: Icons.account_circle,
-          text: languages[languageProvider.currentLanguage]!["Profile"]!["Account"]!,
+          text: languages[languageProvider.currentLanguage]!["Profile"]![
+              "Account"]!,
           destination: AccountPage(),
           theme: theme),
       _createNavigationItem(
           icon: Icons.article,
-          text: languages[languageProvider.currentLanguage]!["Profile"]!["Terms"]!,
+          text: languages[languageProvider.currentLanguage]!["Profile"]![
+              "Terms"]!,
           destination: TermsAndConditionsPage(),
           theme: theme),
       _createNavigationItem(
           icon: Icons.notifications,
-          text: languages[languageProvider.currentLanguage]!["Profile"]!["Notifications"]!,
+          text: languages[languageProvider.currentLanguage]!["Profile"]![
+              "Notifications"]!,
           destination: NotificationsPage(),
           theme: theme),
     ]);
@@ -198,17 +205,20 @@ class ProfileSettingsState extends State<ProfileSettings> {
       if (userType == 1) _createOrganizationNavigationItem(theme),
       _createNavigationItem(
           icon: Icons.report,
-          text: languages[languageProvider.currentLanguage]!["Profile"]!["Reports"]!,
+          text: languages[languageProvider.currentLanguage]!["Profile"]![
+              "Reports"]!,
           destination: ReportsPage(),
           theme: theme),
       _createNavigationItem(
           icon: Icons.security,
-          text: languages[languageProvider.currentLanguage]!["Profile"]!["Security"]!,
+          text: languages[languageProvider.currentLanguage]!["Profile"]![
+              "Security"]!,
           destination: SecurityPage(),
           theme: theme),
       _createNavigationItem(
           icon: Icons.settings,
-          text: languages[languageProvider.currentLanguage]!["Profile"]!["Language"]!,
+          text: languages[languageProvider.currentLanguage]!["Profile"]![
+              "Settings"]!,
           destination: SettingsPage(),
           theme: theme),
     ]);
@@ -245,7 +255,9 @@ class ProfileSettingsState extends State<ProfileSettings> {
   Widget _createOrganizationNavigationItem(ThemeData theme) {
     return ListTile(
       leading: const Icon(Icons.business),
-      title: Text(languages[languageProvider.currentLanguage]!["Profile"]!["Organization"]!,
+      title: Text(
+          languages[languageProvider.currentLanguage]!["Profile"]![
+              "Organization"]!,
           style: TextStyle(color: theme.colorScheme.onSurface)),
       onTap: () {
         Navigator.push(
@@ -289,6 +301,41 @@ class ProfileSettingsState extends State<ProfileSettings> {
                 title: const Text('Español'),
                 onTap: () {
                   _changeLanguage('ES');
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Italiano'),
+                onTap: () {
+                  _changeLanguage('IT');
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Nederlands'),
+                onTap: () {
+                  _changeLanguage('NL');
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Português'),
+                onTap: () {
+                  _changeLanguage('PT');
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('Français'),
+                onTap: () {
+                  _changeLanguage('FR');
+                  Navigator.pop(context);
+                },
+              ),
+              ListTile(
+                title: const Text('العربية'),
+                onTap: () {
+                  _changeLanguage('AR');
                   Navigator.pop(context);
                 },
               ),
