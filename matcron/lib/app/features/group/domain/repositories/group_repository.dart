@@ -1,5 +1,6 @@
 import 'package:matcron/app/features/group/data/models/group.dart';
 import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
+import 'package:matcron/app/features/mattress_history/domain/entities/mattress_history.dart';
 import 'package:matcron/core/resources/data_state.dart';
 import 'package:matcron/app/features/group/data/models/GroupWithMattressesDto.dart';
 
@@ -12,4 +13,5 @@ abstract class GroupRepository {
   Future<DataState<void>> transferOut(String uid);
   Future<DataState<void>> removeMattressFromGroup(EditMattressesToGroupModel model);
   Future<DataState<void>> addMattressToGroup(EditMattressesToGroupModel model);
+  Future<DataState<List<MattressHistoryEntity>>> getGroupHistoryById(String id);
 }
