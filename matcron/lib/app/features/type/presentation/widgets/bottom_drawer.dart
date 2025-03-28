@@ -197,8 +197,8 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                         )
                       : Text(
                           widget.isEditable
-                              ? "Edit Mattress Details"
-                              : "View Mattress Details",
+                              ? "Edit Type Details"
+                              : "View Type Details",
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
