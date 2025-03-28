@@ -84,6 +84,13 @@ const languages = {
       "Language": "Change Language",
       "About": "About Us",
       "Log Out": "Log Out"
+    },
+    "Group": {
+      "SearchGroups": "Search groups",
+      "Add": "Add",
+      "Active": "Active",
+      "Archived": "Archived",
+      "Mattresses": "mattresses"
     }
   },
   "DE": {
@@ -173,6 +180,13 @@ const languages = {
       "Language": "Sprache ändern",
       "About": "Über uns",
       "Log Out": "Abmelden"
+    },
+    "Group": {
+      "SearchGroups": "Gruppen suchen",
+      "Add": "Hinzufügen",
+      "Active": "Aktiv",
+      "Archived": "Archiviert",
+      "Mattresses": "Matratzen"
     }
   },
   "ES": {
@@ -260,6 +274,13 @@ const languages = {
       "Language": "Cambiar idioma",
       "About": "Sobre nosotros",
       "Log Out": "Cerrar sesión"
+    },
+    "Group": {
+      "SearchGroups": "Buscar grupos",
+      "Add": "Agregar",
+      "Active": "Activo",
+      "Archived": "Archivado",
+      "Mattresses": "Colchones"
     }
   },
   "FR": {
@@ -347,6 +368,13 @@ const languages = {
       "Language": "Changer de langue",
       "About": "À propos de nous",
       "Log Out": "Se déconnecter"
+    },
+    "Group": {
+      "SearchGroups": "Rechercher des groupes",
+      "Add": "Ajouter",
+      "Active": "Actif",
+      "Archived": "Archivé",
+      "Mattresses": "Matelas"
     }
   },
   "IT": {
@@ -434,6 +462,13 @@ const languages = {
       "Language": "Cambia lingua",
       "About": "Chi siamo",
       "Log Out": "Esci"
+    },
+    "Group": {
+      "SearchGroups": "Cerca gruppi",
+      "Add": "Aggiungi",
+      "Active": "Attivo",
+      "Archived": "Archiviato",
+      "Mattresses": "Materassi"
     }
   },
   "NL": {
@@ -521,6 +556,13 @@ const languages = {
       "Language": "Taal wijzigen",
       "About": "Over ons",
       "Log Out": "Uitloggen"
+    },
+    "Group": {
+      "SearchGroups": "Groepen zoeken",
+      "Add": "Toevoegen",
+      "Active": "Actief",
+      "Archived": "Gearchiveerd",
+      "Mattresses": "Matrassen"
     }
   },
   "PT": {
@@ -608,6 +650,13 @@ const languages = {
       "Language": "Alterar Idioma",
       "About": "Sobre Nós",
       "Log Out": "Sair"
+    },
+    "Group": {
+      "SearchGroups": "Pesquisar grupos",
+      "Add": "Adicionar",
+      "Active": "Ativo",
+      "Archived": "Arquivado",
+      "Mattresses": "Colchões"
     }
   },
   "AR": {
@@ -695,6 +744,13 @@ const languages = {
       "Language": "تغيير اللغة",
       "About": "معلومات عنا",
       "Log Out": "تسجيل الخروج"
+    },
+    "Group": {
+      "SearchGroups": "البحث عن المجموعات",
+      "Add": "إضافة",
+      "Active": "نشط",
+      "Archived": "مؤرشف",
+      "Mattresses": "مراتب"
     }
   }
 };
