@@ -16,7 +16,7 @@ class LanguageProvider extends ChangeNotifier {
   }
 
   Future<void> setLanguage(String languageCode) async {
-    const allowedLanguages = ['EN', 'DE', 'ES'];
+    const allowedLanguages = ['EN', 'DE', 'ES', 'FR', 'IT', 'NL', 'PT', 'AR'];
     if (allowedLanguages.contains(languageCode.toUpperCase())) {
       final storage = FlutterSecureStorage();
       await storage.write(key: 'languageCode', value: languageCode.toUpperCase());
