@@ -1,6 +1,6 @@
 import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
-import 'package:matcron/app/features/organization/domain/entities/organization.dart';
+import 'package:matcron/app/features/organisation/domain/entities/organization.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/core/resources/database_service.dart';
 

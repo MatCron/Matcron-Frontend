@@ -16,7 +16,7 @@ class HeaderState extends State<Header> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      color: theme.cardColor,
+      color: theme.scaffoldBackgroundColor,
       child: Padding(
         padding: const EdgeInsets.only(top: 40.0, left: 10.0, right: 10.0),
         child: Row(
@@ -35,6 +35,32 @@ class HeaderState extends State<Header> {
             // Profile and Notifications
             Row(
               children: [
+                  // Notification Icon
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NotificationsPage(),
+                      ),
+                    );
+                  },
+                  child: Container(
+                    width: 38.0,
+                    height: 38.0,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.notifications,
+                      color: theme.colorScheme.onPrimary,
+                      size: 20.0,
+                    ),
+                  ),
+                ),
+              
+                const SizedBox(width: 10),
                 // Profile Icon (Navigates to ProfileSettings)
                 GestureDetector(
                   onTap: () {
@@ -60,32 +86,9 @@ class HeaderState extends State<Header> {
                   ),
                 ),
 
-                const SizedBox(width: 10),
+              
 
-                // Notification Icon
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => NotificationsPage(),
-                      ),
-                    );
-                  },
-                  child: Container(
-                    width: 38.0,
-                    height: 38.0,
-                    decoration: BoxDecoration(
-                      color: theme.colorScheme.primary,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.notifications,
-                      color: theme.colorScheme.onPrimary,
-                      size: 20.0,
-                    ),
-                  ),
-                ),
+              
               ],
             ),
           ],

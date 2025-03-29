@@ -32,7 +32,7 @@ class AddMattressPageState extends State<AddMattressPage> {
         builder: (_, state) {
           if (state is RemoteMattressesLoading) {
             return Scaffold(
-              backgroundColor: theme.cardColor,
+              backgroundColor: theme.scaffoldBackgroundColor,
               body: Center(
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),

@@ -283,232 +283,6 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     );
   }
 
-  // void _openAddMattressDrawer() {
-  //   final theme = Theme.of(context);
-  //   // Declare selectedIds outside the builder to persist state
-  //   Set<String> selectedIds = {};
-
-  //   showModalBottomSheet(
-  //     context: context,
-  //     backgroundColor: theme.colorScheme.surface,
-  //     isScrollControlled: true,
-  //     shape: const RoundedRectangleBorder(
-  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-  //     ),
-  //     builder: (BuildContext context) {
-  //       List<MattressEntity> mattresses =
-  //           globalMattresses; //CHANNGE THIS TO GET ALL MATTERESES
-  //       List<MattressEntity> filteredMattresses = List.from(mattresses);
-
-  //       TextEditingController searchController = TextEditingController();
-
-  //       return StatefulBuilder(
-  //         builder: (BuildContext context, StateSetter setModalState) {
-  //           void _filterMattresses(String query) {
-  //             setModalState(() {
-  //               if (query.isEmpty) {
-  //                 filteredMattresses = List.from(mattresses);
-  //               } else {
-  //                 filteredMattresses = mattresses.where((mattress) {
-  //                   return (mattress.type ?? "")
-  //                           .toLowerCase()
-  //                           .contains(query.toLowerCase()) ||
-  //                       (mattress.location ?? "")
-  //                           .toLowerCase()
-  //                           .contains(query.toLowerCase());
-  //                 }).toList();
-  //               }
-  //             });
-  //           }
-
-  //           return Padding(
-  //             padding: MediaQuery.of(context).viewInsets,
-  //             child: Container(
-  //               padding: const EdgeInsets.all(16),
-  //               height: 500, // Adjust height as needed
-  //               child: Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.start,
-  //                 children: [
-  //                   Text(
-  //                     "Add Mattresses To Group",
-  //                     style: TextStyle(
-  //                       fontSize: 18,
-  //                       fontWeight: FontWeight.bold,
-  //                       color: theme.colorScheme.primary,
-  //                     ),
-  //                   ),
-  //                   const SizedBox(height: 10),
-  //                   Row(
-  //                     children: [
-  //                       Expanded(
-  //                         child: TextField(
-  //                           controller: searchController,
-  //                           onChanged: (value) {
-  //                             _filterMattresses(value);
-  //                           },
-  //                           decoration: InputDecoration(
-  //                             hintText: "Search Mattress",
-  //                             hintStyle:  TextStyle(color: theme.colorScheme.shadow),
-  //                             prefixIcon:
-  //                                  Icon(Icons.search, color: theme.colorScheme.shadow),
-  //                             suffixIcon: IconButton(
-  //                               icon: Image.asset(
-  //                                 'assets/images/scan_icon.png', // Path to your scan icon asset
-  //                                 height: 36,
-  //                                 width: 50,
-  //                               ),
-  //                               onPressed: () {
-  //                                 _openRfidModal(context, 'SEARCH');
-  //                               },
-  //                             ),
-  //                             border: OutlineInputBorder(
-  //                               borderRadius: BorderRadius.circular(30.0),
-  //                               borderSide: BorderSide.none,
-  //                             ),
-  //                             filled: true,
-  //                             fillColor: theme.cardColor,
-  //                             contentPadding:
-  //                                 const EdgeInsets.symmetric(vertical: 8.0),
-  //                           ),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   const SizedBox(height: 10),
-  //                   Expanded(
-  //                     child: ListView.builder(
-  //                       itemCount: filteredMattresses.length,
-  //                       itemBuilder: (context, index) {
-  //                         String mattressId = filteredMattresses[index].uid!;
-  //                         return CheckboxListTile(
-  //                           title: Column(
-  //                             crossAxisAlignment: CrossAxisAlignment.start,
-  //                             children: [
-  //                               Text(
-  //                                 filteredMattresses[index].type ??
-  //                                     "Unknown Type",
-  //                                 style:  TextStyle(
-  //                                   fontWeight: FontWeight.bold,
-  //                                   color: theme.colorScheme.onSurface,
-  //                                 ),
-  //                               ),
-  //                               Row(
-  //                                 children: [
-  //                                    Text(
-  //                                     "Status: ",
-  //                                     style: TextStyle(color: theme.colorScheme.shadow),
-  //                                   ),
-  //                                   Text(
-  //                                     "${mattressStatus[filteredMattresses[index].status!]['Text']}",
-  //                                     style: TextStyle(
-  //                                         color: mattressStatus[
-  //                                             filteredMattresses[index]
-  //                                                 .status!]['Color'] as Color),
-  //                                   ),
-  //                                 ],
-  //                               ),
-  //                               Text(
-  //                                 "Location: ${filteredMattresses[index].location ?? 'Unknown Location'}",
-  //                                 style:  TextStyle(color:theme.colorScheme.shadow),
-  //                               ),
-  //                             ],
-  //                           ),
-  //                           checkColor: theme.colorScheme.primary,
-  //                           activeColor: theme.colorScheme.surface,
-  //                           value: selectedIds.contains(mattressId),
-  //                           onChanged: (bool? value) {
-  //                             setModalState(() {
-  //                               if (value == true) {
-  //                                 selectedIds.add(mattressId);
-  //                               } else {
-  //                                 selectedIds.remove(mattressId);
-  //                               }
-  //                             });
-  //                           },
-  //                         );
-  //                       },
-  //                     ),
-  //                   ),
-  //                   const SizedBox(height: 10),
-  //                   Row(
-  //                     mainAxisAlignment: MainAxisAlignment.end,
-  //                     children: [
-  //                       TextButton(
-  //                         onPressed: () {
-  //                           setModalState(() {
-  //                             selectedIds.clear();
-  //                           });
-  //                         },
-  //                         child:  Text(
-  //                           "Clear",
-  //                           style: TextStyle(color: theme.colorScheme.error),
-  //                         ),
-  //                       ),
-  //                       ElevatedButton(
-  //                         onPressed: () async {
-  //                           List<MattressEntity> selectedMattresses = mattresses
-  //                               .where((mattress) =>
-  //                                   selectedIds.contains(mattress.uid))
-  //                               .toList(); // this is for local adding dynamically
-  //                           //convert to mattressDto
-
-  //                           if (selectedMattresses.isNotEmpty) {
-  //                             bool? added = await _performAdd(selectedIds);
-  //                             if (mounted && added!) {
-  //                               setState(() {
-  //                                 for (var mattress in selectedMattresses) {
-  //                                   MattressDto mattressDto = MattressDto(
-  //                                     uid: mattress.uid,
-  //                                     mattressTypeName: mattress.type,
-  //                                     location: mattress.location,
-  //                                     status: mattress.status,
-  //                                   );
-
-  //                                   widget.group.mattressList.add(mattressDto);
-  //                                   globalMattresses.remove(mattress);
-  //                                 }
-  //                               });
-
-  //                               Navigator.pop(context); // Close drawer
-  //                               ScaffoldMessenger.of(context).showSnackBar(
-  //                                 const SnackBar(
-  //                                   content: Text("Mattresses added to group."),
-  //                                   backgroundColor: Colors.green,
-  //                                 ),
-  //                               );
-  //                             }
-  //                           } else {
-  //                             ScaffoldMessenger.of(context).showSnackBar(
-  //                               const SnackBar(
-  //                                 content: Text("No mattresses selected."),
-  //                                 backgroundColor: Colors.orange,
-  //                               ),
-  //                             );
-  //                           }
-  //                         },
-  //                         style: ElevatedButton.styleFrom(
-  //                           backgroundColor: theme.colorScheme.primary,
-  //                           padding: const EdgeInsets.symmetric(
-  //                               vertical: 14, horizontal: 24),
-  //                           shape: RoundedRectangleBorder(
-  //                               borderRadius: BorderRadius.circular(8)),
-  //                         ),
-  //                         child:  Text(
-  //                           "Add Mattresses",
-  //                           style: TextStyle(color: theme.colorScheme.surface),
-  //                         ),
-  //                       ),
-  //                     ],
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           );
-  //         },
-  //       );
-  //     },
-  //   );
-  // }
 
   void _openAddMattressDrawer() {
   final theme = Theme.of(context);
@@ -607,7 +381,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                         borderSide: BorderSide.none,
                       ),
                       filled: true,
-                      fillColor: theme.cardColor,
+                      fillColor: theme.scaffoldBackgroundColor,
                     ),
                   ),
 
@@ -758,7 +532,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: theme.cardColor),
+          border: Border.all(color: theme.scaffoldBackgroundColor),
         ),
         child: Column(
           children: [
@@ -790,13 +564,13 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.colorScheme.surface,
+        backgroundColor: theme.colorScheme.primary,
         elevation: 0,
-        iconTheme:  IconThemeData(color: theme.colorScheme.onSurface),
+        iconTheme:  IconThemeData(color: theme.colorScheme.surface),
         title:  Text(
           "Group Details",
           style: TextStyle(
-            color: theme.colorScheme.onSurface,
+            color: theme.colorScheme.surface,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -818,7 +592,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: theme.cardColor,
+                          color: theme.scaffoldBackgroundColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Column(

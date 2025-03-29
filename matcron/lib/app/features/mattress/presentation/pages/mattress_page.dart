@@ -455,7 +455,7 @@ void _initializeUserType() async {
   Widget build(BuildContext context) {
         final theme = Theme.of(context); // Get theme
     return Scaffold(
-        backgroundColor: theme.colorScheme.background,
+        backgroundColor: theme.scaffoldBackgroundColor,
       body: BlocBuilder<RemoteMattressBloc, RemoteMattressState>(
         builder: (_, state) {
           if (state is RemoteMattressesLoading) {
@@ -486,7 +486,7 @@ void _initializeUserType() async {
 
   Widget _buildDoneState(BuildContext context,ThemeData theme) {
     return Container(
-      color:theme.cardColor,
+      color:theme.scaffoldBackgroundColor,
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -725,7 +725,7 @@ void _initializeUserType() async {
                                         flex: 2,
                                         child: Text(
                                           mattress.type!,
-                                          style: TextStyle(color: theme.colorScheme.onSurface),
+                                          style: TextStyle(color: theme.colorScheme.onBackground),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -733,7 +733,7 @@ void _initializeUserType() async {
                                         flex: 3,
                                         child: Text(
                                           mattress.location!,
-                                          style: TextStyle(color: theme.colorScheme.onSurface),
+                                          style: TextStyle(color: theme.colorScheme.onBackground),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
