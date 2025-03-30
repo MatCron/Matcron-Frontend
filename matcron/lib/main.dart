@@ -139,9 +139,11 @@ class _MyHomePageState extends State<MyHomePage> {
     languageProvider = Provider.of<LanguageProvider>(context, listen: false);
     _initializeLanguage();
     _selectedPageIndex = widget.startPageIndex;
+    _controller.index = _selectedPageIndex;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _pageController.jumpToPage(_selectedPageIndex);
     });
+    
   }
 
   Future<void> _initializeLanguage() async {

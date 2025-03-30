@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:matcron/app/features/group/data/models/group.dart';
+import 'package:matcron/app/features/mattress_history/data/models/mattress_history_model.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:matcron/app/features/group/data/models/GroupWithMattressesDto.dart';
@@ -32,4 +33,7 @@ abstract class GroupApiService {
 
   @POST('/mattresses/multiple')
   Future <HttpResponse<void>> removeMattressFromGroup({@Body() required EditMattressesToGroupModel model, @Header('Authorization') required String token});
+
+  @GET('/{id}/log')
+  Future<HttpResponse<List<MattressHistoryModel>>> getGroupHistory({@Header('Authorization') required String token, @Path('id') required String id});
 }

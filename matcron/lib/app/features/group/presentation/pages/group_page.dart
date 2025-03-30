@@ -7,7 +7,10 @@ import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
 import 'package:matcron/app/features/organisation/domain/entities/organization.dart';
 import 'package:matcron/app/features/organisation/domain/repositories/organization_repository.dart';
 import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
+import 'package:matcron/config/languages.dart';
 import 'package:matcron/core/resources/data_state.dart';
+import 'package:matcron/core/resources/language_provider.dart';
+import 'package:provider/provider.dart';
 import '../widgets/add_group_drawer.dart';
 import '../widgets/group_card_widget.dart';
 import '../widgets/group_details_page.dart';
@@ -33,11 +36,13 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
   late TabController _tabController;
   bool _loading = true; // New: Tracks if groups are still loading
   bool _error = false;  // Tracks if there was an error
+   late LanguageProvider languageProvider;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    languageProvider = Provider.of<LanguageProvider>(context, listen: false);
     _initializeGroups();
   }
 
@@ -240,7 +245,7 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
                               decoration: InputDecoration(
                                 filled: true,
                                 fillColor: theme.colorScheme.surface,
-                                hintText: "Search groups",
+                                hintText: languages[languageProvider.currentLanguage]!["Group"]!["SearchGroups"],
                                 hintStyle:  TextStyle(color: theme.colorScheme.onBackground),
                                 prefixIcon:  Icon(Icons.search, color: theme.colorScheme.onBackground),
                                  border: OutlineInputBorder(
@@ -257,7 +262,7 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
                          child: ElevatedButton.icon(
                             onPressed: _openAddDrawer,
                             icon:  Icon(Icons.add, color: theme.colorScheme.surface),
-                            label:  Text("Add Group", style: TextStyle(color: theme.colorScheme.surface)),
+                            label:  Text(languages[languageProvider.currentLanguage]!["Group"]!["Add Group"]!, style: TextStyle(color: theme.colorScheme.surface)),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: theme.colorScheme.primary,
                               shape: RoundedRectangleBorder(
@@ -293,7 +298,7 @@ Container(
         ),
       ),
     ),
-                      tabs:  [
+                      tabs: const [
                         Tab(text: "Active"),
                         Tab(text: "Archived"),
                       ],
