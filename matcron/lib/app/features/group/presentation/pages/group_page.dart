@@ -7,7 +7,10 @@ import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
 import 'package:matcron/app/features/organisation/domain/entities/organization.dart';
 import 'package:matcron/app/features/organisation/domain/repositories/organization_repository.dart';
 import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
+import 'package:matcron/config/languages.dart';
 import 'package:matcron/core/resources/data_state.dart';
+import 'package:matcron/core/resources/language_provider.dart';
+import 'package:provider/provider.dart';
 import '../widgets/add_group_drawer.dart';
 import '../widgets/group_card_widget.dart';
 import '../widgets/group_details_page.dart';
@@ -33,11 +36,13 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
   late TabController _tabController;
   bool _loading = true; // New: Tracks if groups are still loading
   bool _error = false;  // Tracks if there was an error
+   late LanguageProvider languageProvider;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    languageProvider = Provider.of<LanguageProvider>(context, listen: false);
     _initializeGroups();
   }
 
@@ -220,99 +225,99 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      body: _loading
-          ? Center(child: CircularProgressIndicator(color: theme.colorScheme.primary,)) // Show loading spinner
-          : _error
-              ? const Center(child: Text("Error loading groups. Try again later."))
-              : Column(
-                  children: [
-                    // Search bar + Add button
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                                                     TextField(
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: theme.colorScheme.surface,
-                                hintText: "Search groups",
-                                hintStyle:  TextStyle(color: theme.colorScheme.onBackground),
-                                prefixIcon:  Icon(Icons.search, color: theme.colorScheme.onBackground),
-                                 border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(30.0),
-                                borderSide: BorderSide.none,
-                              ),
-                                contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
-                              ),
-                            
+ @override
+Widget build(BuildContext context) {
+  final theme = Theme.of(context);
+  return Scaffold(
+    body: _loading
+        ? Center(child: CircularProgressIndicator(color: theme.colorScheme.primary,)) // Show loading spinner
+        : _error
+            ? const Center(child: Text("Error loading groups. Try again later."))
+            : Column(
+                children: [
+                  // Search bar + Add button
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextField(
+                          decoration: InputDecoration(
+                            hintText: languages[languageProvider.currentLanguage]!["Group"]!["SearchGroups"],
+                            hintStyle: TextStyle(color: theme.colorScheme.onBackground),
+                            prefixIcon: Icon(Icons.search, color: theme.colorScheme.onBackground),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(30.0),
+                              borderSide: BorderSide.none,
+                            ),
+                            filled: true,
+                            fillColor: theme.colorScheme.surface,
+                            contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
                           ),
-                          const SizedBox(width: 10),
-                           Align(
-        alignment: Alignment.centerRight,
-                         child: ElevatedButton.icon(
+                        ),
+                        const SizedBox(width: 10),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: ElevatedButton.icon(
                             onPressed: _openAddDrawer,
-                            icon:  Icon(Icons.add, color: theme.colorScheme.surface),
-                            label:  Text("Add Group", style: TextStyle(color: theme.colorScheme.surface)),
+                            icon: Icon(Icons.add, color: theme.colorScheme.surface),
+                            label: Text(
+                              languages[languageProvider.currentLanguage]!["Group"]!["Add"]!,
+                              style: TextStyle(color: theme.colorScheme.surface),
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: theme.colorScheme.primary,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8.0),
-                                
                               ),
                             ),
                           ),
-                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                  ), 
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: theme.colorScheme.shadow, // This controls the divider line
+                          width: 1.0,
+                        ),
                       ),
-                    ), 
-                    
-Container(
-  decoration: BoxDecoration(
-    border: Border(
-      bottom: BorderSide(
-        color: theme.colorScheme.shadow, // This controls the divider line
-        width: 1.0,
-      ),
-    ),
-  ),
-                    // Tabs
-                   child: TabBar(
+                    ),
+                    child: TabBar(
                       controller: _tabController,
                       labelColor: theme.colorScheme.primary,
                       unselectedLabelColor: theme.colorScheme.shadow,
                       indicator: BoxDecoration(
-      border: Border(
-        bottom: BorderSide(
-          color: theme.colorScheme.primary,
-          width: 2.0,
-        ),
-      ),
-    ),
-                      tabs:  [
-                        Tab(text: "Active"),
-                        Tab(text: "Archived"),
+                        border: Border(
+                          bottom: BorderSide(
+                            color: theme.colorScheme.primary,
+                            width: 2.0,
+                          ),
+                        ),
+                      ),
+                      tabs: [
+                        Tab(text: languages[languageProvider.currentLanguage]!["Group"]!["Active"]!),
+                        Tab(text: languages[languageProvider.currentLanguage]!["Group"]!["Archived"]!),
                       ],
                     ),
-),
-                    // Tab Views
-                    Expanded(
-                      child: TabBarView(
-                        controller: _tabController,
-                        children: [
-                          _buildGroupList(activeGroups),
-                          _buildGroupList(archivedGroups),
-                        ],
-                      ),
+                  ),
+                  // Tab Views
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        _buildGroupList(activeGroups),
+                        _buildGroupList(archivedGroups),
+                      ],
                     ),
-                  ],
-                ),
-    );
-  }
+                  ),
+                ],
+              ),
+  );
+}
+
 
   /// Builds the list of groups
   Widget _buildGroupList(List<GroupEntity> groups) {

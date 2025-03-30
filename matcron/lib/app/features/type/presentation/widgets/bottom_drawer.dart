@@ -197,8 +197,8 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                         )
                       : Text(
                           widget.isEditable
-                              ? "Edit Mattress Details"
-                              : "View Mattress Details",
+                              ? "Edit Type Details"
+                              : "View Type Details",
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -293,6 +293,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                           style: TextStyle(
                                               fontSize: 14,
                                               color:theme.colorScheme.shadow,
+
                                               fontStyle: FontStyle.italic
                                               ),
                                         ),
@@ -314,6 +315,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                                           style: TextStyle(
                                               fontSize: 14,
                                               color:theme.colorScheme.shadow),
+                                              ),
                                         ),
                                       ],
                                     ),
@@ -323,7 +325,7 @@ class MattressTypeBottomDrawerState extends State<MattressTypeBottomDrawer> {
                             );
                           },
                         ),
-                      ),
+                      ), //hree
                     ],
                   ),
                 ),
