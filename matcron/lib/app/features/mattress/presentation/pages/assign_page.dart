@@ -59,7 +59,7 @@ class AssignPageState extends State<AssignPage> {
           await ndef.write(message);
           //print("sucess");
             // Vibrate on success
-          if (await Vibration.hasVibrator() ?? false) {
+          if (await Vibration.hasVibrator()) {
             Vibration.vibrate(duration: 500);
           }
             // Play success sound
@@ -113,7 +113,7 @@ class AssignPageState extends State<AssignPage> {
   // Handle error scenarios with vibration and sound
 void _handleError(String errorMessage) async {
   // Vibrate on error
-  if (await Vibration.hasVibrator() ?? false) {
+  if (await Vibration.hasVibrator()) {
     Vibration.vibrate(duration: 1000);
   }
 
