@@ -55,13 +55,15 @@ const languages = {
       "Processing": "Processing...",
       "FinishhedWriting": "Finished writing to NFC tag!",
       "FailedWriting": "Failed or no writable tag found.",
+
       "In Production": "In Production",
       "In Inventory": "In Inventory",
       "Assigned": "Assigned",
       "In Use": "In Use",
       "Cleaning Required": "Cleaning Required",
-      "Decommissoned": "Decommissioned",
+      "Decommissioned": "Decommissioned",
       "In Transit": "In Transit",
+
     },
     "Type": {
       "SearchType": "Search Mattress Type",
@@ -91,7 +93,8 @@ const languages = {
       "Active": "Active",
       "Archived": "Archived",
       "Mattresses": "mattresses"
-    }
+    },
+
   },
   "DE": {
     "Header": {
@@ -344,7 +347,7 @@ const languages = {
       "Assigned": "Attribué",
       "In Use": "En cours d'utilisation",
       "Cleaning Required": "Nettoyage requis",
-      "Decommissoned": "Mis hors service",
+      "Decommissioned": "Mis hors service",
       "In Transit": "En transit"
     },
     "Type": {
@@ -438,7 +441,7 @@ const languages = {
       "Assigned": "Assegnato",
       "In Use": "In uso",
       "Cleaning Required": "Pulizia necessaria",
-      "Decommissoned": "Fuori servizio",
+      "Decommissioned": "Fuori servizio",
       "In Transit": "In transito"
     },
     "Type": {
@@ -532,7 +535,7 @@ const languages = {
       "Assigned": "Toegewezen",
       "In Use": "In gebruik",
       "Cleaning Required": "Reiniging vereist",
-      "Decommissoned": "Buiten gebruik gesteld",
+      "Decommissioned": "Buiten gebruik gesteld",
       "In Transit": "Onderweg"
     },
     "Type": {
@@ -626,7 +629,7 @@ const languages = {
       "Assigned": "Atribuído",
       "In Use": "Em Uso",
       "Cleaning Required": "Limpeza Necessária",
-      "Decommissoned": "Desativado",
+      "Decommissioned": "Desativado",
       "In Transit": "Em Trânsito"
     },
     "Type": {
@@ -720,7 +723,7 @@ const languages = {
       "Assigned": "مخصص",
       "In Use": "قيد الاستخدام",
       "Cleaning Required": "يتطلب التنظيف",
-      "Decommissoned": "متوقف عن الخدمة",
+      "Decommissioned": "متوقف عن الخدمة",
       "In Transit": "قيد النقل"
     },
     "Type": {
