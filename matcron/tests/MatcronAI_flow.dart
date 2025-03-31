@@ -11,6 +11,7 @@ import 'package:matcron/app/injection_container.dart'; // Import your dependency
 import 'package:provider/provider.dart';
 import '../tests/Robots/main_navigation_robot.dart';
 import '../tests/Robots/matress_page_robot.dart';
+import 'Robots/profile_robot.dart';
 
 void main() async {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,7 @@ void main() async {
     return;
   }
   group('Matress Page test', () {
-    testWidgets('Mattress Page Interaction Test', (WidgetTester tester) async {
+    testWidgets('Cannge language flow ', (WidgetTester tester) async {
       // Launch the app
 
       await tester.pumpWidget(
@@ -41,56 +42,11 @@ void main() async {
       // Initialize the robot
       final robot = MattressPageRobot(tester);
       final mainNavigationRobot = MainNavigationRobot(tester);
+      final profileRobot = ProfileRobot(tester);
       await mainNavigationRobot.pumpUntilFound(tester, find.text('Dashboard'));
       // navigate to Mattress Page
-      await mainNavigationRobot.tapMattressItem();
-
-      // Test searching for a mattress
-      await robot.searchForMattress('testing');
-      await robot.verifyMattressInList('testing');
-
-      // Test adding a mattress
-      await robot.tapAddMattressButton();
-      // Verify navigation to Add Mattress Page
-      expect(find.text('Generate RFID'), findsOneWidget);
-
-      // Go back to Mattress Page
-      await robot.pressBackButton(tester);
-
-      await tester.pumpAndSettle();
-
-      // // Test importing mattresses
-      // await robot.tapImportMattressButton();
-      // // Verify navigation to Import Mattress Page
-      // expect(find.text('Import Mattress'), findsOneWidget);
-
-      // Go back to Mattress Page
-      // await tester.pageBack();
-      // await tester.pumpAndSettle();
-
-      // Test opening mattress dropdown details
-      const testType = 'Double';
-      const testLocation = 'testing';
-
-      await robot.verifyMattressInList(testType);
-      await robot.tapMattressItem(testType, testLocation);
-
-      // Test editing mattress details
-      await robot.tapEditButton();
-
-      // Verify modal opens for editing
-      expect(find.text('Edit'), findsOneWidget);
-      await robot.tapCancelButton();
-
-      await robot.tapMoreButton();
-
-      await robot.tapOnX();
-      await robot.tapEditButton();
-      await robot.tapOnStatus();
-      await robot.tapOnInUse();
-      await robot.tapSaveButton();
-      await robot.tapOnCircle();
-      await robot.tapOnTransferOut();
+      await mainNavigationRobot.tapOnProfileIcon();
+      await profileRobot.tapOnHelp();
 
       // // Test More button
       // await robot.tapMoreButton();

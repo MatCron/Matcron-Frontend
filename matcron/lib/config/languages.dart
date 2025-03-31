@@ -60,7 +60,7 @@ const languages = {
       "Assigned": "Assigned",
       "In Use": "In Use",
       "Cleaning Required": "Cleaning Required",
-      "Decommissoned": "Decommissioned",
+      "Decommissioned": "Decommissioned",
       "In Transit": "In Transit",
     },
     "Type": {

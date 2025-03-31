@@ -40,4 +40,27 @@ class MainNavigationRobot {
     final header = find.text(expectedTitle); // Locate the header title
     expect(header, findsOneWidget);
   }
+
+  Future<void> pumpUntilFound(
+    WidgetTester tester,
+    Finder finder, {
+    Duration timeout = const Duration(seconds: 10),
+  }) async {
+    final start = DateTime.now();
+    while (DateTime.now().difference(start) < timeout) {
+      await tester.pump();
+      if (finder.evaluate().isNotEmpty) {
+        return; // Widget found, exit loop
+      }
+      await Future.delayed(const Duration(
+          milliseconds: 100)); // Small delay to avoid high CPU usage
+    }
+    throw Exception('Widget not found within timeout: ${finder.description}');
+  }
+
+  Future<void> tapOnProfileIcon() async {
+    var offset = Offset(338.3, 61.7);
+    await tester.tapAt(offset);
+    await tester.pumpAndSettle();
+  }
 }

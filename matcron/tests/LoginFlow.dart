@@ -99,7 +99,7 @@ void main() async {
       // Enter valid email and password
       debugPrint('Entering valid email and password...');
       await loginRobot.enterEmail('matcron@gmail.com');
-      await loginRobot.enterPassword('password');
+      await loginRobot.enterPassword('Password');
       debugPrint('Valid email and password entered.');
 
       // Tap Sign In
@@ -110,7 +110,7 @@ void main() async {
       // Verify navigation to the home page
       try {
         debugPrint('Verifying navigation to the dashboard page...');
-        expect(find.text('Dashboard Page'), findsOneWidget);
+        expect(find.text('Dashboard'), findsOneWidget);
         debugPrint('Navigation to the home page verified successfully.');
       } catch (e) {
         debugPrint('Error during home page navigation verification: $e');

@@ -597,6 +597,7 @@ class MattressPageState extends State<MattressPage> {
                 const SizedBox(width: 10.0),
                 if (selectedMattresses.isNotEmpty)
                   ElevatedButton(
+                    key: Key('transfer_out_button'),
                     onPressed: () {
                       Navigator.push(
                           context,
@@ -815,11 +816,17 @@ class MattressPageState extends State<MattressPage> {
                                         ),
                                         Expanded(
                                           flex: 2,
+                                          key: Key('mattress_status'),
                                           child: Text(
                                             mattress.status != null &&
                                                     mattress.status! <
                                                         mattressStatus.length
-                                                ? languages[languageProvider.currentLanguage]!["Mattress"]![mattressStatus[mattress.status!]['Text'] as String]! : 'Unknown Status',
+                                                ? languages[languageProvider
+                                                        .currentLanguage]![
+                                                    "Mattress"]![mattressStatus[
+                                                        mattress.status!]
+                                                    ['Text'] as String]!
+                                                : 'Unknown Status',
                                             style: TextStyle(
                                               fontSize: 13.0,
                                               fontWeight: FontWeight.bold,
