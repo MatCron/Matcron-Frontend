@@ -5,7 +5,6 @@ import 'package:matcron/app/features/recycling_info/presentation/recycling_info.
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/domain/repositories/type_repository.dart';
 import 'package:matcron/main.dart';
-import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/resources/data_state.dart'; // Adjust import as needed
 import 'package:matcron/app/features/rotation_info/presentation/pages/rotation_info.dart';
 
@@ -104,7 +103,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final backgroundColor = theme.cardColor;
+    final backgroundColor = theme.scaffoldBackgroundColor;
     final fieldColor =theme.colorScheme.surface;
     final primaryColor =theme.colorScheme.primary;
     final hintTextStyle = TextStyle(color: theme.colorScheme.shadow);
@@ -112,11 +111,31 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
 
     return Scaffold(
       backgroundColor: backgroundColor,
-      body: Column(
+  body: Column(
+  children: [
+  Container(
+    color: primaryColor,
+      padding: const EdgeInsets.only(left: 16, top: 40, right: 16, bottom: 16),
+      child: Row(
         children: [
-          const Header(title: "Mattress Type"),
-          Expanded(
-            child: SingleChildScrollView(
+          IconButton(
+            icon: Icon(Icons.arrow_back, 
+                color: theme.colorScheme.surface),
+            onPressed: () => Navigator.pop(context),
+          ),
+          Text(
+            "Mattress Type",
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: theme.colorScheme.surface,
+            ),
+          ),
+        ],
+      ),
+    ),
+    Expanded(
+      child: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Form(
                 key: _formKey,

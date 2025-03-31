@@ -254,7 +254,7 @@ class MattressTypePageState extends State<MattressTypePage> {
         builder: (context, state) {
           if (state is RemoteTypesLoading) {
             return Scaffold(
-              backgroundColor: theme.cardColor,
+              backgroundColor: theme.scaffoldBackgroundColor,
               body: Center(
                 child: CircularProgressIndicator(
                   valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),

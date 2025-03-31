@@ -509,7 +509,7 @@ class MattressPageState extends State<MattressPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context); // Get theme
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: BlocBuilder<RemoteMattressBloc, RemoteMattressState>(
         builder: (_, state) {
           if (state is RemoteMattressesLoading) {
@@ -541,7 +541,7 @@ class MattressPageState extends State<MattressPage> {
   Widget _buildDoneState(BuildContext context, ThemeData theme) {
     return Consumer<LanguageProvider>(builder: (context, value, child) {
       return Container(
-        color: theme.cardColor,
+        color: theme.scaffoldBackgroundColor,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -799,7 +799,7 @@ class MattressPageState extends State<MattressPage> {
                                             mattress.type!,
                                             style: TextStyle(
                                                 color: theme
-                                                    .colorScheme.onSurface),
+                                                    .colorScheme.onBackground),
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),
@@ -809,7 +809,7 @@ class MattressPageState extends State<MattressPage> {
                                             mattress.location!,
                                             style: TextStyle(
                                                 color: theme
-                                                    .colorScheme.onSurface),
+                                                    .colorScheme.onBackground),
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                         ),

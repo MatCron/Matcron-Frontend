@@ -402,7 +402,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
-                        fillColor: theme.cardColor,
+                        fillColor: theme.scaffoldBackgroundColor,
                       ),
                     ),
 
@@ -573,7 +573,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: theme.cardColor),
+          border: Border.all(color: theme.scaffoldBackgroundColor),
         ),
         child: Column(
           children: [
@@ -606,13 +606,13 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: theme.colorScheme.surface,
+        backgroundColor: theme.colorScheme.primary,
         elevation: 0,
-        iconTheme: IconThemeData(color: theme.colorScheme.onSurface),
+        iconTheme: IconThemeData(color: theme.colorScheme.surface),
         title: Text(
           "Group Details",
           style: TextStyle(
-            color: theme.colorScheme.onSurface,
+            color: theme.colorScheme.surface,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -634,7 +634,7 @@ class GroupDetailsPageState extends State<GroupDetailsPage> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: theme.cardColor,
+                          color: theme.scaffoldBackgroundColor,
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Column(

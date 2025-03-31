@@ -39,16 +39,18 @@ class GroupCardWidget extends StatelessWidget {
                 children: [
                   Text(
                     groupName,
-                    style: const TextStyle(
+                    style:  TextStyle(
+                        color:theme.colorScheme.onSurface,
                       fontWeight: FontWeight.bold,
                       fontSize: 16.0,
+                    
                     ),
                   ),
                   const SizedBox(height: 4.0),
                   Text(
                     "$mattressCount mattresses",
                     style: TextStyle(
-                      color:theme.colorScheme.shadow,
+                      color:theme.colorScheme.onSurface,
                       fontSize: 14.0,
                     ),
                   ),

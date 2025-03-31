@@ -4,8 +4,8 @@ import 'package:matcron/app/features/group/data/models/group.dart';
 import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
 import 'package:matcron/app/features/group/domain/repositories/group_repository.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
-import 'package:matcron/app/features/organization/domain/entities/organization.dart';
-import 'package:matcron/app/features/organization/domain/repositories/organization_repository.dart';
+import 'package:matcron/app/features/organisation/domain/entities/organization.dart';
+import 'package:matcron/app/features/organisation/domain/repositories/organization_repository.dart';
 import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
 import 'package:matcron/config/languages.dart';
 import 'package:matcron/core/resources/data_state.dart';
@@ -238,52 +238,72 @@ class GroupPageState extends State<GroupPage> with SingleTickerProviderStateMixi
                     // Search bar + Add button
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                      child: Row(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          Expanded(
-                            child: TextField(
+                                                     TextField(
                               decoration: InputDecoration(
-                                hintText: languages[languageProvider.currentLanguage]!["Group"]!["SearchGroups"],
-                                hintStyle: const TextStyle(color: Colors.grey),
-                                prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
-                                  borderSide: BorderSide.none,
-                                ),
                                 filled: true,
-                                fillColor: theme.cardColor,
-                                contentPadding: const EdgeInsets.symmetric(vertical: 8.0),
+                                fillColor: theme.colorScheme.surface,
+                                hintText: languages[languageProvider.currentLanguage]!["Group"]!["SearchGroups"],
+                                hintStyle:  TextStyle(color: theme.colorScheme.onBackground),
+                                prefixIcon:  Icon(Icons.search, color: theme.colorScheme.onBackground),
+                                 border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30.0),
+                                borderSide: BorderSide.none,
                               ),
-                            ),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 10.0),
+                              ),
+                            
                           ),
                           const SizedBox(width: 10),
-                          ElevatedButton.icon(
+                           Align(
+        alignment: Alignment.centerRight,
+                         child: ElevatedButton.icon(
                             onPressed: _openAddDrawer,
                             icon:  Icon(Icons.add, color: theme.colorScheme.surface),
-                            label:  Text(languages[languageProvider.currentLanguage]!["Group"]!["Add"]!, style: TextStyle(color: theme.colorScheme.surface)),
+                            label:  Text(languages[languageProvider.currentLanguage]!["Group"]!["Add Group"]!, style: TextStyle(color: theme.colorScheme.surface)),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: theme.colorScheme.primary,
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0),
+                                borderRadius: BorderRadius.circular(8.0),
+                                
                               ),
                             ),
                           ),
+                           ),
                         ],
                       ),
-                    ),
-
+                    ), 
+                    
+Container(
+  decoration: BoxDecoration(
+    border: Border(
+      bottom: BorderSide(
+        color: theme.colorScheme.shadow, // This controls the divider line
+        width: 1.0,
+      ),
+    ),
+  ),
                     // Tabs
-                    TabBar(
+                   child: TabBar(
                       controller: _tabController,
                       labelColor: theme.colorScheme.primary,
                       unselectedLabelColor: theme.colorScheme.shadow,
-                      indicatorColor: theme.colorScheme.primary,
-                      tabs: [
-                        Tab(text: languages[languageProvider.currentLanguage]!["Group"]!["Active"]!),
-                        Tab(text: languages[languageProvider.currentLanguage]!["Group"]!["Archived"]),
+                      indicator: BoxDecoration(
+      border: Border(
+        bottom: BorderSide(
+          color: theme.colorScheme.primary,
+          width: 2.0,
+        ),
+      ),
+    ),
+                      tabs: const [
+                        Tab(text: "Active"),
+                        Tab(text: "Archived"),
                       ],
                     ),
-
+),
                     // Tab Views
                     Expanded(
                       child: TabBarView(

@@ -1,0 +1,2 @@
+C:/Matcron-Frontend/matcron/android/app/.cxx/Debug/6k1x2z1n/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Matcron-Frontend/matcron/android/app/.cxx/Debug/6k1x2z1n/armeabi-v7a/CMakeFiles/rebuild_cache.dir

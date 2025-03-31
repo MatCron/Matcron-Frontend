@@ -65,6 +65,7 @@ ThemeData darkTheme() {
       surface: Colors.black, // Darker shade for surfaces
       onPrimary: Colors.white,
       onSecondary: Colors.white,
+      onBackground: Colors.white,
       onSurface: Colors.white70,
       shadow: Colors.grey,
       error: Color(0xFFCF6679), // Softer red for dark mode errors

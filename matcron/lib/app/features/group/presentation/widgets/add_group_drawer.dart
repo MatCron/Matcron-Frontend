@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:matcron/app/features/group/data/models/group.dart';
-import 'package:matcron/app/features/organization/domain/entities/organization.dart';
+import 'package:matcron/app/features/organisation/domain/entities/organization.dart';
 import 'package:matcron/core/resources/authorization.dart';
 
 class AddGroupDrawer extends StatefulWidget {

@@ -8,7 +8,7 @@ class MattressDimensionsPage extends StatelessWidget {
     final theme = Theme.of(context);
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
+    final appBarColor= theme.colorScheme.primary;
     final backgroundColor =theme.colorScheme.surface;
     final primaryColor = theme.colorScheme.primary;
 
@@ -16,7 +16,7 @@ class MattressDimensionsPage extends StatelessWidget {
     final titleStyle = TextStyle(
       fontSize: screenWidth * 0.06, 
       fontWeight: FontWeight.bold,
-      color: primaryColor,
+      color: theme.colorScheme.onPrimary,
     );
     final labelStyle = TextStyle(
       fontSize: screenWidth * 0.035, 
@@ -32,7 +32,7 @@ class MattressDimensionsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: AppBar(
-        backgroundColor: backgroundColor,
+        backgroundColor: appBarColor,
         elevation: 0,
            automaticallyImplyLeading: false,
         leading: IconButton(
@@ -41,7 +41,7 @@ class MattressDimensionsPage extends StatelessWidget {
             "<",
             style: TextStyle(
               fontSize: screenWidth * 0.08,
-              color: theme.colorScheme.primary, 
+              color: theme.colorScheme.surface, 
               fontWeight: FontWeight.bold,
             ),
           ),
