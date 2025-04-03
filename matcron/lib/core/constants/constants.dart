@@ -19,13 +19,13 @@ const progressBarLabels = ["Select", "Tap RFID", "Finished"];
 
 //status
 const List<Map<String, dynamic>> mattressStatus = [
-  {"Text": "Production", "Color": Colors.orange},
-  {"Text": "Inventory", "Color": Colors.green},
+  {"Text": "In Production", "Color": Colors.orange},
+  {"Text": "In Inventory", "Color": Colors.green},
   {"Text": "Assigned", "Color": Colors.green},
-  {"Text": "Active", "Color": Colors.green},
+  {"Text": "In Use", "Color": Colors.green},
   {"Text": "Cleaning Required", "Color": Colors.red},
   {"Text": "Decommissioned", "Color": Colors.red},
-  {"Text": "Transit", "Color": Colors.orange},
+  {"Text": "In Transit", "Color": Colors.orange},
 ];
 
 const groupStatus = [ "Active", "Archived"];

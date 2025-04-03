@@ -55,7 +55,6 @@ const languages = {
       "Processing": "Processing...",
       "FinishhedWriting": "Finished writing to NFC tag!",
       "FailedWriting": "Failed or no writable tag found.",
-
       "In Production": "In Production",
       "In Inventory": "In Inventory",
       "Assigned": "Assigned",
@@ -63,7 +62,6 @@ const languages = {
       "Cleaning Required": "Cleaning Required",
       "Decommissioned": "Decommissioned",
       "In Transit": "In Transit",
-
     },
     "Type": {
       "SearchType": "Search Mattress Type",
@@ -93,8 +91,7 @@ const languages = {
       "Active": "Active",
       "Archived": "Archived",
       "Mattresses": "mattresses"
-    },
-
+    }
   },
   "DE": {
     "Header": {
