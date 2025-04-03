@@ -344,7 +344,7 @@ const languages = {
       "Assigned": "Attribué",
       "In Use": "En cours d'utilisation",
       "Cleaning Required": "Nettoyage requis",
-      "Decommissioned": "Mis hors service",
+      "Decommissoned": "Mis hors service",
       "In Transit": "En transit"
     },
     "Type": {
@@ -438,7 +438,7 @@ const languages = {
       "Assigned": "Assegnato",
       "In Use": "In uso",
       "Cleaning Required": "Pulizia necessaria",
-      "Decommissioned": "Fuori servizio",
+      "Decommissoned": "Fuori servizio",
       "In Transit": "In transito"
     },
     "Type": {
@@ -532,7 +532,7 @@ const languages = {
       "Assigned": "Toegewezen",
       "In Use": "In gebruik",
       "Cleaning Required": "Reiniging vereist",
-      "Decommissioned": "Buiten gebruik gesteld",
+      "Decommissoned": "Buiten gebruik gesteld",
       "In Transit": "Onderweg"
     },
     "Type": {
@@ -626,7 +626,7 @@ const languages = {
       "Assigned": "Atribuído",
       "In Use": "Em Uso",
       "Cleaning Required": "Limpeza Necessária",
-      "Decommissioned": "Desativado",
+      "Decommissoned": "Desativado",
       "In Transit": "Em Trânsito"
     },
     "Type": {
@@ -720,7 +720,7 @@ const languages = {
       "Assigned": "مخصص",
       "In Use": "قيد الاستخدام",
       "Cleaning Required": "يتطلب التنظيف",
-      "Decommissioned": "متوقف عن الخدمة",
+      "Decommissoned": "متوقف عن الخدمة",
       "In Transit": "قيد النقل"
     },
     "Type": {
