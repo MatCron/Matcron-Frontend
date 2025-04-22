@@ -79,18 +79,16 @@ class _SplashScreenState extends State<SplashScreen>
                         color:  theme.colorScheme.surface,
                       ),
                       children: [
-                         TextSpan(text: 'MAT'),
-                        TextSpan(
-                          text: 'CRON',
+                         TextSpan(text: 'MATCRON',
                           style: GoogleFonts.lato(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.primary,
+                            color: Colors.teal,
                           ),
                         ),
                       ],
                     ),
-                  ),
+                  ),%
                 ],
               ),
             ),
