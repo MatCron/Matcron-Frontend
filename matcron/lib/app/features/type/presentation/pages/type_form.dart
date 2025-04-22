@@ -109,31 +109,36 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
     final hintTextStyle = TextStyle(color: theme.colorScheme.shadow);
     final labelStyle = TextStyle(fontSize: 16, color: theme.colorScheme.onSurface);
 
-    return Scaffold(
+      return Scaffold(
       backgroundColor: backgroundColor,
-  body: Column(
-  children: [
-  Container(
-    color: primaryColor,
-      padding: const EdgeInsets.only(left: 16, top: 40, right: 16, bottom: 16),
-      child: Row(
-        children: [
-          IconButton(
-            icon: Icon(Icons.arrow_back, 
-                color: theme.colorScheme.surface),
-            onPressed: () => Navigator.pop(context),
-          ),
-          Text(
-            "Mattress Type",
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: theme.colorScheme.surface,
-            ),
-          ),
-        ],
+      appBar: AppBar(
+  backgroundColor: Theme.of(context).primaryColor,
+  elevation: 0,
+  leading: Padding(
+    padding: const EdgeInsets.only(left: 12.0),
+    child: GestureDetector(
+      onTap: () => Navigator.pop(context),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.onSurface.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        padding: const EdgeInsets.all(8),
+        child:  Icon(Icons.arrow_back, color: theme.colorScheme.surface),
       ),
     ),
+  ),
+  title:  Text(
+    "Add Mattress Type",
+    style: TextStyle(
+      color: theme.colorScheme.surface,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+),
+  body: Column(
+  children: [
+    
     Expanded(
       child: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),

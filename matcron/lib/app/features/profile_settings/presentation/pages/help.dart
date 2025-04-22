@@ -115,10 +115,31 @@ class _HelpPageState extends State<HelpPage> {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        backgroundColor: theme.colorScheme.primary,
-        title: const Text("MatBot"),
+appBar: AppBar(
+  backgroundColor: Theme.of(context).primaryColor,
+  elevation: 0,
+  leading: Padding(
+    padding: const EdgeInsets.only(left: 12.0),
+    child: GestureDetector(
+      onTap: () => Navigator.pop(context),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.onSurface.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        padding: const EdgeInsets.all(8),
+        child:  Icon(Icons.arrow_back, color: theme.colorScheme.surface),
       ),
+    ),
+  ),
+  title:  Text(
+    "MatBot",
+    style: TextStyle(
+      color: theme.colorScheme.surface,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+),
       body: Column(
         children: [
           Expanded(

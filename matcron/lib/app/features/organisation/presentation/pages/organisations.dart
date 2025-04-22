@@ -103,26 +103,31 @@ class OrganizationPageState extends State<OrganizationPage> {
     final theme = Theme.of(context);
       return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      appBar: AppBar(
-        backgroundColor: theme.scaffoldBackgroundColor, 
-        title:  Text(
-          "Organisation",
-          style: TextStyle(color: theme.colorScheme.primary, fontSize:25,fontWeight: FontWeight.bold),
+ appBar: AppBar(
+  backgroundColor: Theme.of(context).primaryColor,
+  elevation: 0,
+  leading: Padding(
+    padding: const EdgeInsets.only(left: 12.0),
+    child: GestureDetector(
+      onTap: () => Navigator.pop(context),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.onSurface.withOpacity(0.1),
+          shape: BoxShape.circle,
         ),
-        centerTitle: true,
-         leading: InkWell(
-          onTap: () => Navigator.pop(context),
-          child:  Center(
-            child: Text(
-              "<",
-              style: TextStyle(
-                fontSize: 35,
-                color: theme.colorScheme.primary,
-              ),
-            ),
-          ),
-        ),
+        padding: const EdgeInsets.all(8),
+        child:  Icon(Icons.arrow_back, color: theme.colorScheme.surface),
       ),
+    ),
+  ),
+  title:  Text(
+    "Organisation",
+    style: TextStyle(
+      color: theme.colorScheme.surface,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+),
       body: BlocBuilder<RemoteOrganizationBloc, RemoteOrganizationState>(
         builder: (_, state) {
           if (state is RemoteOrganizationsLoading) {
@@ -163,7 +168,7 @@ class OrganizationPageState extends State<OrganizationPage> {
                   });
                 },
                 decoration: InputDecoration(
-                  hintText: "Search Organizations",
+                  hintText: "Search Organisations",
                   hintStyle:  TextStyle(color: theme.colorScheme.onSurface),
                   prefixIcon: Icon(Icons.search, color:theme.colorScheme.shadow),
                   border: OutlineInputBorder(
@@ -197,16 +202,16 @@ class OrganizationPageState extends State<OrganizationPage> {
                     ),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
-                      vertical: 14,
+                      vertical: 10,
                     ),
                   ),
                   child:  Text(
-                    "+ Add Organization",
-                    style: TextStyle(color: theme.colorScheme.surface),
+                    "+",
+                    style: TextStyle(color: theme.colorScheme.surface,fontSize: 20.0),
                   ),
                 ),
               ),
-              const SizedBox(height: 18.0),
+              const SizedBox(height: 10.0),
 
               // Table headers
               Row(

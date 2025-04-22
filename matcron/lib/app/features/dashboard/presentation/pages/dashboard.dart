@@ -157,7 +157,7 @@ class DashboardPage extends StatelessWidget {
       barRods: [
         BarChartRodData(
           toY: (lower + upper) * value,
-          width: 24,
+          width: 34,
           borderRadius: BorderRadius.circular(6),
           rodStackItems: [
             BarChartRodStackItem(0, lower * value, theme.primaryColor),

@@ -1,3 +1,5 @@
+// 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
@@ -66,14 +68,40 @@ class AddMattressPageState extends State<AddMattressPage> {
   Widget _buildPage(BuildContext context) {
     final uniqueMattressTypes = widget.mattressTypes.toSet().toList();
     final theme = Theme.of(context);
-    return Scaffold(
+return Scaffold(
+  appBar: AppBar(
+    backgroundColor: Theme.of(context).colorScheme.primary,
+    elevation: 0,
+    leading: Padding(
+      padding: const EdgeInsets.only(left: 12.0),
+      child: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(8),
+          child:  Icon(Icons.arrow_back, color: theme.colorScheme.surface),
+        ),
+      ),
+    ),
+    title: Text(
+      " Add Mattress",
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.surface,
+        fontWeight: FontWeight.bold,
+        fontSize: 22,
+      ),
+    ),
+    ),
       body: Container(
         color: theme.cardColor,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Header(title: 'Mattress'),
+          
               const SizedBox(height: 20.0),
 
               // Block with rounded edges and picture
