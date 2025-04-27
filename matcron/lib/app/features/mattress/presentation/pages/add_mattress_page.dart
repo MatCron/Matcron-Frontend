@@ -9,7 +9,6 @@ import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_
 import 'package:matcron/app/features/mattress/presentation/pages/assign_page.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/presentation/pages/type_form.dart';
-import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/constants/constants.dart';
 
 class AddMattressPage extends StatefulWidget {
