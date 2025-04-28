@@ -9,7 +9,6 @@ import 'package:matcron/core/components/bottom_bar/controllers/notch_bottom_bar_
 class DashboardPage extends StatelessWidget {
   final NotchBottomBarController? controller;
 
-  // Use super constructor parameter for 'key'
   const DashboardPage({super.key, this.controller});
 
   @override
@@ -22,8 +21,8 @@ class DashboardPage extends StatelessWidget {
     );
   }
 
-
   Widget _buildBody(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocBuilder<RemoteDashboardBloc, RemoteDashboardState>(
       builder: (_, state) {
         if (state is RemoteDashboardInitial) {
@@ -34,14 +33,27 @@ class DashboardPage extends StatelessWidget {
                 children: <Widget>[
                   ...buildStatCards(),
                   const SizedBox(height: 20),
-                  Text("Mattress Lifecycle", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                  Text("Mattress Lifecycle",
+                      style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.primary)),
                   _chartStack(context),
                   const SizedBox(height: 20),
-                  Text("Mattress Maintenance", style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                  Text("Mattress Maintenance",
+                      style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.primary)),
                   _maintenanceChart(context),
                   const SizedBox(height: 20),
-                  Text("Request Wash", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                  ListTile(
+              
+                  Text("Request Wash",
+                      style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.primary)),
+                  const ListTile(
                     title: Text("Louth Hospital has requested wash for 27 Mattress"),
                     trailing: Icon(Icons.pending_actions),
                   ),
@@ -59,12 +71,7 @@ class DashboardPage extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.of(context).size.width - 40,
       height: 200,
-      child: Stack(
-        children: [
-          _createLifecycleChart(),
-          _createTrendLineChart(),
-        ],
-      ),
+      child: _createLifecycleChart(context),
     );
   }
 
@@ -72,160 +79,208 @@ class DashboardPage extends StatelessWidget {
     return SizedBox(
       width: MediaQuery.of(context).size.width - 40,
       height: 200,
-      child: _createMaintenancePieChart(),
+      child: _createMaintenancePieChart(context),
     );
   }
 
   List<Widget> buildStatCards() => [
-    StatCard(
-      title: "Active",
-      count: "308",
-      icon: Icons.hotel,
-      imagePath: "assets/images/bed3.jpg",
-    ),
-    StatCard(
-      title: "Transferred Out",
-      count: "308",
-      icon: Icons.transfer_within_a_station,
-      imagePath: "assets/images/mattress1.jpg",
-    ),
-    StatCard(
-      title: "End Lifecycle",
-      count: "112",
-      icon: Icons.delete,
-      imagePath: "assets/images/assign_page.png",
-    ),
-    StatCard(
-      title: "Review Required",
-      count: "112",
-      icon: Icons.reviews,
-      imagePath: "assets/images/bed-1.jpg",
-    ),
-  ];
+        StatCard(
+          title: "Active",
+          count: "308",
+          icon: Icons.hotel,
+          imagePath: "assets/images/bed3.jpg",
+        ),
+        StatCard(
+          title: "Transferred Out",
+          count: "308",
+          icon: Icons.transfer_within_a_station,
+          imagePath: "assets/images/mattress1.jpg",
+        ),
+        StatCard(
+          title: "End Lifecycle",
+          count: "112",
+          icon: Icons.delete,
+          imagePath: "assets/images/assign_page.png",
+        ),
+        StatCard(
+          title: "Review Required",
+          count: "112",
+          icon: Icons.reviews,
+          imagePath: "assets/images/bed-1.jpg",
+        ),
+      ];
 
-  Widget _createLifecycleChart() {
-    return BarChart(
-      BarChartData(
-        alignment: BarChartAlignment.spaceAround,
-        maxY: 300,
-        backgroundColor: Colors.white, // Set the background color to white
-        barTouchData: BarTouchData(
-          enabled: true,
-          touchTooltipData: BarTouchTooltipData(
-            tooltipBgColor: Colors.grey[800],
-            tooltipPadding: const EdgeInsets.all(8),
-            tooltipMargin: 8,
-            getTooltipItem: (group, groupIndex, rod, rodIndex) {
-              String weekDay = _getWeekDay(group.x.toDouble());
-              return BarTooltipItem(
-                '$weekDay: ${rod.y.toInt()} mattresses',
-                TextStyle(color: Colors.yellow, fontWeight: FontWeight.bold),
-              );
-            },
+  Widget _createLifecycleChart(BuildContext context) {
+    final theme = Theme.of(context);
+    return TweenAnimationBuilder<double>(
+      duration: const Duration(seconds: 2),
+      tween: Tween(begin: 0, end: 1),
+      builder: (context, value, child) {
+        return Container(
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: theme.colorScheme.onSecondary,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
-        ),
-        titlesData: _buildTitlesData(),
-        borderData: FlBorderData(
-          show: true,
-          border: Border.all(color: Colors.grey[300]!, width: 2),
-        ),
-        barGroups: _buildBarGroups(),
-      ),
+          padding: const EdgeInsets.all(12),
+          child: BarChart(
+            BarChartData(
+              alignment: BarChartAlignment.spaceAround,
+              maxY: 300,
+              gridData: FlGridData(show: false),
+              titlesData: _buildTitlesData(context),
+              barTouchData: BarTouchData(enabled: false),
+              borderData: FlBorderData(show: false),
+              barGroups: [
+                _stackedBarGroup(0, 100, 150, value, context),
+                _stackedBarGroup(1, 140, 110, value,context),
+                _stackedBarGroup(2, 80, 50, value,context),
+                _stackedBarGroup(3, 60, 40, value,context),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _createTrendLineChart() {
-    return Positioned.fill(
-      child: LineChart(
-        LineChartData(
-          gridData: FlGridData(show: false),
-          titlesData: FlTitlesData(show: false),
-          borderData: FlBorderData(show: false),
-          lineBarsData: [
-            LineChartBarData(
-              spots: [
-                FlSpot(0, 300),
-                FlSpot(1, 225),
-                FlSpot(2, 190),
-                FlSpot(3, 150),
-              ],
-              isCurved: true,
-              colors: [Colors.black],
-              barWidth: 2,
-              isStrokeCapRound: true,
-              dotData: FlDotData(show: false),
-              belowBarData: BarAreaData(show: false),
-            )
+  BarChartGroupData _stackedBarGroup(int x, double lower, double upper, double value,BuildContext context) {
+    final theme = Theme.of(context);
+    return BarChartGroupData(
+      x: x,
+      barRods: [
+        BarChartRodData(
+          toY: (lower + upper) * value,
+          width: 34,
+          borderRadius: BorderRadius.circular(6),
+          rodStackItems: [
+            BarChartRodStackItem(0, lower * value, theme.primaryColor),
+            BarChartRodStackItem(lower * value, (lower + upper) * value, Colors.deepPurple.shade100),
           ],
         ),
-      ),
+      ],
     );
   }
 
-  Widget _createMaintenancePieChart() {
-    return PieChart(
-      PieChartData(
-        pieTouchData: PieTouchData(
-          touchCallback: (pieTouchResponse) {},
-          enabled: true,
+  FlTitlesData _buildTitlesData(BuildContext context) {
+    final theme = Theme.of(context);
+    return FlTitlesData(
+      show: true,
+      bottomTitles: AxisTitles(
+        sideTitles: SideTitles(
+          showTitles: true,
+          getTitlesWidget: (value, meta) => Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: Text(
+              _getWeekDay(value),
+              style:  TextStyle(
+                color: theme.colorScheme.primary,
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
+            ),
+          ),
+          reservedSize: 32,
         ),
-        centerSpaceRadius: 40,
-        sectionsSpace: 0,
-        startDegreeOffset: -90,
-        sections: [
-          PieChartSectionData(
-            color: Colors.blue[100]!,
-            value: 30,
-            title: 'Flip (30)',
-            radius: 60,
-            titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          PieChartSectionData(
-            color: Colors.blue[300]!,
-            value: 40,
-            title: 'Rotate (40)',
-            radius: 60,
-            titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          PieChartSectionData(
-            color: Colors.blue[600]!,
-            value: 30,
-            title: 'Wash (30)',
-            radius: 60,
-            titleStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-        ],
+      ),
+      leftTitles: AxisTitles(
+        sideTitles: SideTitles(showTitles: false),
+      ),
+      topTitles: AxisTitles(
+        sideTitles: SideTitles(showTitles: false),
+      ),
+      rightTitles: AxisTitles(
+        sideTitles: SideTitles(showTitles: false),
       ),
     );
   }
 
   String _getWeekDay(double value) {
     switch (value.toInt()) {
-      case 0: return 'Active';
-      case 1: return 'Transferred';
-      case 2: return 'End Life';
-      case 3: return 'Review';
-      default: return '';
+      case 0:
+        return 'Active';
+      case 1:
+        return 'Transferred';
+      case 2:
+        return 'Decomission';
+      case 3:
+        return 'Review';
+      default:
+        return '';
     }
   }
 
-  FlTitlesData _buildTitlesData() => FlTitlesData(
-    show: true,
-    bottomTitles: SideTitles(
-      showTitles: true,
-      getTextStyles: (_) => const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14),
-      margin: 12,
-      getTitles: (value) => _getWeekDay(value),
-    ),
-    leftTitles: SideTitles(showTitles: false),
-  );
+  Widget _createMaintenancePieChart(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.onSecondary,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      padding: const EdgeInsets.all(8),
+      child: PieChart(
+        PieChartData(
+          pieTouchData: PieTouchData(enabled: true),
+          centerSpaceRadius: 40,
+          startDegreeOffset: -90,
+          sectionsSpace: 0,
+          sections: [
+            PieChartSectionData(
+              color: Colors.deepPurple.shade100,
+              value: 30,
+              title: 'Flip',
+              radius: 60,
+              titleStyle:  TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.surface,
+              ),
+            ),
+            PieChartSectionData(
+              color: theme.primaryColor,
+              value: 40,
+              title: 'Rotate',
+              radius: 60,
+              titleStyle:  TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.surface,
+              ),
+            ),
+            PieChartSectionData(
+              color: Colors.deepPurple.shade400,
 
-  List<BarChartGroupData> _buildBarGroups() => [
-    BarChartGroupData(x: 0, barRods: [BarChartRodData(y: 300, width: 18, colors: [Colors.green])]),
-    BarChartGroupData(x: 1, barRods: [BarChartRodData(y: 150, width: 18, colors: [Colors.blue])]),
-    BarChartGroupData(x: 2, barRods: [BarChartRodData(y: 80, width: 18, colors: [Colors.red])]),
-    BarChartGroupData(x: 3, barRods: [BarChartRodData(y: 100, width: 18, colors: [Colors.yellow])]),
-  ];
+
+
+              value: 30,
+              title: 'Wash',
+              radius: 60,
+              titleStyle:  TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.bold,
+                color:theme.colorScheme.surface,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+
 }
 
 class StatCard extends StatelessWidget {
@@ -234,7 +289,13 @@ class StatCard extends StatelessWidget {
   final IconData icon;
   final String imagePath;
 
-  const StatCard({super.key, required this.title, required this.count, required this.icon, required this.imagePath});
+  const StatCard({
+    super.key,
+    required this.title,
+    required this.count,
+    required this.icon,
+    required this.imagePath,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -245,15 +306,18 @@ class StatCard extends StatelessWidget {
           image: DecorationImage(
             image: AssetImage(imagePath),
             fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.3), BlendMode.darken),
+            colorFilter: ColorFilter.mode(
+                Colors.black.withOpacity(0.3), BlendMode.darken),
           ),
         ),
         child: ListTile(
-          title: Text(title, style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          subtitle: Text(count, style: TextStyle(color: Colors.white70)),
+          title: Text(title,
+              style: const TextStyle(
+                  color: Colors.white, fontWeight: FontWeight.bold)),
+          subtitle: Text(count, style: const TextStyle(color: Colors.white70)),
           leading: Icon(icon, color: Colors.white),
         ),
       ),
     );
-  }
+}
 }

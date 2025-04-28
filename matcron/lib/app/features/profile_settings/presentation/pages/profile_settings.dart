@@ -72,15 +72,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
 
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
-      appBar: AppBar(
-        backgroundColor: theme.appBarTheme.backgroundColor,
-        leading: InkWell(
-          onTap: () => Navigator.pop(context),
-          child: const Center(
-            child: Text("<", style: TextStyle(fontSize: 35)),
-          ),
-        ),
-      ),
+      appBar:null,
       body: ListView(
         children: <Widget>[
           _buildProfileHeader(theme),
@@ -119,7 +111,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                   languages[languageProvider.currentLanguage]!["Profile"]![
                       "Log Out"]!,
                   style: TextStyle(
-                      fontSize: 16, color: theme.colorScheme.primary)),
+                      fontSize: 16, color: theme.colorScheme.error)), // Logout text
             ),
           ),
         ],
@@ -128,24 +120,28 @@ class ProfileSettingsState extends State<ProfileSettings> {
   }
 
   Widget _buildProfileHeader(ThemeData theme) {
-    return Container(
-      color: theme.primaryColor,
+     return Stack(
+    children: [
+      Container(
+        width: double.infinity,
+        color: theme.primaryColor,
       padding: const EdgeInsets.symmetric(vertical: 24),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+           const SizedBox(height: 40),
           GestureDetector(
             onTap: _pickImage,
             child: Stack(
               alignment: Alignment.bottomRight,
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.white,
+                  backgroundColor: theme.colorScheme.onPrimary,
                   radius: 50,
                   backgroundImage:
                       _imageFile != null ? FileImage(_imageFile!) : null,
                   child: _imageFile == null
-                      ? const Icon(Icons.person, size: 50.0, color: Colors.grey)
+                      ?  Icon(Icons.person, size: 50.0, color: theme.colorScheme.shadow)
                       : null,
                 ),
                 Positioned(
@@ -156,7 +152,7 @@ class ProfileSettingsState extends State<ProfileSettings> {
                         shape: BoxShape.circle, color: Colors.blueAccent),
                     padding: const EdgeInsets.all(5),
                     child:
-                        const Icon(Icons.edit, size: 20, color: Colors.white),
+                         Icon(Icons.edit, size: 20, color: theme.colorScheme.onPrimary),
                   ),
                 ),
               ],
@@ -168,8 +164,27 @@ class ProfileSettingsState extends State<ProfileSettings> {
               style: TextStyle(color: theme.colorScheme.onPrimary)),
         ],
       ),
-    );
-  }
+      ),
+   
+  Positioned(
+        top: 40,
+        left: 16,
+        child: GestureDetector(
+          onTap: () => Navigator.pop(context),
+          child: Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.onSurface.withOpacity(0.1),
+              shape: BoxShape.circle,
+            ),
+            padding: const EdgeInsets.all(8),
+            child:  Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary),
+          ),
+        ),
+      ),
+    ],
+  );
+}
+
 
   Widget _buildGroupedContainer(ThemeData theme) {
     return _buildContainer(theme, [

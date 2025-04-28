@@ -20,26 +20,30 @@ class AboutUsPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
-        backgroundColor: theme.colorScheme.primary,
-        leading: InkWell(
-          onTap: () => Navigator.of(context).pop(),
-          child:  Center(
-            child: Text(
-              "<",
-              style: TextStyle(
-                fontSize: 26,
-                color: theme.colorScheme.surface,  
-           
-              ),
-            ),
-          ),
+  backgroundColor: Theme.of(context).primaryColor,
+  elevation: 0,
+  leading: Padding(
+    padding: const EdgeInsets.only(left: 12.0),
+    child: GestureDetector(
+      onTap: () => Navigator.pop(context),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.onSurface.withOpacity(0.1),
+          shape: BoxShape.circle,
         ),
-        title:  Text(
-          'About Us',
-          style: TextStyle(color: theme.colorScheme.surface),
-        ),
-        iconTheme: IconThemeData(color:theme.colorScheme.surface),
+        padding: const EdgeInsets.all(8),
+        child:  Icon(Icons.arrow_back, color: theme.colorScheme.surface),
       ),
+    ),
+  ),
+  title:  Text(
+    "About Us",
+    style: TextStyle(
+      color: theme.colorScheme.surface,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(

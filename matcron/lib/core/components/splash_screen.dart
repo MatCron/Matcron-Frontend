@@ -73,19 +73,12 @@ class _SplashScreenState extends State<SplashScreen>
                   // App Name with Custom Font
                   RichText(
                     text: TextSpan(
-                      style: GoogleFonts.lato(
-                        fontSize: 70,
-                        fontWeight: FontWeight.bold,
-                        color:  theme.colorScheme.surface,
-                      ),
-                      children: [
-                         TextSpan(text: 'MAT'),
-                        TextSpan(
-                          text: 'CRON',
+                          children: [
+                         TextSpan(text: 'MATCRON',
                           style: GoogleFonts.lato(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
-                            color: theme.colorScheme.primary,
+                            color: Colors.teal,
                           ),
                         ),
                       ],
