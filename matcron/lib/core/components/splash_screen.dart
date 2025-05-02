@@ -39,6 +39,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: Stack(
         children: [
@@ -49,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen>
                 image: AssetImage('assets/images/bed.jpg'), // Background image
                 fit: BoxFit.cover, // Covers the entire screen
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.2), // Optional darkening
+                  theme.colorScheme.onSurface.withOpacity(0.2), // Optional darkening
                   BlendMode.darken,
                 ),
               ),
@@ -72,15 +73,8 @@ class _SplashScreenState extends State<SplashScreen>
                   // App Name with Custom Font
                   RichText(
                     text: TextSpan(
-                      style: GoogleFonts.lato(
-                        fontSize: 70,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                      children: [
-                        const TextSpan(text: 'Mat'),
-                        TextSpan(
-                          text: 'Cron',
+                          children: [
+                         TextSpan(text: 'MATCRON',
                           style: GoogleFonts.lato(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,

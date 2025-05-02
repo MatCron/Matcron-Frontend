@@ -1,0 +1,1 @@
+C:\Matcron-Frontend\matcron\build\app\intermediates\cxx\Debug\6k1x2z1n\obj\arm64-v8a

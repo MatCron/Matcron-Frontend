@@ -9,7 +9,13 @@ class AuthorizationService {
   }
 
   Future<String?> getToken() async {
-    return await secureStorage.read(key: 'authToken');
+    try {
+      return await secureStorage.read(key: 'authToken');
+    } catch (e) {
+      print("Secure storage error: $e");
+      await secureStorage.deleteAll(); // Reset storage if decryption fails
+      return null;
+    }
   }
 
   void deleteToken() async {
@@ -27,6 +33,25 @@ class AuthorizationService {
     return null;
   }
 
+  Future<int?> getUserType() async {
+    String? token = await getToken();
+    if (token != null && token.isNotEmpty) {
+      var p = JwtDecoder.decode(token);
+      print(p);
+      // Safely parse the 'UserType' value
+      if (p.containsKey('UserType')) {
+        try {
+          return int.parse(
+              p['UserType'].toString()); // Convert to string first, then parse
+        } catch (e) {
+          print("Error parsing UserType: $e");
+          return null;
+        }
+      }
+    }
+    return null;
+  }
+
   /// Check if token is expired
   Future<bool> isTokenExpired() async {
     String? token = await getToken();
@@ -34,5 +59,20 @@ class AuthorizationService {
       return JwtDecoder.isExpired(token);
     }
     return true; // If no token, consider it expired
+  }
+
+  /// Save language preference
+  void setLanguage(String languageCode) async {
+    const allowedLanguages = ['EN', 'DE', 'ES'];
+    if (allowedLanguages.contains(languageCode.toUpperCase())) {
+      await secureStorage.write(key: 'languageCode', value: languageCode.toUpperCase());
+    } else {
+      print("Invalid language code: $languageCode");
+    }
+  }
+
+  /// Get saved language preference
+  Future<String?> getLanguage() async {
+    return await secureStorage.read(key: 'languageCode') ?? 'ES'; // Default to English
   }
 }

@@ -1,3 +1,5 @@
+// 
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
@@ -7,8 +9,6 @@ import 'package:matcron/app/features/mattress/presentation/bloc/remote_mattress_
 import 'package:matcron/app/features/mattress/presentation/pages/assign_page.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/presentation/pages/type_form.dart';
-import 'package:matcron/config/theme/app_theme.dart';
-import 'package:matcron/core/components/header/header.dart';
 import 'package:matcron/core/constants/constants.dart';
 
 class AddMattressPage extends StatefulWidget {
@@ -27,15 +27,16 @@ class AddMattressPageState extends State<AddMattressPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       body: BlocBuilder<RemoteMattressBloc, RemoteMattressState>(
         builder: (_, state) {
           if (state is RemoteMattressesLoading) {
             return Scaffold(
-              backgroundColor: HexColor("#E5E5E5"),
+              backgroundColor: theme.scaffoldBackgroundColor,
               body: Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+                  valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
                 ),
               ),
             );
@@ -65,15 +66,41 @@ class AddMattressPageState extends State<AddMattressPage> {
 
   Widget _buildPage(BuildContext context) {
     final uniqueMattressTypes = widget.mattressTypes.toSet().toList();
-
-    return Scaffold(
+    final theme = Theme.of(context);
+return Scaffold(
+  appBar: AppBar(
+    backgroundColor: Theme.of(context).colorScheme.primary,
+    elevation: 0,
+    leading: Padding(
+      padding: const EdgeInsets.only(left: 12.0),
+      child: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          padding: const EdgeInsets.all(8),
+          child:  Icon(Icons.arrow_back, color: theme.colorScheme.surface),
+        ),
+      ),
+    ),
+    title: Text(
+      " Add Mattress",
+      style: TextStyle(
+        color: Theme.of(context).colorScheme.surface,
+        fontWeight: FontWeight.bold,
+        fontSize: 22,
+      ),
+    ),
+    ),
       body: Container(
-        color: HexColor("#E5E5E5"),
+        color: theme.cardColor,
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Header(title: 'Mattress'),
+          
               const SizedBox(height: 20.0),
 
               // Block with rounded edges and picture
@@ -81,10 +108,10 @@ class AddMattressPageState extends State<AddMattressPage> {
                 margin: const EdgeInsets.symmetric(horizontal: 20.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(15.0),
-                  color: Colors.white,
+                  color: theme.colorScheme.surface,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color:theme.colorScheme.onSurface.withOpacity(0.1),
                       blurRadius: 8.0,
                       offset: const Offset(0, 2),
                     ),
@@ -116,10 +143,10 @@ class AddMattressPageState extends State<AddMattressPage> {
                     const EdgeInsets.symmetric(horizontal: 20.0, vertical: 3.0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(25.0),
-                  color: Colors.white,
+                  color: theme.colorScheme.surface,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
+                      color: theme.colorScheme.onSurface.withOpacity(0.1),
                       blurRadius: 5.0,
                       offset: const Offset(0, 2),
                     ),
@@ -155,8 +182,8 @@ class AddMattressPageState extends State<AddMattressPage> {
                               children: [
                                 TextSpan(
                                   text: "${type.name} ",
-                                  style: const TextStyle(
-                                    color: Colors.black,
+                                  style:  TextStyle(
+                                    color:theme.colorScheme.onSurface,
                                     fontWeight: FontWeight.w500,
                                     fontSize: 16.0,
                                   ),
@@ -164,8 +191,8 @@ class AddMattressPageState extends State<AddMattressPage> {
                                 TextSpan(
                                   text:
                                       "(${type.length} x ${type.width} x ${type.height})",
-                                  style: const TextStyle(
-                                    color: Colors.grey,
+                                  style: TextStyle(
+                                    color: theme.colorScheme.shadow,
                                     fontWeight: FontWeight.w300,
                                     fontSize: 14.0,
                                   ),
@@ -175,18 +202,18 @@ class AddMattressPageState extends State<AddMattressPage> {
                           ),
                         ),
                       ),
-                      const DropdownMenuItem<String>(
+                       DropdownMenuItem<String>(
                         value: '+ Add custom Type',
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Divider(
                                 color:
-                                    Colors.grey), // Line before Add Custom Type
+                                    theme.colorScheme.shadow), // Line before Add Custom Type
                             Text(
                               '+ Add custom Type',
                               style: TextStyle(
-                                color: Colors.black,
+                                color: theme.colorScheme.onSurface,
                                 fontWeight: FontWeight.w500,
                                 fontSize: 16.0,
                               ),
@@ -239,12 +266,12 @@ class AddMattressPageState extends State<AddMattressPage> {
                     ),
                     padding: const EdgeInsets.symmetric(vertical: 15.0),
                   ),
-                  child: const Text(
+                  child:  Text(
                     "Generate RFID",
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: theme.colorScheme.surface,
                     ),
                   ),
                 ),
@@ -257,13 +284,15 @@ class AddMattressPageState extends State<AddMattressPage> {
   }
 
   Widget _buildRoundedTextField({
+
     required TextEditingController controller,
     required String hintText,
     bool readOnly = false,
     void Function()? onTap,
   }) {
+    final theme = Theme.of(context);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20.0),
+      margin:  EdgeInsets.symmetric(horizontal: 20.0),
       child: TextField(
         controller: controller,
         readOnly: readOnly,
@@ -271,7 +300,7 @@ class AddMattressPageState extends State<AddMattressPage> {
         decoration: InputDecoration(
           hintText: hintText,
           filled: true,
-          fillColor: Colors.white,
+          fillColor: theme.colorScheme.surface,
           contentPadding: const EdgeInsets.symmetric(
             vertical: 15.0,
             horizontal: 20.0,

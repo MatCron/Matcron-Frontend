@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+
 class SearchBar extends StatelessWidget {
   final Function(String)? onSearchChanged; // Callback for text changes
   final String placeholder;
@@ -17,16 +18,17 @@ class SearchBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context ) {
+    final theme = Theme.of(context);
     return Container(
       width: 400,
       margin: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 10.0),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.colorScheme.surface,
         borderRadius: BorderRadius.circular(25.0),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
+            color: theme.colorScheme.onSurface.withOpacity(0.1),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -49,10 +51,10 @@ class SearchBar extends StatelessWidget {
           // Scan Icon
           IconButton(
             icon: canRefreshList
-                ? const Icon(
+                ?  Icon(
                     Icons.close,
                     size: 24,
-                    color: Colors.red,
+                    color: theme.colorScheme.error,
                   )
                 : Image.asset(
                     'assets/images/scan_icon.png', // Path to your scan icon asset

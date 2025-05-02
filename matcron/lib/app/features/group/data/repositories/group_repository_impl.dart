@@ -5,6 +5,7 @@ import 'package:matcron/app/features/group/data/data_sources/group_api_service.d
 import 'package:matcron/app/features/group/data/models/group.dart';
 import 'package:matcron/app/features/group/domain/entities/group_entity.dart';
 import 'package:matcron/app/features/group/domain/repositories/group_repository.dart';
+import 'package:matcron/app/features/mattress_history/domain/entities/mattress_history.dart';
 import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/data_state.dart';
 import 'package:matcron/app/features/group/data/models/GroupWithMattressesDto.dart';
@@ -134,6 +135,7 @@ Future<DataState<GroupWithMattressesDto>> getGroupById(String id) async {
       }
       
     } on DioException catch(e) {
+      print(e.response?.data["error"]);
       return DataFailed(e);
     }
   }
@@ -180,6 +182,56 @@ Future<DataState<GroupWithMattressesDto>> getGroupById(String id) async {
             type: DioExceptionType.badResponse,
             requestOptions: httpResponse.response.requestOptions, 
           )
+        );
+      }
+      
+    } on DioException catch(e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<void>> removeMattressFromGroup(EditMattressesToGroupModel model) async {
+    final String token = 'Bearer ${await AuthorizationService().getToken()}';
+    
+    try {
+      final httpResponse = await _groupApiService.removeMattressFromGroup(model: model, token: token);
+
+      if (httpResponse.response.statusCode == HttpStatus.ok) {
+        return DataSuccess(httpResponse.data);
+      } else {
+        return DataFailed(
+          DioException(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: httpResponse.response.requestOptions, 
+          )
+        );
+      }
+      
+    } on DioException catch(e) {
+      return DataFailed(e);
+    }
+  }
+
+  @override
+  Future<DataState<List<MattressHistoryEntity>>> getGroupHistoryById(String id) async {
+    final String token = 'Bearer ${await AuthorizationService().getToken()}';
+
+    try {
+      final httpResponse = await _groupApiService.getGroupHistory(id: id, token: token);
+
+      if (httpResponse.response.statusCode == HttpStatus.ok) {
+        return DataSuccess(httpResponse.data);
+      } else {
+        return DataFailed(
+          DioException(
+            error: httpResponse.response.statusMessage,
+            response: httpResponse.response,
+            type: DioExceptionType.badResponse,
+            requestOptions: httpResponse.response.requestOptions,
+          ),
         );
       }
       

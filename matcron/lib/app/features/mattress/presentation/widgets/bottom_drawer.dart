@@ -5,15 +5,19 @@ import 'package:matcron/app/features/mattress/domain/repositories/mattress_repos
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/core/resources/data_state.dart';
+import 'dart:async';
+
 
 class MattressBottomDrawer extends StatefulWidget {
   const MattressBottomDrawer(
       {super.key,
       required this.mattressTypes,
       required this.mattress,
+      required this.userType,
       required this.onSave});
   final List<MattressTypeEntity> mattressTypes;
   final MattressEntity mattress;
+  final int userType;
   final void Function(MattressEntity mattress) onSave;
 
   @override
@@ -24,13 +28,63 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
   late MattressEntity mattress;
   late MattressRepository _mattressRepository;
   bool isLoading = true;
+  late bool _isRotationDone =true;
+late Duration _rotationTimer;
+late Timer _timer;
+
 
   @override
   void initState() {
     super.initState();
     _mattressRepository = GetIt.instance<MattressRepository>();
-    _initializeMattress();
+   // Initialize with widget data first
+  _isRotationDone = widget.mattress.rotationDone ?? false;
+  _rotationTimer = const Duration(hours: 2); // Default
+  _initializeMattress(); // Will update from fetched data
+
+   // Initialize rotation timer (example: 12 hours)
+  _rotationTimer = const Duration(hours: 2);
+  _isRotationDone = widget.mattress.rotationDone ?? false;
+  if (!_isRotationDone) {
+    _startTimer();
   }
+}
+
+void _startTimer() {
+  _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    if (_rotationTimer.inSeconds > 0) {
+      setState(() {
+        _rotationTimer = _rotationTimer - const Duration(seconds: 1);
+      });
+    } else {
+      timer.cancel();
+      setState(() {}); // Force UI update for overdue state
+    }
+  });
+}
+
+@override
+void dispose() {
+  _timer.cancel();
+  super.dispose();
+}
+
+String _formatDuration(Duration duration) {
+  String twoDigits(int n) => n.toString().padLeft(2, '0');
+  final hours = twoDigits(duration.inHours);
+  final minutes = twoDigits(duration.inMinutes.remainder(60));
+  final seconds = twoDigits(duration.inSeconds.remainder(60));
+  return '$hours:$minutes:$seconds';
+}
+
+void _markRotationDone() {
+  setState(() {
+    _isRotationDone = true;
+    _timer.cancel();
+    // Update the mattress entity
+    mattress = mattress.copyWith(rotationDone: true);
+  });
+}
 
   void _initializeMattress() async {
     String id = widget.mattress.uid!;
@@ -41,6 +95,10 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
         mattress = state.data!;
         mattress.uid = id;
         mattress.mattressTypeId = mattress.mattressType!.id!;
+         _isRotationDone = mattress.rotationDone ?? false;
+          if (!_isRotationDone && _rotationTimer.inSeconds <= 0) {
+        _rotationTimer = Duration.zero;
+      }
       } else {
         mattress = widget.mattress;
       }
@@ -49,6 +107,11 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
   }
 
   void _saveMattress(BuildContext context) {
+      // Update rotation state in mattress
+      mattress = mattress.copyWith(
+    rotationDone: _isRotationDone,
+    rotationTimer: _rotationTimer.inSeconds // If storing duration
+  );
     //validation lator,
     widget.onSave(mattress);
     Navigator.of(context).pop();
@@ -71,16 +134,17 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
       minChildSize: 0.55, // Minimum height, keeping it from collapsing too much
       maxChildSize: 1.0, // Full-screen expansion
       builder: (BuildContext context, ScrollController scrollController) {
+        final theme = Theme.of(context);
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration:  BoxDecoration(
+            color: theme.colorScheme.surface,
             borderRadius: BorderRadius.vertical(
               top: Radius.circular(20),
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black26,
+                color: theme.colorScheme.onSurface.withOpacity(0.5),
                 blurRadius: 10,
                 spreadRadius: 5,
               ),
@@ -97,15 +161,15 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
-                      color: matcronPrimaryColor,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close, color: Colors.red),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
+                  // IconButton(
+                  //   icon:  Icon(Icons.close, color:  theme.colorScheme.error),
+                  //   onPressed: () {
+                  //     Navigator.of(context).pop();
+                  //   },
+                  // ),
                 ],
               ),
               // Scrollable content
@@ -113,7 +177,11 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
                 child: ListView(
                   controller: scrollController,
                   children: [
+                  
+                    if (widget.userType == 1)
                     const SizedBox(height: 16),
+                    
+                    if (widget.userType == 1)
                     _buildDropdownField(
                         label: "Edit Mattress Type",
                         items: uniqueMattressTypes, // Pass the unique types
@@ -132,34 +200,76 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Row(
-                          children: [
-                            Text(
-                              "Lateral Rotation Done?",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w600),
-                            ),
-                            SizedBox(width: 5),
-                            Tooltip(
-                              message:
-                                  'Indicates if the lateral rotation has been completed',
-                              child: Icon(Icons.info_outline,
-                                  size: 20, color: Colors.grey),
-                            ),
-                          ],
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.check_circle,
-                              color: Colors.green, size: 40),
-                          onPressed: () {
-                            // Action for lateral rotation done
-                          },
-                        ),
+             Row(
+  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  children: [
+    Row(
+      children: [
+        Text(
+          "Lateral Rotation",
+          style: TextStyle(
+              fontSize: 16, 
+              fontWeight: FontWeight.w600,
+              color: _isRotationDone 
+                  ? Colors.green
+                  : _rotationTimer.inSeconds <= 0 
+                      ? theme.colorScheme.error 
+                      : theme.colorScheme.onSurface),
+        ),
+        const SizedBox(width: 5),
+        Tooltip(
+          message: _isRotationDone 
+              ? 'Rotation completed'
+              : 'Time remaining for next rotation',
+          child: Icon(Icons.info_outline,
+              size: 20, color: theme.colorScheme.shadow),
+        ),
+      ],
+    ),
+    ElevatedButton.icon(
+      icon: Icon(
+        _isRotationDone ? Icons.check_circle : Icons.rotate_left,
+        color: theme.colorScheme.surface,
+      ),
+      label: Text(
+        _isRotationDone 
+            ? "Done"
+            : _rotationTimer.inSeconds <= 0
+                ? "Overdue!"
+                : _formatDuration(_rotationTimer),
+        style: TextStyle(
+          color: theme.colorScheme.surface,
+          fontWeight: FontWeight.bold
+        ),
+      ),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: _isRotationDone 
+            ? Colors.green
+            : _rotationTimer.inSeconds <= 0
+                ? theme.colorScheme.error
+                : theme.colorScheme.primary,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      onPressed: _isRotationDone ? null : () {
+        _markRotationDone();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text("Rotation marked as completed!"),
+            backgroundColor: theme.colorScheme.primary,
+          ),
+        );
+      },
+    ),
+  ],
+),
                       ],
                     ),
                   ],
                 ),
-              ),
+              ),               
               // Buttons aligned to the bottom right
               Align(
                 alignment: Alignment.bottomRight,
@@ -171,14 +281,14 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
                       _buildActionButton(
                         context,
                         label: "Cancel",
-                        color: Colors.red,
+                        color:  theme.colorScheme.error,
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                       const SizedBox(width: 8),
                       _buildActionButton(
                         context,
                         label: "Save",
-                        color: matcronPrimaryColor,
+                        color: theme.colorScheme.primary,
                         onPressed: () {
                           _saveMattress(context);
                         },
@@ -228,12 +338,13 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
       required List<String> items,
       String? value,
       required purpose}) {
+        final theme = Theme.of(context);
     return DropdownButtonFormField<String>(
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         filled: true,
-        fillColor: Colors.grey[200],
+        fillColor:  theme.cardColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
           borderSide: BorderSide.none,
@@ -257,9 +368,12 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
 
         if (purpose == "STATUS") {
           setState(() {
-            mattress =
-                mattress.copyWith(status: _getUniqueStatus().indexOf(value!));
-          });
+            // Get original index from mattressStatus
+    final originalIndex = mattressStatus.indexWhere(
+      (status) => status['Text'] == value
+    );
+    mattress = mattress.copyWith(status: originalIndex);
+  });
         }
       },
       value: value,
@@ -268,12 +382,13 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
 
   // Helper method for building text fields
   Widget _buildTextField(String label, String? value) {
+    final theme = Theme.of(context);
     return TextFormField(
       decoration: InputDecoration(
         labelText: label,
         labelStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
         filled: true,
-        fillColor: Colors.grey[200],
+        fillColor:  theme.cardColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.0),
           borderSide: BorderSide.none,
@@ -293,6 +408,7 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
       {required String label,
       required Color color,
       required VoidCallback onPressed}) {
+        final theme = Theme.of(context);
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         backgroundColor: color,
@@ -303,7 +419,7 @@ class MattressBottomDrawerState extends State<MattressBottomDrawer> {
       ),
       onPressed: onPressed,
       child: Text(label,
-          style: const TextStyle(color: Colors.white, fontSize: 16)),
+          style:  TextStyle(color:  theme.colorScheme.surface, fontSize: 16)),
     );
   }
 }

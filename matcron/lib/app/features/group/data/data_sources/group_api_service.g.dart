@@ -14,7 +14,8 @@ class _GroupApiService implements GroupApiService {
     this.baseUrl,
     this.errorLogger,
   }) {
-    baseUrl ??= 'https://www.matcron.online/api/groups';
+    baseUrl ??= 'https://api.matcron.online/api/groups';
+    
   }
 
   final Dio _dio;
@@ -245,5 +246,75 @@ Future<HttpResponse<GroupWithMattressesDto>> getGroupById({
 
     final _result = await _dio.fetch<void>(_options);
     return HttpResponse(null, _result);
+  }
+  
+  @override
+  Future<HttpResponse<void>> removeMattressFromGroup({
+    required EditMattressesToGroupModel model,
+    required String token,
+  }) async {
+    final _headers = {'Authorization': token};
+    final _data = model.toJson();
+    final _options = Options(
+      method: 'POST',
+      headers: _headers,
+    ).compose(
+      _dio.options,
+      '/mattresses/remove',
+      data: _data,
+    ).copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl);
+
+    final _result = await _dio.fetch<void>(_options);
+    return HttpResponse(null, _result);
+  }
+  
+  @override
+  Future<HttpResponse<List<MattressHistoryModel>>> getGroupHistory(
+      {required String token, required String id}) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    const Map<String, dynamic>? _data = null;
+
+    final _options =
+        _setStreamType<HttpResponse<List<MattressHistoryModel>>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/$id/log',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            )));
+
+    // Update the fetch method to expect a List<dynamic> instead of a Map<String, dynamic>
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<MattressHistoryModel> _value;
+
+    try {
+      // Assuming the response directly gives you the list, map it to your model
+      if (_result.data != null) {
+        _value = _result.data!
+            .map((dynamic i) =>
+                MattressHistoryModel.fromJson(i as Map<String, dynamic>))
+            .toList();
+      } else {
+        throw Exception("Response data is null");
+      }
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
   }
 }

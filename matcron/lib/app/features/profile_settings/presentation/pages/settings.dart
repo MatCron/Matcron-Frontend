@@ -1,5 +1,7 @@
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:matcron/config/theme/theme_cubit.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -9,73 +11,52 @@ class SettingsPage extends StatefulWidget {
 }
 
 class SettingsPageState extends State<SettingsPage> {
-  bool _isDarkMode = false; // Default to light mode
-
   @override
   Widget build(BuildContext context) {
+    final themeMode = context.watch<ThemeCubit>().state; // Get current theme state
+    final theme = Theme.of(context); // Get current theme=
+    bool isDarkMode = themeMode == ThemeMode.dark; // Check if dark mode is active
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).colorScheme.background, // Dynamic background
       appBar: AppBar(
-              leading: InkWell(
-          onTap: () => Navigator.of(context).pop(),
-          child: const Center(
-            child: Text(
-              "<",
-              style: TextStyle(
-                fontSize: 30,
-                color: Colors.white, 
-                         ),
-            ),
-          ),
+  backgroundColor: Theme.of(context).primaryColor,
+  elevation: 0,
+  leading: Padding(
+    padding: const EdgeInsets.only(left: 12.0),
+    child: GestureDetector(
+      onTap: () => Navigator.pop(context),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.onSurface.withOpacity(0.1),
+          shape: BoxShape.circle,
         ),
-        title: const Text(
-          "Settings",
-          style: TextStyle(color: Colors.white),
-        ),
-        iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: const Color.fromARGB(255, 80, 194, 201),
-        // Ensures the status bar text is appropriately colored in AppBar
-        systemOverlayStyle: SystemUiOverlayStyle.light.copyWith(
-          statusBarColor: Color.fromARGB(255, 80, 194, 201),
-          statusBarBrightness: Brightness.light,
-        ),
+        padding: const EdgeInsets.all(8),
+        child:  Icon(Icons.arrow_back, color: theme.colorScheme.surface),
       ),
+    ),
+  ),
+  title:  Text(
+    "Appearance",
+    style: TextStyle(
+      color: theme.colorScheme.surface,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+),
       body: ListView(
         children: <Widget>[
           SwitchListTile(
             title: const Text('Dark Mode'),
             subtitle: const Text('Enable dark mode theme'),
-            value: _isDarkMode,
+            value: isDarkMode,
             onChanged: (bool value) {
-              setState(() {
-                _isDarkMode = value;
-                _toggleTheme(value);
-              });
+              context.read<ThemeCubit>().toggleTheme(value);
             },
             secondary: const Icon(Icons.lightbulb_outline),
           ),
         ],
       ),
     );
-  }
-
-  void _toggleTheme(bool darkMode) {
-    if (darkMode) {
-      // Apply dark theme
-      SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(
-          statusBarColor: Colors.black,
-          statusBarBrightness: Brightness.dark,
-        ),
-      );
-    } else {
-      // Apply light theme
-      SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.light.copyWith(
-          statusBarColor: Colors.white,
-          statusBarBrightness: Brightness.light,
-        ),
-      );
-    }
   }
 }

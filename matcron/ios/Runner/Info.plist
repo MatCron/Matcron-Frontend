@@ -51,10 +51,20 @@
     <array>
         <string>fetch</string>
         <string>processing</string>
+		<string>nfc-session</string>
     </array>
     
     <key>NFCReaderUsageDescription</key>
     <string>We need NFC permission to scan NFC tags.</string>
+    <key>NSCameraUsageDescription</key>
+    <string>App needs camera access to take profile pictures.</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>App needs access to the photo library to select profile pictures.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>App requires microphone access for audio recording.</string>
 
+    <!-- Permission for using mic -->
+    <key>NSMicrophoneUsageDescription</key>
+    <string>Need microphone access for voice commands</string>
 </dict>
 </plist>

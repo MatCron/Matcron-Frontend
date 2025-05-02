@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:matcron/app/features/LBH_info/presentation/bloc/pages/lbh_info.dart';
 import 'package:matcron/app/features/recycling_info/presentation/recycling_info.dart';
-import 'package:matcron/core/components/header/header.dart'; // Adjust import as needed
+import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
+import 'package:matcron/app/features/type/domain/repositories/type_repository.dart';
+import 'package:matcron/main.dart';
+import 'package:matcron/core/resources/data_state.dart'; // Adjust import as needed
+import 'package:matcron/app/features/rotation_info/presentation/pages/rotation_info.dart';
 
 class AddMattressTypePage extends StatefulWidget {
   const AddMattressTypePage({
@@ -14,6 +19,7 @@ class AddMattressTypePage extends StatefulWidget {
 
 class AddMattressTypePageState extends State<AddMattressTypePage> {
   final _formKey = GlobalKey<FormState>();
+  final TypeRepository _typeRepository = GetIt.instance<TypeRepository>();
 
   // Controllers for fields
   final TextEditingController _typeNameController = TextEditingController();
@@ -50,39 +56,91 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
     return text.trim().split(RegExp(r'\s+')).length;
   }
 
-  void _onAddMattressTypePressed() {
+  void _onAddMattressTypePressed() async {
+    final theme = Theme.of(context);  
+    //print("object");
     if (_formKey.currentState!.validate()) {
-      // MattressTypeEntity entity = MattressTypeEntity(
-      //   name: _typeNameController.text.trim(),
-      //   width: double.tryParse(_widthController.text.trim()),
-      //   length: double.tryParse(_lengthController.text.trim()),
-      //   height: double.tryParse(_heightController.text.trim()),
-      //   composition: _materialCompositionController.text.trim(),
-      //   rotationInterval: double.tryParse(_rotationTimerController.text.trim()),
-      //   recyclingDetails: _recycleInfoController.text.trim(),
-      //   expectedLifespan: _lifeSpanValue != null
-      //       ? double.tryParse(_lifeSpanValue!.split(' ').first)
-      //       : null,
-      //   warrantyPeriod: _washableValue == "Yes" ? 1.0 : 0.0, // Example
-      // );
+      MattressTypeEntity entity = MattressTypeEntity(
+        name: _typeNameController.text.trim(),
+        width: double.tryParse(_widthController.text.trim()),
+        length: double.tryParse(_lengthController.text.trim()),
+        height: double.tryParse(_heightController.text.trim()),
+        composition: _materialCompositionController.text.trim(),
+        rotationInterval: double.tryParse(_rotationTimerController.text.trim()),
+        recyclingDetails: _recycleInfoController.text.trim(),
+        expectedLifespan: _lifeSpanValue != null
+            ? double.tryParse(_lifeSpanValue!.split(' ').first)
+            : null,
+        warrantyPeriod: _washableValue == "Yes" ? 1.0 : 0.0, // Example
+        stock: 0,
+      );
+
+      var state = await _typeRepository.addType(entity);
+
+      if (state is DataSuccess) {
+        await Future.delayed(Duration(milliseconds: 100));
+
+        Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => MyHomePage(startPageIndex: 2,),
+      ),
+      (Route<dynamic> route) => false, // Remove all previous routes
+    );
+      } else {
+        // Display error notification
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add type. Please try again.'),
+            backgroundColor: theme.colorScheme.error,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final backgroundColor = const Color(0xFFE5E5E5);
-    final fieldColor = Colors.white;
-    final primaryColor = const Color.fromARGB(255, 80, 194, 201);
-    final hintTextStyle = TextStyle(color: Colors.grey[600]);
-    const labelStyle = TextStyle(fontSize: 16, color: Colors.black54);
+    final theme = Theme.of(context);
+    final backgroundColor = theme.scaffoldBackgroundColor;
+    final fieldColor =theme.colorScheme.surface;
+    final primaryColor =theme.colorScheme.primary;
+    final hintTextStyle = TextStyle(color: theme.colorScheme.shadow);
+    final labelStyle = TextStyle(fontSize: 16, color: theme.colorScheme.onSurface);
 
-    return Scaffold(
+      return Scaffold(
       backgroundColor: backgroundColor,
-      body: Column(
-        children: [
-          const Header(title: "Mattress Type"),
-          Expanded(
-            child: SingleChildScrollView(
+      appBar: AppBar(
+  backgroundColor: Theme.of(context).primaryColor,
+  elevation: 0,
+  leading: Padding(
+    padding: const EdgeInsets.only(left: 12.0),
+    child: GestureDetector(
+      onTap: () => Navigator.pop(context),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.onSurface.withOpacity(0.1),
+          shape: BoxShape.circle,
+        ),
+        padding: const EdgeInsets.all(8),
+        child:  Icon(Icons.arrow_back, color: theme.colorScheme.surface),
+      ),
+    ),
+  ),
+  title:  Text(
+    "Add Mattress Type",
+    style: TextStyle(
+      color: theme.colorScheme.surface,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+),
+  body: Column(
+  children: [
+    
+    Expanded(
+      child: SingleChildScrollView(
               padding: const EdgeInsets.all(16.0),
               child: Form(
                 key: _formKey,
@@ -319,7 +377,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                                   horizontal: 20, vertical: 14),
                               suffixText: "(Max: 100 word)",
                               suffixStyle: TextStyle(
-                                  color: Colors.grey[600], fontSize: 12),
+                                  color:theme.colorScheme.shadow, fontSize: 12),
                             ),
                             validator: (value) {
                               if (value == null) return null;
@@ -348,8 +406,8 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                             ),
                             padding: const EdgeInsets.all(4.0),
                             margin: const EdgeInsets.only(top: 8),
-                            child: const Icon(Icons.info_outline,
-                                size: 20, color: Colors.black54),
+                            child:  Icon(Icons.info_outline,
+                                size: 20, color: theme.colorScheme.onSurface),
                           ),
                         ),
                       ],
@@ -391,8 +449,18 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                             shape: BoxShape.circle,
                           ),
                           padding: const EdgeInsets.all(8.0),
-                          child: const Icon(Icons.access_time_outlined,
-                              size: 20, color: Colors.black54),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const RotationPage()),
+                          );
+                        },
+                        child: const Icon(Icons.access_time_outlined,
+                            size: 20, color: Colors.black54),
+                      ),
                         ),
                       ],
                     ),
@@ -412,7 +480,7 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                         contentPadding: const EdgeInsets.symmetric(
                             horizontal: 20, vertical: 14),
                       ),
-                      hint: const Text("washable", style: labelStyle),
+                      hint:  Text("washable", style: labelStyle),
                       icon: const Icon(Icons.arrow_drop_down),
                       items: <String>["Yes", "No"].map((String value) {
                         return DropdownMenuItem<String>(
@@ -442,9 +510,9 @@ class AddMattressTypePageState extends State<AddMattressTypePage> {
                             vertical: 18.0,
                           ),
                         ),
-                        child: const Text(
+                        child:  Text(
                           "+ Add Mattress Type",
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(color: theme.colorScheme.surface),
                         ),
                       ),
                     ),

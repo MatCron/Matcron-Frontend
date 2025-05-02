@@ -18,4 +18,10 @@ abstract class TypeApiService {
 
   @POST('/')
   Future<HttpResponse<void>> addType({@Body() required TypeModel model, @Header('Authorization') required String token});
+
+  @POST('/{id}')
+  Future<HttpResponse<void>> updateType({@Body() required TypeModel model, @Header('Authorization') required String token, @Path('id') required String id});
+
+  @DELETE('/{id}')
+  Future<HttpResponse<void>> deleteType({@Header('Authorization') required String token, @Path('id') required String id});
 }

@@ -4,16 +4,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:matcron/app/features/auth/domain/entities/user_db_entity.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/login/remote_login_event.dart';
-import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
+//import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/register/remote_registration_bloc.dart';
 import 'package:matcron/app/features/auth/presentation/bloc/auth/remote/remote_auth_state.dart';
-import 'package:matcron/app/features/auth/presentation/pages/register.dart';
-import 'package:matcron/app/injection_container.dart';
-import 'package:matcron/app/main.dart';
+import 'package:matcron/config/languages.dart';
+import 'package:matcron/core/resources/authorization.dart';
+import 'package:matcron/core/resources/language_provider.dart';
+//import 'package:matcron/app/features/auth/presentation/pages/register.dart';
+//import 'package:matcron/app/injection_container.dart';
+//import 'package:matcron/app/features/auth/presentation/pages/register.dart';
+//import 'package:matcron/app/injection_container.dart';
+import 'package:matcron/main.dart';
 import 'package:matcron/core/constants/constants.dart';
+import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
-   
+
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
@@ -47,18 +53,21 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return TextField(
       controller: widget.controller,
       keyboardType: widget.inputType,
-      autofillHints: widget.autofillHint != null ? [widget.autofillHint!] : null,
+      autofillHints:
+          widget.autofillHint != null ? [widget.autofillHint!] : null,
       obscureText: widget.isPassword ? _obscureText : false,
-      style: const TextStyle(color: Colors.black),
+      style: TextStyle(color: theme.colorScheme.onSurface),
       decoration: InputDecoration(
-        fillColor: Colors.white,
+        fillColor: theme.colorScheme.surface,
         filled: true,
         hintText: widget.placeholder,
-        hintStyle: TextStyle(color: Colors.grey[600]),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        hintStyle: TextStyle(color: theme.colorScheme.shadow),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
           borderSide: BorderSide.none,
@@ -71,11 +80,11 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
           borderRadius: BorderRadius.circular(8),
           borderSide: const BorderSide(color: Colors.transparent),
         ),
-               suffixIcon: widget.isPassword
+        suffixIcon: widget.isPassword
             ? IconButton(
                 icon: Icon(
                   _obscureText ? Icons.visibility_off : Icons.visibility,
-                  color: Colors.grey[600],
+                  color: theme.colorScheme.shadow,
                 ),
                 onPressed: _toggleObscureText,
               )
@@ -84,16 +93,18 @@ class _RoundedTextFieldState extends State<RoundedTextField> {
     );
   }
 }
+
 class _LoginPageState extends State<LoginPage> {
-  final TextEditingController emailController    = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  String selectedLanguage = 'English'; 
+  String selectedLanguage = 'EN';
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
-      extendBodyBehindAppBar: true, 
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
         toolbarHeight: 40,
         backgroundColor: Colors.transparent,
@@ -102,36 +113,50 @@ class _LoginPageState extends State<LoginPage> {
         actions: [
           PopupMenuButton<String>(
             icon: const Icon(Icons.language),
-            onSelected: (value) {
+            onSelected: (value) async {
+              // Pass the correct language code to setLanguage
+              String languageCode = value == 'English'
+                  ? 'EN'
+                  : value == 'German'
+                      ? 'DE'
+                      : 'ES';
+
+              final languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+              await languageProvider.setLanguage(languageCode);
+                // Update language globally
               setState(() {
-                selectedLanguage = value;
+                selectedLanguage = languageCode;
               });
+
+              
+
+              AuthorizationService().setLanguage(languageCode);
             },
             itemBuilder: (BuildContext context) {
               return ['English', 'German', 'Spanish'].map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice,
-                  child: Text(choice),
+                  child: Text(choice, style: theme.textTheme.bodyMedium),
                 );
               }).toList();
             },
           ),
         ],
       ),
-      body: _buildBody(context),
+      body: _buildBody(context, theme),
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  Widget _buildBody(BuildContext context, ThemeData theme) {
     return BlocBuilder<RemoteLoginBloc, RemoteAuthState>(
       builder: (_, state) {
         // Loading spinner
         if (state is RemoteAuthLoading) {
           return Scaffold(
-            backgroundColor: Colors.white,
+            backgroundColor: theme.colorScheme.surface,
             body: Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+                valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
               ),
             ),
           );
@@ -157,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                 image: const AssetImage('assets/images/bed.jpg'),
                 fit: BoxFit.cover,
                 colorFilter: ColorFilter.mode(
-                  Colors.black.withOpacity(0.35),
+                  theme.colorScheme.onSurface.withOpacity(0.35),
                   BlendMode.darken,
                 ),
               ),
@@ -181,12 +206,12 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 30),
 
                       // Title
-                      const Text(
-                        "Welcome to Matcron!",
+                      Text(
+                        languages[selectedLanguage]!["Login"]!["WelcomeToMatcron!"]!,
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: theme.colorScheme.surface,
                         ),
                       ),
                       const SizedBox(height: 30),
@@ -194,42 +219,41 @@ class _LoginPageState extends State<LoginPage> {
                       // Email Field
                       RoundedTextField(
                         controller: emailController,
-                        placeholder: "Enter email",
+                        placeholder: languages[selectedLanguage]!["Login"]!["EnterEmail"]!,
                         inputType: TextInputType.emailAddress,
                         autofillHint: AutofillHints.email,
                       ),
                       if (emailError != null)
                         Text(
                           emailError,
-                          style: const TextStyle(color: Colors.red, fontSize: 12),
+                          style: TextStyle(
+                              color: theme.colorScheme.error, fontSize: 12),
                         ),
                       const SizedBox(height: 30),
 
                       // Password Field
                       RoundedTextField(
                         controller: passwordController,
-                        placeholder: "Enter password",
-                       inputType: TextInputType.visiblePassword,
-                     isPassword: true,
+                        placeholder: languages[selectedLanguage]!["Login"]!["EnterPassword"]!,
+                        inputType: TextInputType.visiblePassword,
+                        isPassword: true,
                       ),
                       if (passwordError != null)
                         Text(
                           passwordError,
-                          style: const TextStyle(color: Colors.red, fontSize: 12),
+                          style: TextStyle(
+                              color: theme.colorScheme.error, fontSize: 12),
                         ),
                       const SizedBox(height: 15),
 
-             
                       Align(
                         alignment: Alignment.centerRight,
                         child: GestureDetector(
-                          onTap: () {
-                          
-                          },
-                          child: const Text(
-                            "Forgot Password?",
+                          onTap: () {},
+                          child: Text(
+                            languages[selectedLanguage]!["Login"]!["ForgotPassword"]!,
                             style: TextStyle(
-                              color: Colors.white,
+                              color: theme.colorScheme.surface,
                               fontWeight: FontWeight.bold,
                               fontSize: 15,
                             ),
@@ -249,67 +273,13 @@ class _LoginPageState extends State<LoginPage> {
                           minimumSize: const Size(double.infinity, 50),
                           backgroundColor: matcronPrimaryColor,
                         ),
-                        child: const Text(
-                          "Log In",
-                          style: TextStyle(color: Colors.white, fontSize: 25),
+                        child: Text(
+                          languages[selectedLanguage]!["Login"]!["LogIn"]!,
+                          style: TextStyle(
+                              color: theme.colorScheme.surface, fontSize: 25),
                         ),
                       ),
                       const SizedBox(height: 18),
-
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            child: Divider(
-                              color: Colors.white,
-                              thickness: 1,
-                              endIndent: 10,
-                            ),
-                          ),
-                          const Text(
-                            'or',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          Expanded(
-                            child: Divider(
-                              color: Colors.white,
-                              thickness: 1,
-                              indent: 10,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-
-                      // Sign Up (Outlined) Button
-                      OutlinedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BlocProvider<RemoteRegistrationBloc>(
-                                create: (_) => sl<RemoteRegistrationBloc>(),
-                                child: const RegisterPage(),
-                              ),
-                            ),
-                          );
-                        },
-                        style: OutlinedButton.styleFrom(
-                          side: const BorderSide(color: Colors.white, width: 2),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
-                        child: const Text(
-                          "Sign Up",
-                          style: TextStyle(color: Colors.white, fontSize: 25),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -323,7 +293,8 @@ class _LoginPageState extends State<LoginPage> {
           SchedulerBinding.instance.addPostFrameCallback((_) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text("Welcome Back, ${state.user?.firstName} ${state.user?.lastName}!"),
+                content: Text(
+                    "${languages[selectedLanguage]!["Login"]!["WelcomeBack"]!}, ${state.user?.firstName} ${state.user?.lastName}!"),
                 duration: const Duration(seconds: 2),
               ),
             );
@@ -342,7 +313,7 @@ class _LoginPageState extends State<LoginPage> {
           return Center(
             child: Text(
               "Error: ${state.exception}",
-              style: const TextStyle(color: Colors.red),
+              style: TextStyle(color: theme.colorScheme.error),
             ),
           );
         }
@@ -354,13 +325,13 @@ class _LoginPageState extends State<LoginPage> {
 
   void login(BuildContext context) {
     context.read<RemoteLoginBloc>().add(
-      Login(
-        UserLoginEntity(
-          email: emailController.text,
-          password: passwordController.text,
-        ),
-      ),
-    );
+          Login(
+            UserLoginEntity(
+              email: emailController.text,
+              password: passwordController.text,
+            ),
+          ),
+        );
   }
 
   @override

@@ -21,3 +21,11 @@ class GetSingleType extends RemoteTypeEvent {
 class AddType extends RemoteTypeEvent {
   const AddType(MattressTypeEntity type) : super(type: type);
 }
+
+class UpdateType extends RemoteTypeEvent {
+  const UpdateType(MattressTypeEntity type) : super(type: type);
+}
+
+class DeleteType extends RemoteTypeEvent {
+  const DeleteType(String id) : super(id: id);
+}

@@ -5,15 +5,19 @@ import 'package:matcron/app/features/mattress/domain/entities/mattress.dart';
 import 'package:matcron/app/features/mattress/domain/repositories/mattress_repository.dart';
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_bloc.dart';
+import 'package:matcron/app/features/type/presentation/bloc/remote_type_event.dart';
 import 'package:matcron/app/features/type/presentation/bloc/remote_type_state.dart';
 import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dart';
-import 'package:matcron/config/theme/app_theme.dart';
-import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/app/features/type/presentation/pages/type_form.dart';
+import 'package:matcron/config/languages.dart';
 import 'package:matcron/core/components/search_bar/search_bar.dart' as custom;
+import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/data_state.dart';
+import 'package:matcron/core/resources/language_provider.dart';
 import 'package:matcron/core/resources/nfc_decoder.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:provider/provider.dart';
+
 
 class MattressTypePage extends StatefulWidget {
   const MattressTypePage({super.key});
@@ -33,17 +37,30 @@ class MattressTypePageState extends State<MattressTypePage> {
   final MattressRepository _mattressRepository =
       GetIt.instance<MattressRepository>();
 
+
   bool isScanning = true; // NFC scanning status
   bool isFinished = false; // Finished writing status
 
   MattressTypeEntity? currentSearchedEntity;
+  int userType = 0;
+
+  late LanguageProvider languageProvider;
 
   @override
   void initState() {
     super.initState();
     filteredTypes = mattressTypes; // Initialize with all data
     canRefreshList = false;
+    languageProvider = Provider.of<LanguageProvider>(context, listen: false);
+    _initializeUserType(); // Call an async function separately
   }
+
+  void _initializeUserType() async {
+  int type = (await AuthorizationService().getUserType())!;
+  setState(() {
+    userType = type;
+  }); 
+}
 
   @override
   void dispose() {
@@ -164,9 +181,54 @@ class MattressTypePageState extends State<MattressTypePage> {
         return MattressTypeBottomDrawer(
           mattress: type,
           isEditable: isEditable,
-          onSave: (mattress) {
-            // Save functionality placeholder
-          },
+          onSave: _updateType,
+        );
+      },
+    );
+  }
+
+  void _updateType(MattressTypeEntity entity) {
+    filteredTypes.clear();
+
+    context.read<RemoteTypeBloc>().add(UpdateType(entity));
+  }
+
+  void _deleteType(String id) {
+    filteredTypes.clear();
+
+    context.read<RemoteTypeBloc>().add(DeleteType(id));
+  }
+
+  void _showDeleteConfirmationDialog(BuildContext context, String id) {
+    final theme = Theme.of(context);
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Delete Mattress Type'),
+          content: Text('Are you sure you want to delete this Mattress Type?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel', style: TextStyle(color: theme.colorScheme.shadow)),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteType(id);
+              },
+              child: Text(
+                'Delete',
+                style: TextStyle(color: theme.colorScheme.error), // Red color for delete button
+              ),
+            ),
+          ],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          backgroundColor: theme.colorScheme.surface,
         );
       },
     );
@@ -174,27 +236,28 @@ class MattressTypePageState extends State<MattressTypePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
      double screenWidth = MediaQuery.of(context).size.width;
     TextStyle headerStyle = TextStyle(
       fontSize: screenWidth * 0.04,
       fontWeight: FontWeight.bold,
-      color: Colors.black,
+      color: theme.colorScheme.onSurface,
       overflow: TextOverflow.ellipsis,
     );
     TextStyle dataStyle = TextStyle(
       fontSize: screenWidth * 0.035,
       fontStyle: FontStyle.italic,
-      color: Colors.grey,
+      color: theme.colorScheme.shadow,
     );
     return Scaffold(
       body: BlocBuilder<RemoteTypeBloc, RemoteTypeState>(
         builder: (context, state) {
           if (state is RemoteTypesLoading) {
             return Scaffold(
-              backgroundColor: HexColor("#E5E5E5"),
+              backgroundColor: theme.scaffoldBackgroundColor,
               body: Center(
                 child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+                  valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
                 ),
               ),
             );
@@ -213,7 +276,7 @@ class MattressTypePageState extends State<MattressTypePage> {
               filteredTypes = [currentSearchedEntity!];
             }
 
-            return _buildDoneState(context,headerStyle,dataStyle);
+            return _buildDoneState(context,headerStyle,dataStyle,theme);
           }
 
           return const SizedBox();
@@ -222,214 +285,228 @@ class MattressTypePageState extends State<MattressTypePage> {
     );
   }
 
-  Widget _buildDoneState(BuildContext context,TextStyle headerStyle, TextStyle dataStyle) {
-   
-    return Scaffold(
-      body: Container(
-        padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
-        color: HexColor("#E5E5E5"),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            custom.SearchBar(
-              placeholder: "Search Mattress Type",
-              canRefreshList: canRefreshList,
-              searchMattress: () => _openRfidModal(context),
-              refreshList: () => _refreshList(),
-              onSearchChanged: (query) {
-                setState(() {
-                  filteredTypes = mattressTypes
-                      .where((type) => type.name!
-                          .toLowerCase()
-                          .contains(query.toLowerCase()))
-                      .toList();
-                });
-              },
-            ),
-            const SizedBox(height: 10.0),
-
-            // Add mattress type button
-            Align(
-              alignment: Alignment.centerRight,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => AddMattressTypePage()),
-                  );
+  Widget _buildDoneState(BuildContext context,TextStyle headerStyle, TextStyle dataStyle,ThemeData theme) {
+    return Consumer<LanguageProvider>(builder: (context, value, child) {
+      return Scaffold(
+        body: Container(
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+          color: theme.cardColor,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              custom.SearchBar(
+                placeholder: languages[languageProvider.currentLanguage]!["Type"]!["SearchType"]!,
+                canRefreshList: canRefreshList,
+                searchMattress: () => _openRfidModal(context),
+                refreshList: () => _refreshList(),
+                onSearchChanged: (query) {
+                  setState(() {
+                    filteredTypes = mattressTypes
+                        .where((type) => type.name!
+                            .toLowerCase()
+                            .contains(query.toLowerCase()))
+                        .toList();
+                  });
                 },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: matcronPrimaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+              ),
+              const SizedBox(height: 10.0),
+
+              // Add mattress type button
+              if (userType == 1)
+              Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => AddMattressTypePage()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 14,
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 14,
+                  child:  Text(
+                    languages[languageProvider.currentLanguage]!["Type"]!["AddType"]!,
+                    style: TextStyle(color: theme.colorScheme.onPrimary),
                   ),
-                ),
-                child: const Text(
-                  "+ Add Type",
-                  style: TextStyle(color: Colors.white),
                 ),
               ),
-            ),
-            const SizedBox(height: 18.0),
+              const SizedBox(height: 18.0),
 
-            // Table headers with better spacing
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    "Type",
-                    style: const TextStyle(
-                      fontSize: 16.0,
-                      fontStyle: FontStyle.italic,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 20), // Added spacing
-                Expanded(
-                  flex: 3,
-                  child: Center(
+              // Table headers with better spacing
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
                     child: Text(
-                      "Inches",
-                      style: const TextStyle(
+                      languages[languageProvider.currentLanguage]!["Type"]!["TypeHeader"]!,
+                      style:  TextStyle(
                         fontSize: 16.0,
                         fontStyle: FontStyle.italic,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ), // Prevent wrapping
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                    width: 40), // More spacing between Inches and Stock
-                Expanded(
-                  flex: 2,
-                  child: Center(
-                    child: Text(
-                      "Stock",
-                      style: const TextStyle(
-                        fontSize: 16.0,
-                        fontStyle: FontStyle.italic,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: theme.colorScheme.onSurface,
+                        overflow: TextOverflow.clip
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 20),
-                const Text("Edit", style: TextStyle(fontSize: 16)),
-                const SizedBox(width: 30),
-                const Text("Delete", style: TextStyle(fontSize: 16)),
-              ],
-            ),
-            const Divider(color: Colors.black26),
+                  const SizedBox(width: 20), // Added spacing
+                  Expanded(
+                    flex: 3,
+                    child: Center(
+                      child: Text(
+                        languages[languageProvider.currentLanguage]!["Type"]!["InchesHeader"]!,
+                        style:  TextStyle(
+                          fontSize: 16.0,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onSurface,
+                          overflow: TextOverflow.clip
+                        ), // Prevent wrapping
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                      width: 40), // More spacing between Inches and Stock
+                  Expanded(
+                    flex: 2,
+                    child: Center(
+                      child: Text(
+                        languages[languageProvider.currentLanguage]!["Type"]!["StockHeader"]!,
+                        style:  TextStyle(
+                          fontSize: 16.0,
+                          fontStyle: FontStyle.italic,
+                          fontWeight: FontWeight.bold,
+                          color: theme.colorScheme.onSurface,
+                          overflow: TextOverflow.ellipsis
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (userType == 1)
+                  const SizedBox(width: 20),
+                  if (userType == 1)
+                  Text(languages[languageProvider.currentLanguage]!["Type"]!["Edit"]!, style: TextStyle(fontSize: 16)),
+                  if (userType == 1)
+                  const SizedBox(width: 30),
+                  if (userType == 1)
+                  Text(languages[languageProvider.currentLanguage]!["Type"]!["Delete"]!, style: TextStyle(fontSize: 16)),
+                ],
+              ),
+              Divider(color: theme.dividerColor),
 
-            // Table rows with mattress types
-            Expanded(
-              child: ListView.builder(
-                itemCount: filteredTypes.length,
-                itemBuilder: (context, index) {
-                  final type = filteredTypes[index];
-                  return GestureDetector(
-                    onTap: () {
-                      // Open bottom drawer with mattress type details
-                      _openBottomDrawer(context, type: type, isEditable: false);
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(vertical: 6.0),
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10.0),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            flex: 1,
-                            child: Text(
-                              type.name!,
-                              style: headerStyle,
+              // Table rows with mattress types
+              Expanded(
+                child: ListView.builder(
+                  itemCount: filteredTypes.length,
+                  itemBuilder: (context, index) {
+                    final type = filteredTypes[index];
+                    return GestureDetector(
+                      onTap: () {
+                        // Open bottom drawer with mattress type details
+                        _openBottomDrawer(context, type: type, isEditable: false);
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(vertical: 6.0),
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          color: theme.colorScheme.surface,
+                          borderRadius: BorderRadius.circular(10.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.colorScheme.onSecondary,
+                              blurRadius: 5,
+                              offset: Offset(0, 3),
                             ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Center(
-                              //make it fit in one line without squishing
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              flex: 1,
                               child: Text(
-                                "(${type.width?.toInt()} x ${type.length?.toInt()} x ${type.height?.toInt()})",
-                                style:dataStyle,
-                                maxLines: 1, // Prevent wrapping in data
+                                type.name!,
+                                style: headerStyle,
                               ),
                             ),
-                          ),
-                          Expanded(
-                            flex: 1,
-                            child: Center(
-                              child: Text(
-                                type.stock.toString(),
-                                style: const TextStyle(
-                                  fontSize: 14.0,
-                                  fontWeight: FontWeight.bold,
+                            Expanded(
+                              flex: 2,
+                              child: Center(
+                                //make it fit in one line without squishing
+                                child: Text(
+                                  "(${type.width?.toInt()} x ${type.length?.toInt()} x ${type.height?.toInt()})",
+                                  style:dataStyle,
+                                  maxLines: 1, // Prevent wrapping in data
                                 ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 20),
-                          GestureDetector(
-                            onTap: () {
-                              // Edit functionality placeholder
-                              _openBottomDrawer(context,
-                                  type: type, isEditable: true);
-                            },
-                            child: const CircleAvatar(
-                              radius: 15,
-                              backgroundColor: Colors.blue,
-                              child: Icon(
-                                Icons.edit,
-                                color: Colors.white,
-                                size: 14.0,
+                            Expanded(
+                              flex: 1,
+                              child: Center(
+                                child: Text(
+                                  type.stock.toString(),
+                                  style: const TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                          const SizedBox(width: 30),
-                          GestureDetector(
-                            onTap: () {
-                              // Delete functionality placeholder
-                            },
-                            child: const CircleAvatar(
-                              radius: 15,
-                              backgroundColor: Colors.red,
-                              child: Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                                size: 14.0,
+                            if (userType == 1)
+                            const SizedBox(width: 20),
+                            if (userType == 1)
+                            GestureDetector(
+                              onTap: () {
+                                // Edit functionality placeholder
+                                _openBottomDrawer(context,
+                                    type: type, isEditable: true);
+                              },
+                              child:  CircleAvatar(
+                                radius: 15,
+                                backgroundColor:theme.colorScheme.secondary,
+                                child: Icon(
+                                  Icons.edit,
+                                  color: Colors.white,
+                                  size: 14.0,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                            if (userType == 1)
+                            const SizedBox(width: 30),
+                            if (userType == 1)
+                            GestureDetector(
+                              onTap: () {
+                                _showDeleteConfirmationDialog(context, type.id!);
+                              },
+                              child:  CircleAvatar(
+                                radius: 15,
+                                backgroundColor:theme.colorScheme.error,
+                                child: Icon(
+                                  Icons.delete,
+                                  color: theme.colorScheme.surface,
+                                  size: 14.0,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    });
+
   }
 }

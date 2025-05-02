@@ -14,14 +14,17 @@ import 'package:matcron/app/features/mattress/presentation/widgets/bottom_drawer
 import 'package:matcron/app/features/type/domain/entities/mattress_type.dart';
 import 'package:matcron/app/features/type/presentation/widgets/bottom_drawer.dart';
 import 'package:matcron/app/injection_container.dart';
-import 'package:matcron/config/theme/app_theme.dart';
+import 'package:matcron/config/languages.dart';
 import 'package:matcron/core/components/transfer_out/transfer_reason.dart';
 import 'package:matcron/core/constants/constants.dart';
 import 'package:matcron/core/components/search_bar/search_bar.dart' as custom;
 import 'package:intl/intl.dart';
+import 'package:matcron/core/resources/authorization.dart';
 import 'package:matcron/core/resources/data_state.dart';
+import 'package:matcron/core/resources/language_provider.dart';
 import 'package:matcron/core/resources/nfc_decoder.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'package:provider/provider.dart';
 
 class MattressPage extends StatefulWidget {
   final MattressEntity? searchedEntity;
@@ -40,6 +43,12 @@ class MattressPageState extends State<MattressPage> {
   List<MattressTypeEntity> types = [];
   List<GroupEntity> groups = [];
   bool canRefreshList = false;
+  int userType = 0;
+  String? language;
+  late LanguageProvider languageProvider;
+
+  // New: List to hold selected status filters (assuming statuses are represented as indexes)
+  List<int> selectedFilterStatuses = [];
 
   final MattressRepository _mattressRepository =
       GetIt.instance<MattressRepository>();
@@ -53,12 +62,22 @@ class MattressPageState extends State<MattressPage> {
   @override
   void initState() {
     super.initState();
+    languageProvider = Provider.of<LanguageProvider>(context, listen: false);
     filteredMattresses = mattresses;
     canRefreshList = false;
+    _initializeUserType(); // Call an async function separately
+  }
+
+  void _initializeUserType() async {
+    int type = (await AuthorizationService().getUserType())!;
+    String? lang = await AuthorizationService().getLanguage();
+    setState(() {
+      userType = type;
+      language = lang ?? "EN";
+    });
   }
 
   void _updateMattress(MattressEntity m) {
-    //filteredMattresses.clear();
     context.read<RemoteMattressBloc>().add(UpdateMattress(m));
   }
 
@@ -72,69 +91,92 @@ class MattressPageState extends State<MattressPage> {
 
   void _refreshList() {
     setState(() {
-      filteredMattresses = mattresses; // Update with the single mattress
+      filteredMattresses = mattresses; // Reset filter
       currentSearchedEntity = null;
       canRefreshList = false;
     });
   }
 
-  void _showImportPreview(BuildContext context, GroupEntity entity) {
+  void _showImportPreview(
+      BuildContext context, GroupEntity entity, ThemeData theme) {
     Future.delayed(Duration.zero, () {
       showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            backgroundColor: Colors.white,
+            backgroundColor: theme.colorScheme.onPrimary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12.0),
             ),
             title: Text(
-              "Import Group",
+              languages[languageProvider.currentLanguage]!["Mattress"]![
+                  "ImportGroup"]!,
               style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: matcronPrimaryColor),
+                  color: theme.colorScheme.primary),
             ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _infoRow("Name", entity.name ?? "N/A"),
-                _infoRow("Description", entity.description ?? "N/A"),
-                _infoRow("Mattress Count", entity.mattressCount.toString()),
-                _infoRow("Sender Org", entity.senderOrganisationName ?? "N/A"),
-                _infoRow("Status", groupStatus[entity.status! - 1]),
-                _infoRow("Transfer Purpose",
-                    transferOutPurposes[entity.transferOutPurpose! - 1]),
+                _infoRow(
+                    languages[languageProvider.currentLanguage]!["Mattress"]![
+                        "ImportGroup"]!,
+                    entity.name ?? "N/A",
+                    theme),
+                _infoRow(
+                    languages[languageProvider.currentLanguage]!["Mattress"]![
+                        "PreviewDesc"]!,
+                    entity.description ?? "N/A",
+                    theme),
+                _infoRow(
+                    languages[languageProvider.currentLanguage]!["Mattress"]![
+                        "PreviewCount"]!,
+                    entity.mattressCount.toString(),
+                    theme),
+                _infoRow("Sender Org", entity.senderOrganisationName ?? "N/A",
+                    theme),
+                _infoRow(
+                    languages[languageProvider.currentLanguage]!["Mattress"]![
+                        "PreviewStatus"]!,
+                    groupStatus[entity.status! - 1],
+                    theme),
+                _infoRow(
+                    languages[languageProvider.currentLanguage]!["Mattress"]![
+                        "PreviewPurpose"]!,
+                    transferOutPurposes[entity.transferOutPurpose! - 1],
+                    theme),
               ],
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child:
-                    Text("Cancel", style: TextStyle(color: Colors.redAccent)),
+                child: Text(
+                    languages[languageProvider.currentLanguage]!["Mattress"]![
+                        "PreviewCancel"]!,
+                    style: TextStyle(color: Colors.redAccent)),
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: matcronPrimaryColor,
+                  backgroundColor: theme.colorScheme.primary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
                 onPressed: () async {
-                  BuildContext parentContext =
-                      context; // Store the valid context before popping
-
-                  Navigator.pop(context); // Close the dialog
-
+                  BuildContext parentContext = context;
+                  Navigator.pop(context);
                   Future.microtask(() {
                     if (parentContext.mounted) {
-                      _importGroup(
-                          parentContext, entity.uid!); // Use the stored context
+                      _importGroup(parentContext, entity.uid!, theme);
                     }
                   });
                 },
-                child: Text("Import", style: TextStyle(color: Colors.white)),
+                child: Text(
+                    languages[languageProvider.currentLanguage]!["Mattress"]![
+                        "PreviewImport"]!,
+                    style: TextStyle(color: theme.colorScheme.onPrimary)),
               ),
             ],
           );
@@ -143,29 +185,26 @@ class MattressPageState extends State<MattressPage> {
     });
   }
 
-  void _importGroup(BuildContext context, String id) async {
-  var state = await _groupRepository.importMattressFromGroup(id);
-
-  if (state is DataSuccess) {
-    if (!mounted) return; // ✅ Ensure widget is still active
-
-    Navigator.pop(context); // ✅ Safe pop
-
-    Future.delayed(Duration.zero, () {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Mattresses imported successfully!"),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
-    });
+  void _importGroup(BuildContext context, String id, ThemeData theme) async {
+    var state = await _groupRepository.importMattressFromGroup(id);
+    if (state is DataSuccess) {
+      if (!mounted) return;
+      Navigator.pop(context);
+      Future.delayed(Duration.zero, () {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(languages[languageProvider.currentLanguage]![
+                  "Mattress"]!["PreviewImport"]!),
+              backgroundColor: Colors.green,
+            ),
+          );
+        }
+      });
+    }
   }
-}
 
-
-  Widget _infoRow(String label, String value) {
+  Widget _infoRow(String label, String value, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
       child: Row(
@@ -173,10 +212,11 @@ class MattressPageState extends State<MattressPage> {
         children: [
           Text(label,
               style: TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.black87)),
+                  fontWeight: FontWeight.bold,
+                  color: theme.colorScheme.onSurface)),
           Flexible(
             child: Text(value,
-                style: TextStyle(color: Colors.black54),
+                style: TextStyle(color: theme.colorScheme.secondary),
                 overflow: TextOverflow.ellipsis),
           ),
         ],
@@ -185,18 +225,20 @@ class MattressPageState extends State<MattressPage> {
   }
 
   void _openDPPBottomDrawer(BuildContext context,
-      {required MattressTypeEntity type,
+      {required ThemeData theme,
+      required MattressTypeEntity type,
       required String failSafe,
       required bool isEditable}) {
     showModalBottomSheet(
       context: context,
-      isScrollControlled: true, // Allows the drawer to take up full height
-      backgroundColor: Colors.transparent, // Matches design
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) {
         return MattressTypeBottomDrawer(
           mattress: type,
           isEditable: false,
           failSafe: failSafe,
+          showHistory: true,
           onSave: (mattress) {
             // Save functionality placeholder
           },
@@ -205,13 +247,13 @@ class MattressPageState extends State<MattressPage> {
     );
   }
 
-  void _openRfidModal(BuildContext context, String session) {
+  void _openRfidModal(BuildContext context, String session, ThemeData theme) {
     if (session == 'SEARCH') {
       Future.delayed(Duration(milliseconds: 100), _startNfcSession);
     } else if (session == 'IMPORT') {
-      Future.delayed(Duration(milliseconds: 100), _startImportNfcSession);
+      Future.delayed(
+          Duration(milliseconds: 100), () => _startImportNfcSession(theme));
     }
-
     showDialog(
       context: context,
       builder: (context) {
@@ -221,7 +263,7 @@ class MattressPageState extends State<MattressPage> {
             children: [
               Center(
                 child: Image.asset(
-                  'assets/images/scan_icon.png', // Adjust your image path as needed
+                  'assets/images/scan_icon.png',
                   width: 275,
                   fit: BoxFit.cover,
                 ),
@@ -235,23 +277,19 @@ class MattressPageState extends State<MattressPage> {
     );
   }
 
-  Future<void> _startImportNfcSession() async {
+  Future<void> _startImportNfcSession(ThemeData theme) async {
     if (!mounted) return;
-
     setState(() {
       isScanning = true;
       isFinished = false;
     });
-
     NfcManager.instance.startSession(onDiscovered: (NfcTag badge) async {
       try {
         var ndef = Ndef.from(badge);
         if (ndef != null && ndef.cachedMessage != null) {
           var uid = decodeNfcPayload(ndef.cachedMessage!.records[0].payload);
-
           var state =
               await _groupRepository.getImportPreviewFromMattressId(uid);
-
           if (state is DataSuccess && state.data != null) {
           } else {
             if (mounted) {
@@ -262,18 +300,13 @@ class MattressPageState extends State<MattressPage> {
               );
             }
           }
-
           NfcManager.instance.stopSession();
-
           if (mounted) {
-            Navigator.of(context, rootNavigator: true)
-                .pop(); // Ensure only the dialog is closed
+            Navigator.of(context, rootNavigator: true).pop(); // Close dialog
           }
-
           if (mounted) {
-            _showImportPreview(context, state.data!);
+            _showImportPreview(context, state.data!, theme);
           }
-          // Close the dialog safely
         } else {
           _handleNfcError("Failed to read NFC tag.");
         }
@@ -284,13 +317,11 @@ class MattressPageState extends State<MattressPage> {
   }
 
   Future<void> _startNfcSession() async {
-    if (!mounted) return; // Ensure the widget is still in the tree
-
+    if (!mounted) return;
     setState(() {
       isScanning = true;
       isFinished = false;
     });
-
     NfcManager.instance.startSession(onDiscovered: (NfcTag badge) async {
       try {
         var ndef = Ndef.from(badge);
@@ -298,9 +329,7 @@ class MattressPageState extends State<MattressPage> {
           var uid = decodeNfcPayload(ndef.cachedMessage!.records[0].payload);
           var state = await _mattressRepository.getMattressById(uid);
           state.data!.uid = uid;
-
           if (state is DataSuccess && state.data != null) {
-            // Update filteredMattresses using _searchMattress
             _searchMattress(state.data!);
           } else {
             if (mounted) {
@@ -309,13 +338,9 @@ class MattressPageState extends State<MattressPage> {
               );
             }
           }
-
           NfcManager.instance.stopSession();
-
-          // Close the dialog safely
           if (mounted) {
-            Navigator.of(context, rootNavigator: true)
-                .pop(); // Ensure only the dialog is closed
+            Navigator.of(context, rootNavigator: true).pop();
           }
         } else {
           _handleNfcError("Failed to read NFC tag.");
@@ -328,18 +353,13 @@ class MattressPageState extends State<MattressPage> {
 
   void _handleNfcError(String errorMessage) {
     if (!mounted) return;
-
     setState(() {
       isScanning = false;
     });
-
     NfcManager.instance.stopSession(errorMessage: errorMessage);
-
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(errorMessage)),
     );
-
-    // Close the dialog if still visible
     if (Navigator.canPop(context)) {
       Navigator.of(context, rootNavigator: true).pop();
     }
@@ -348,27 +368,22 @@ class MattressPageState extends State<MattressPage> {
   void _addMattressToGroup(List<String> mattresses, String groupId) async {
     var mattressesToAdd =
         EditMattressesToGroupModel(groupId: groupId, mattressIds: mattresses);
-
-    var addState = await _groupRepository
-        .addMattressToGroup(mattressesToAdd); // Await the async call
-
+    var addState = await _groupRepository.addMattressToGroup(mattressesToAdd);
     if (addState is DataSuccess) {
-      // Close the current screen and go back
       Navigator.pop(context);
-
-      // Show success notification
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Mattresses added to group successfully!"),
+        SnackBar(
+          content: Text(languages[languageProvider.currentLanguage]![
+              "Mattress"]!["MattressAddedToGroup"]!),
           backgroundColor: Colors.green,
           duration: Duration(seconds: 3),
         ),
       );
     } else {
-      // Show error notification
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("Mattresses already added to group."),
+          content: Text(languages[languageProvider.currentLanguage]![
+              "Mattress"]!["MattressAlreadyAdded"]!),
           backgroundColor: Colors.red,
           duration: const Duration(seconds: 3),
         ),
@@ -376,93 +391,284 @@ class MattressPageState extends State<MattressPage> {
     }
   }
 
+  // New: Open bottom drawer to filter by statuses
+  void _openFilterBottomDrawer(ThemeData theme) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: theme.colorScheme.surface,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (BuildContext context) {
+        // Create a temporary copy of selected statuses
+        List<int> tempSelectedStatuses = List.from(selectedFilterStatuses);
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return Padding(
+              padding: MediaQuery.of(context).viewInsets,
+              child: Container(
+                padding: EdgeInsets.all(16),
+                // Adjust height as needed
+                height: 350,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        languages[languageProvider.currentLanguage]![
+                            "Mattress"]!["FilterByStatus"]!,
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.primary)),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 220,
+                      child: ListView.builder(
+                        itemCount: mattressStatus.length,
+                        itemBuilder: (context, index) {
+                          String statusText =
+                              mattressStatus[index]['Text'] as String;
+                          return CheckboxListTile(
+                            title: Text(
+                              statusText,
+                              style:
+                                  TextStyle(color: theme.colorScheme.onSurface),
+                            ),
+                            checkColor: theme.colorScheme.primary,
+                            activeColor: theme.colorScheme.onPrimary,
+                            value: tempSelectedStatuses.contains(index),
+                            onChanged: (bool? value) {
+                              setModalState(() {
+                                if (value == true) {
+                                  tempSelectedStatuses.add(index);
+                                } else {
+                                  tempSelectedStatuses.remove(index);
+                                }
+                              });
+                            },
+                          );
+                        },
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            // Clear filters
+                            setState(() {
+                              selectedFilterStatuses = [];
+                              filteredMattresses = mattresses;
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "Clear",
+                            style: TextStyle(color: theme.colorScheme.error),
+                          ),
+                        ),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.all(
+                                  theme.colorScheme.primary)),
+                          onPressed: () {
+                            setState(() {
+                              selectedFilterStatuses = tempSelectedStatuses;
+                              if (selectedFilterStatuses.isEmpty) {
+                                filteredMattresses = mattresses;
+                              } else {
+                                filteredMattresses = mattresses
+                                    .where((mattress) =>
+                                        mattress.status != null &&
+                                        selectedFilterStatuses
+                                            .contains(mattress.status!))
+                                    .toList();
+                              }
+                            });
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "Apply",
+                            style:
+                                TextStyle(color: theme.colorScheme.onPrimary),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ); //:)
+          },
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context); // Get theme
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: BlocBuilder<RemoteMattressBloc, RemoteMattressState>(
         builder: (_, state) {
           if (state is RemoteMattressesLoading) {
             return Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(matcronPrimaryColor),
+                valueColor: AlwaysStoppedAnimation(theme.colorScheme.primary),
               ),
             );
           }
-
           if (state is RemoteMattressesDone) {
             mattresses.clear();
             mattresses.addAll(state.mattresses!);
             types.addAll(state.types!);
             groups.addAll(state.groups!);
-
             if (currentSearchedEntity != null) {
               canRefreshList = true;
               currentSearchedEntity = mattresses.singleWhere(
                   (element) => element.uid == currentSearchedEntity!.uid);
               filteredMattresses = [currentSearchedEntity!];
             }
-
-            return _buildDoneState(context);
+            return _buildDoneState(context, theme);
           }
-
           return const SizedBox();
         },
       ),
     );
   }
 
-  Widget _buildDoneState(BuildContext context) {
-    return Container(
-      color: HexColor("#E5E5E5"),
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Search bar
-          custom.SearchBar(
-            placeholder: "Search Mattress",
-            canRefreshList: canRefreshList,
-            searchMattress: () => _openRfidModal(context, 'SEARCH'),
-            refreshList: () => _refreshList(),
-            onSearchChanged: (query) {
-              setState(() {
-                filteredMattresses = mattresses
-                    .where((mattress) =>
-                        mattress.type!
+  Widget _buildDoneState(BuildContext context, ThemeData theme) {
+    return Consumer<LanguageProvider>(builder: (context, value, child) {
+      return Container(
+        color: theme.scaffoldBackgroundColor,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Search bar
+            custom.SearchBar(
+              placeholder: languages[languageProvider.currentLanguage]![
+                  "Mattress"]!["SearchMattress"]!,
+              canRefreshList: canRefreshList,
+              searchMattress: () => _openRfidModal(context, 'SEARCH', theme),
+              refreshList: () => _refreshList(),
+              onSearchChanged: (query) {
+                setState(() {
+                  filteredMattresses = mattresses.where((mattress) {
+                    return mattress.type!
                             .toLowerCase()
                             .contains(query.toLowerCase()) ||
                         mattress.location!
                             .toLowerCase()
-                            .contains(query.toLowerCase()))
-                    .toList();
-              });
-            },
-          ),
+                            .contains(query.toLowerCase());
+                  }).toList();
+                });
+              },
+            ),
+            const SizedBox(height: 10.0),
+            // Buttons row including the new Filter button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                // Filter button
+                ElevatedButton(
+                  onPressed: () => _openFilterBottomDrawer(theme),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: theme.colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 14,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.filter_list,
+                          size: 20, color: theme.colorScheme.onPrimary),
+                      SizedBox(width: 5),
+                      Text("Filter",
+                          style: TextStyle(color: theme.colorScheme.onPrimary)),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 10.0),
+                if (selectedMattresses.isNotEmpty)
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                BlocProvider<RemoteMattressBloc>(
+                              create: (context) => sl<RemoteMattressBloc>(),
+                              child: TransferOutMattressPage(
+                                groups: groups,
+                                mattresses: selectedMattresses,
+                                addMattresses: _addMattressToGroup,
+                              ),
+                            ),
+                          ));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 14,
+                      ),
+                    ),
+                    child: const Image(
+                      image: AssetImage('assets/images/transfer.png'),
+                      width: 20,
+                      height: 20,
+                    ),
+                  ),
 
-          const SizedBox(height: 10.0),
-          // Buttons
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              if (selectedMattresses.isNotEmpty)
+                if (userType == 1) const SizedBox(width: 10.0),
+
+                if (userType == 1)
+                  ElevatedButton(
+                    key: const Key('add_mattress_button'),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                BlocProvider<RemoteMattressBloc>(
+                              create: (context) => sl<RemoteMattressBloc>(),
+                              child: AddMattressPage(types),
+                            ),
+                          ));
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: theme.colorScheme.primary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                        vertical: 14,
+                      ),
+                    ),
+                    child: const Image(
+                      image: AssetImage('assets/images/add.png'),
+                      width: 20,
+                      height: 20,
+                    ),
+                  ),
+
+                const SizedBox(width: 10.0),
                 ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              BlocProvider<RemoteMattressBloc>(
-                            create: (context) => sl<RemoteMattressBloc>(),
-                            child: TransferOutMattressPage(
-                              groups: groups,
-                              mattresses: selectedMattresses,
-                              addMattresses: _addMattressToGroup,
-                            ),
-                          ),
-                        ));
+                    _openRfidModal(context, 'IMPORT', theme);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: matcronPrimaryColor,
+                    backgroundColor: theme.colorScheme.primary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),
@@ -472,366 +678,338 @@ class MattressPageState extends State<MattressPage> {
                     ),
                   ),
                   child: const Image(
-                    image: AssetImage('assets/images/transfer.png'),
+                    image: AssetImage('assets/images/import.png'),
                     width: 20,
                     height: 20,
                   ),
                 ),
-              const SizedBox(width: 10.0),
-              ElevatedButton(
-                key: const Key('add_mattress_button'),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BlocProvider<RemoteMattressBloc>(
-                          create: (context) => sl<RemoteMattressBloc>(),
-                          child: AddMattressPage(types),
-                        ),
-                      ));
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: matcronPrimaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 14,
-                  ),
-                ),
-                child: const Image(
-                  image: AssetImage('assets/images/add.png'),
-                  width: 20,
-                  height: 20,
-                ),
-              ),
-              const SizedBox(width: 10.0),
-              ElevatedButton(
-                onPressed: () {
-                  _openRfidModal(context, 'IMPORT');
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: matcronPrimaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 14,
-                  ),
-                ),
-                child: const Image(
-                  image: AssetImage('assets/images/import.png'),
-                  width: 20,
-                  height: 20,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 15.0),
-          // Table headers
-          Row(
-            children: [
-              const SizedBox(width: 50.0),
-              Expanded(
-                child: Text("Type", style: _headerStyle),
-              ),
-              Expanded(
-                child: Text("Location", style: _headerStyle),
-              ),
-              const SizedBox(width: 30.0),
-              Expanded(
-                child: Text("Status", style: _headerStyle),
-              ),
-            ],
-          ),
-          const Divider(color: Colors.black26),
-          // Mattresses List
-          Expanded(
-            child: filteredMattresses.isEmpty
-                ? Center(
+              ],
+            ),
+            const SizedBox(height: 15.0),
+            // Table headers
+            Row(
+              children: [
+                const SizedBox(width: 50.0),
+                Expanded(
                     child: Text(
-                      "No mattresses available",
-                      style: TextStyle(color: Colors.grey),
-                    ),
-                  )
-                : ListView.builder(
-                    itemCount: filteredMattresses.length,
-                    itemBuilder: (context, index) {
-                      final mattress = filteredMattresses[index];
-                      final isSelected = selectedMattresses.contains(mattress);
-                      final dropdownOpen = selectedMattressIndex == index;
-
-                      return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (selectedMattressIndex == index) {
-                                selectedMattressIndex = -1;
-                              } else {
-                                selectedMattressIndex = index;
-                              }
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 9.0),
-                            child: Column(
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 25.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: dropdownOpen
-                                        ? BorderRadius.only(
-                                            topLeft: Radius.circular(10.0),
-                                            topRight: Radius.circular(10.0),
-                                          )
-                                        : BorderRadius.circular(10.0),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black12,
-                                        blurRadius: 5,
-                                        offset: const Offset(0, 3),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: InkWell(
-                                          onTap: () {
-                                            setState(() {
-                                              if (isSelected) {
-                                                selectedMattresses
-                                                    .remove(mattress);
-                                              } else {
-                                                selectedMattresses
-                                                    .add(mattress);
-                                              }
-                                            });
-                                          },
-                                          child: Container(
-                                            height: 24,
-                                            width: 24,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: isSelected
-                                                  ? matcronPrimaryColor
-                                                  : Colors.transparent,
-                                              border: Border.all(
-                                                color: Colors.grey,
-                                                width: 2,
+                        languages[languageProvider.currentLanguage]![
+                            "Mattress"]!["TypeHeader"]!,
+                        style: _headerStyle(theme))),
+                Expanded(
+                    child: Text(
+                        languages[languageProvider.currentLanguage]![
+                            "Mattress"]!["LocationHeader"]!,
+                        style: _headerStyle(theme))),
+                const SizedBox(width: 30.0),
+                Expanded(
+                    child: Text(
+                        languages[languageProvider.currentLanguage]![
+                            "Mattress"]!["StatusHeader"]!,
+                        style: _headerStyle(theme))),
+              ],
+            ),
+            Divider(color: theme.dividerColor),
+            // Mattresses List
+            Expanded(
+              child: filteredMattresses.isEmpty
+                  ? Center(
+                      child: Text(
+                        languages[languageProvider.currentLanguage]![
+                            "Mattress"]!["NoMattress"]!,
+                        style: TextStyle(color: theme.colorScheme.onBackground),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: filteredMattresses.length,
+                      itemBuilder: (context, index) {
+                        final mattress = filteredMattresses[index];
+                        final isSelected =
+                            selectedMattresses.contains(mattress);
+                        final dropdownOpen = selectedMattressIndex == index;
+                        return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                if (selectedMattressIndex == index) {
+                                  selectedMattressIndex = -1;
+                                } else {
+                                  selectedMattressIndex = index;
+                                }
+                              });
+                            },
+                            child: Container(
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 9.0),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0, vertical: 25.0),
+                                    decoration: BoxDecoration(
+                                      color: theme.colorScheme.surface,
+                                      borderRadius: dropdownOpen
+                                          ? BorderRadius.only(
+                                              topLeft: Radius.circular(10.0),
+                                              topRight: Radius.circular(10.0),
+                                            )
+                                          : BorderRadius.circular(10.0),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: theme.colorScheme.onSecondary,
+                                          blurRadius: 5,
+                                          offset: const Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Expanded(
+                                          child: InkWell(
+                                            onTap: () {
+                                              setState(() {
+                                                if (isSelected) {
+                                                  selectedMattresses
+                                                      .remove(mattress);
+                                                } else {
+                                                  selectedMattresses
+                                                      .add(mattress);
+                                                }
+                                              });
+                                            },
+                                            child: Container(
+                                              height: 24,
+                                              width: 24,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: isSelected
+                                                    ? theme.colorScheme.primary
+                                                    : Colors.transparent,
+                                                border: Border.all(
+                                                  color:
+                                                      theme.colorScheme.shadow,
+                                                  width: 2,
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                      const SizedBox(width: 15.0),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                          mattress.type!,
-                                          style: _itemTextStyle,
-                                          overflow: TextOverflow.ellipsis,
+                                        const SizedBox(width: 15.0),
+                                        Expanded(
+                                          flex: 2,
+                                          child: Text(
+                                            mattress.type!,
+                                            style: TextStyle(
+                                                color: theme
+                                                    .colorScheme.onBackground),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        flex: 3,
-                                        child: Text(
-                                          mattress.location!,
-                                          style: _itemTextStyle,
-                                          overflow: TextOverflow.ellipsis,
+                                        Expanded(
+                                          flex: 3,
+                                          child: Text(
+                                            mattress.location!,
+                                            style: TextStyle(
+                                                color: theme
+                                                    .colorScheme.onBackground),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: Text(
-                                          mattress.status != null &&
-                                                  mattress.status! <
-                                                      mattressStatus.length
-                                              ? mattressStatus[mattress.status!]
-                                                  ['Text'] as String
-                                              : 'Unknown Status',
-                                          style: TextStyle(
-                                            fontSize: 13.0,
-                                            fontWeight: FontWeight.bold,
-                                            color: mattress.status != null &&
+                                        Expanded(
+                                          flex: 2,
+                                          child: Text(
+                                            mattress.status != null &&
                                                     mattress.status! <
                                                         mattressStatus.length
-                                                ? mattressStatus[mattress
-                                                    .status!]['Color'] as Color
-                                                : Colors.black,
+                                                ? languages[languageProvider.currentLanguage]!["Mattress"]![mattressStatus[mattress.status!]['Text'] as String]! : 'Unknown Status',
+                                            style: TextStyle(
+                                              fontSize: 13.0,
+                                              fontWeight: FontWeight.bold,
+                                              color: mattress.status != null &&
+                                                      mattress.status! <
+                                                          mattressStatus.length
+                                                  ? mattressStatus[
+                                                          mattress.status!]
+                                                      ['Color'] as Color
+                                                  : theme.colorScheme.secondary,
+                                            ),
+                                            textAlign: TextAlign.justify,
                                           ),
-                                          textAlign: TextAlign.justify,
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                if (dropdownOpen)
-                                  Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10.0, vertical: 25.0),
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(10.0),
-                                          bottomRight: Radius.circular(10.0),
+                                  if (dropdownOpen)
+                                    Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10.0, vertical: 25.0),
+                                        decoration: BoxDecoration(
+                                          color: theme.colorScheme.surface,
+                                          borderRadius: const BorderRadius.only(
+                                            bottomLeft: Radius.circular(10.0),
+                                            bottomRight: Radius.circular(10.0),
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  theme.colorScheme.onSecondary,
+                                              blurRadius: 5,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
                                         ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black12,
-                                            blurRadius: 5,
-                                            offset: const Offset(0, 3),
-                                          ),
-                                        ],
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: "Rotate: ",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                    TextSpan(
-                                                      text:
-                                                          "${mattress.daysToRotate} days",
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(height: 5.0),
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text:
-                                                          "End of Lifecycle:\n",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                    TextSpan(
-                                                      text: DateFormat(
-                                                              'dd-MM-yyyy')
-                                                          .format(mattress
-                                                              .lifeCyclesEnd!),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              const SizedBox(height: 5.0),
-                                              Text.rich(
-                                                TextSpan(
-                                                  children: [
-                                                    TextSpan(
-                                                      text: "Organization: ",
-                                                      style: TextStyle(
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                    TextSpan(
-                                                      text: "TEMP",
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          //Row of buttons edit and more
-                                          const SizedBox(width: 25.0),
-                                          Row(
-                                            children: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  showModalBottomSheet(
-                                                    context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return MattressBottomDrawer(
-                                                        mattressTypes: types,
-                                                        mattress: mattress,
-                                                        onSave: _updateMattress,
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors
-                                                      .green, // Green background for Edit button
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5.0), // Slight radius for rounded corners
+                                        child: Row(
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text:
+                                                            "${languages[languageProvider.currentLanguage]!["Mattress"]!["Rotate"]}: ",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      TextSpan(
+                                                        text:
+                                                            "${mattress.daysToRotate} ${languages[languageProvider.currentLanguage]!["Mattress"]!["Days"]}",
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                                child: const Text(
-                                                  "Edit",
-                                                  style: TextStyle(
-                                                    color: Colors
-                                                        .white, // White text
+                                                const SizedBox(height: 5.0),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text:
+                                                            "EndOfLifecycle:\n",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      TextSpan(
+                                                        text: DateFormat(
+                                                                'dd-MM-yyyy')
+                                                            .format(mattress
+                                                                .lifeCyclesEnd!),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                              ),
-                                              const SizedBox(width: 5.0),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  _openDPPBottomDrawer(context,
-                                                      type: mattress
-                                                          .mattressType!,
-                                                      failSafe: mattress.uid!,
-                                                      isEditable: false);
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor:
-                                                      matcronPrimaryColor, // Use matcronPrimaryColor for More button
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5.0), // Slight radius for rounded corners
+                                                const SizedBox(height: 5.0),
+                                                Text.rich(
+                                                  TextSpan(
+                                                    children: [
+                                                      TextSpan(
+                                                        text:
+                                                            "${languages[languageProvider.currentLanguage]!["Mattress"]!["Organization"]}: ",
+                                                        style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      TextSpan(
+                                                        text: "TEMP",
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                                child: const Text(
-                                                  "More",
-                                                  style: TextStyle(
-                                                    color: Colors
-                                                        .white, // White text
+                                              ],
+                                            ),
+                                            const SizedBox(width: 25.0),
+                                            Row(
+                                              children: [
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    showModalBottomSheet(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return MattressBottomDrawer(
+                                                          mattressTypes: types,
+                                                          mattress: mattress,
+                                                          userType: userType,
+                                                          onSave:
+                                                              _updateMattress,
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        Colors.green,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5.0),
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    "Edit",
+                                                    style: TextStyle(
+                                                      color: theme.colorScheme
+                                                          .onPrimary,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      )),
-                              ],
-                            ),
-                          ));
-                    },
-                  ),
-          ),
-        ],
-      ),
-    );
+                                                const SizedBox(width: 5.0),
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    _openDPPBottomDrawer(
+                                                        context,
+                                                        theme: theme,
+                                                        type: mattress
+                                                            .mattressType!,
+                                                        failSafe: mattress.uid!,
+                                                        isEditable: false);
+                                                  },
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor: theme
+                                                        .colorScheme.primary,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              5.0),
+                                                    ),
+                                                  ),
+                                                  child: Text(
+                                                    "More",
+                                                    style: TextStyle(
+                                                      color: theme.colorScheme
+                                                          .onPrimary,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        )),
+                                ],
+                              ),
+                            ));
+                      },
+                    ),
+            ),
+          ],
+        ),
+      );
+    });
   }
 
-  static const TextStyle _headerStyle = TextStyle(
-    fontSize: 16.0,
-    fontStyle: FontStyle.italic,
-    fontWeight: FontWeight.bold,
-    color: Colors.black,
-  );
-
-  static const TextStyle _itemTextStyle = TextStyle(
-    fontSize: 14.0,
-    fontWeight: FontWeight.bold,
-  );
+  TextStyle _headerStyle(ThemeData theme) {
+    return TextStyle(
+      fontSize: 16.0,
+      fontWeight: FontWeight.bold,
+      color: theme.colorScheme.onBackground,
+    );
+  }
 }

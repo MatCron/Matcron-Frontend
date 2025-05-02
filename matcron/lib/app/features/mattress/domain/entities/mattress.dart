@@ -12,6 +12,8 @@ class MattressEntity {
   DateTime? lifeCyclesEnd;
   int? daysToRotate;
   String? type;
+  bool? rotationDone;
+  int? rotationTimer;
   MattressTypeEntity? mattressType;
 
   MattressEntity({
@@ -26,6 +28,8 @@ class MattressEntity {
     this.daysToRotate,
     this.location,
     this.type,
+    this.rotationDone,
+    this.rotationTimer,
     this.mattressType,
   });
 
@@ -40,6 +44,8 @@ class MattressEntity {
     int? daysToRotate,
     String? location,
     String? type,
+    bool? rotationDone,
+    int? rotationTimer,
     MattressTypeEntity? mattressType
   }) {
     return MattressEntity(
@@ -54,6 +60,8 @@ class MattressEntity {
       daysToRotate: daysToRotate ?? this.daysToRotate,
       location: location ?? this.location,
       type: type ?? this.type,
+      rotationDone: rotationDone ?? this.rotationDone,
+      rotationTimer: rotationTimer ?? this.rotationTimer,
       mattressType: mattressType ?? this.mattressType,
     );
   }
